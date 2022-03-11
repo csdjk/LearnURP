@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GpuInstanceTree2_Leaves
+  m_Shader: {fileID: 4800000, guid: 881635254434e9c4bbd589d8d2d68cfb, type: 3}
+  m_ShaderKeywords: _ADVANCED_LIGHTING _ALPHATEST_ON _ALPHATOCOVERAGE_ON _ANGLE_FADING
+    _ENVIRONMENTREFLECTIONS_OFF
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 24d5bb70e4143424ea13cd3ddf806861, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: b99f2c3899f8dc941abff2c7559fcd98, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 2b5768e7bad8aa04f86fe1c422f08194, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 2800000, guid: 15e7b93dfd8d56742b3950308a62da9a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseMap:
+        m_Texture: {fileID: 2800000, guid: 0df7a0b61c9dfa6408ae01459c10ffec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: 47cdda17bb08a47b0a50675cbb83cfa2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindMap:
+        m_Texture: {fileID: 2800000, guid: 58ee3d953f2ad1d4bb6dce9e0821b8c0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _ADVANCED_LIGHTING: 0
+    - _AdvancedLighting: 0
+    - _AlphaToCoverage: 1
+    - _AngleFading: 1
+    - _BendFlattenStrength: 1
+    - _BendMode: 0
+    - _BendPushStrength: 1
+    - _Billboard: 0
+    - _BumpScale: 1
+    - _ColorMapHeight: 1
+    - _ColorMapStrength: 0
+    - _Cull: 0
+    - _Cutoff: 0.5
+    - _EnvironmentReflections: 1
+    - _FresnelScale: 0
+    - _FrontScatterIntensity: 0.035
+    - _GlossMapScale: 1
+    - _LambertFactor: 0.528
+    - _Metallic: 0
+    - _NormalScale: 1
+    - _OcclusionStrength: 1
+    - _PerspectiveCorrection: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Scalemap: 0
+    - _ScatterDistortion: 0.031
+    - _ScatterPower: 1.82
+    - _ScatterScale: 0.23
+    - _ShadowBias: 0.65
+    - _ShadowBiasCorrection: 0
+    - _ShadowBiasOffset: 0.15
+    - _ShadowIntensity: 0.292
+    - _ShadowSmoothness: 0.067
+    - _ShadowThreshold: 0.194
+    - _Smoothness: 0.015
+    - _SmoothnessTextureChannel: 0
+    - _Softness: 0.2
+    - _SwingSpeed: 5
+    - _Translucency: 0.149
+    - _TreeLeavesDisp: 0.078
+    - _TreeSwayDisp: 0.234
+    - _TreeSwaySpeed: 0.5
+    - _VertexDarkening: 0.763
+    - _WindAmbientStrength: 0.035
+    - _WindGustFreq: 10
+    - _WindGustStrength: 0.3
+    - _WindGustTint: 0.043
+    - _WindNoiseStrength: 10.73
+    - _WindObjectRand: 1
+    - _WindRandStrength: 0
+    - _WindSize: 5
+    - _WindSpeed: 0.29
+    - _WindSwinging: 0.954
+    - _WindVertexRand: 0.327
+    - _Wind_size: 50
+    - _b_influence: 0.444
+    - _branches_disp: 0.21
+    - _leaves_wiggle_disp: 0.07
+    - _leaves_wiggle_speed: 0.01
+    - _r_influence: 0.496
+    - _tree_sway_disp: 0.591
+    - _tree_sway_speed: 0.66
+    - _tree_sway_stutter: 1.5
+    - _tree_sway_stutter_influence: 0.19
+    - _wind_size: 20
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FadeParams: {r: 6.6, g: 5.14, b: 0, a: 0}
+    - _FresnelColor: {r: 0, g: 0.2830189, b: 0.013477106, a: 1}
+    - _HueVariation: {r: 0, g: 0.5, b: 0.065217376, a: 0.7529412}
+    - _ScalemapInfluence: {r: 0.34, g: 0, b: 0, a: 0}
+    - _ScatterColor: {r: 0.061409745, g: 0.8679245, b: 0.16578218, a: 1}
+    - _ShadowColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+    - _SpecColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+    - _Wind: {r: 1, g: 0, b: 0, a: 10}
+    - _WindDir: {r: 1, g: 0.05, b: 1, a: 0}
+    - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
+    - _wind_dir: {r: 7.16, g: 9.5, b: 0.28, a: 0}

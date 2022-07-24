@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ice
   m_Shader: {fileID: 4800000, guid: a7ec92088465c954a99faa09a8bc3028, type: 3}
-  m_ShaderKeywords: _NORMALMAP
+  m_ShaderKeywords: _INVERT_ICE_DIR _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -49,10 +49,11 @@ Material:
     - _FreezeDirection: 1
     - _FresnelPower: 50
     - _IceBumpScale: 1
-    - _IceDistribution: 0.587
+    - _IceDistribution: 0.471
     - _IceHeight: 0.961
     - _IceSmoothness: 0.618
     - _IceStrength: 0.789
+    - _InvertIceDir: 1
     - _RefractionAmount: 0.275
     - _ScaterDistortion: 0.848
     - _ScaterPower: 1.78

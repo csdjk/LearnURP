@@ -6,7 +6,7 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 
 #include "Assets/Shaders/Libraries/Wind.hlsl"
-#include "Assets/Shaders/Libraries/Common.hlsl"
+#include "Assets/Shaders/Libraries/Node.hlsl"
 #include "Assets/Shaders/Libraries/Color.hlsl"
 
 
@@ -291,13 +291,6 @@ float3 ApplyShadowAtten(in Light light, in float amount)
 {
     float atten = light.distanceAttenuation * light.shadowAttenuation;
     return lerp(1, atten, amount);
-}
-
-float SubsurfaceScattering(float3 viewDirWS, float3 lightDir, float3 normalWS, float distortion, float power, float scale)
-{
-    float3 H = (lightDir + normalWS * distortion);
-    float I = pow(saturate(dot(viewDirWS, -H)), power) * scale;
-    return I;
 }
 
 void ApplySubsurfaceScattering(inout float3 color, float3 viewDirWS, float3 normalWS, Light light, float amount)

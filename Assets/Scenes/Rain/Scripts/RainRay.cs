@@ -8,7 +8,7 @@ public class RainRay : MonoBehaviour
     public static RainRay Instance;
 
     public float boundSize = 0;
-    public float boundSizeBase = -5f;
+    public float boundSizeBase = 0f;
 
     void OnEnable()
     {
@@ -24,7 +24,7 @@ public class RainRay : MonoBehaviour
     void Update()
     {
         // Ray ray = Camera.main.ScreenPointToRay(transform.position);
-        Ray ray = new Ray(transform.position, transform.up);
+        Ray ray = new Ray(transform.position, Vector3.up);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 99999, LayerMask.GetMask("SceneStatic")))
         {

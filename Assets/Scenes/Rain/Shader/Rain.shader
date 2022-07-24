@@ -29,20 +29,19 @@
 				float4 rain_uv : TEXCOORD1;
 				float4 scrPos : TEXCOORD2;
 				float3 worldPos : TEXCOORD3;
+				float depth : TEXCOORD4;
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-				float4 _FarRainData;
-				float4 _NearRainData;
-
 				float4 _RainColor;
-				float4 _RainDepthRange;
-				float4 _RainDepthStart;
+				float _RainAlpha;
+
+				float4 _FarTillingSpeed;
+				float4 _NearTillingSpeed;
+				float _FarDepthStart;
+				float _NearDepthStart;
 
 
-				float _LightExponent;
-				float _LightIntensity1;
-				float _LightIntensity2;
 				float4x4 _DepthCameraMatrixVP;
 			CBUFFER_END
 			
@@ -60,15 +59,22 @@
 			
 			TEXTURE2D(_CameraOpaqueTexture);
 			SAMPLER(sampler_CameraOpaqueTexture);
-			float3 CalculateRainLayer(float2 uv, float sceneViewDepth, float rainDepthRange, float rainDepthStart, float3 layer)
+			// float3 CalculateRainLayer(float2 uv, float sceneViewDepth, float rainDepthStart, float3 layer)
+			// {
+			// 	// r:远处的雨,g:近处的雨,b:雨的深度
+			// 	half4 rain = SAMPLE_TEXTURE2D(_RainTexture, sampler_RainTexture, uv);
+			// 	float rainDepth = rain.b * _ProjectionParams.z + rainDepthStart;
+			// 	float mask = saturate(sceneViewDepth - rainDepth);
+			// 	return rain * mask * layer;
+			// }
+			float3 CalculateRainLayer(float2 uv, float2 depth, float sceneViewDepth, float depthStart)
 			{
 				// r:远处的雨,g:近处的雨,b:雨的深度
 				half4 rain = SAMPLE_TEXTURE2D(_RainTexture, sampler_RainTexture, uv);
-				float rainDepth = rain.b * _ProjectionParams.z * rainDepthRange + rainDepthStart;
+				float rainDepth = depth + depthStart;
 				float mask = saturate(sceneViewDepth - rainDepth);
-				return rain * mask * layer;
+				return rain.rgb * mask;
 			}
-			
 			v2f vert(a2v v)
 			{
 				v2f o;
@@ -78,6 +84,7 @@
 				o.uv = v.uv;
 				o.scrPos = ComputeScreenPos(o.vertex);
 				// o.worldPos = vertexInput.positionVS.xyz;
+				o.depth = -vertexInput.positionVS.z;
 				return o;
 			}
 			inline float DecodeFloatRGBA(float4 enc)
@@ -90,14 +97,14 @@
 				float2 screen_uv = i.scrPos.xy / i.scrPos.w;
 				float2 uv = i.uv;
 
-				float2 scale = _FarRainData.xy;
-				float2 speed = _FarRainData.zw;
+				float2 farTilling = _FarTillingSpeed.xy;
+				float2 farSpeed = _FarTillingSpeed.zw;
 
-				float2 scaleNear = _NearRainData.xy;
-				float2 speedNear = _NearRainData.zw;
+				float2 nearTilling = _NearTillingSpeed.xy;
+				float2 nearSpeed = _NearTillingSpeed.zw;
 
-				float2 uv1 = uv * scale + speed * _Time.x;
-				float2 uv2 = uv * scaleNear + speedNear * _Time.x;
+				float2 uv1 = uv * farTilling + farSpeed * _Time.x;
+				float2 uv2 = uv * nearTilling + nearSpeed * _Time.x;
 
 				// float3 worldDir = normalize(i.worldPos - _WorldSpaceCameraPos);
 				// float2 NoiseUV = tex2D(DistortionTexture, uv1).xy + tex2D(DistortionTexture, uv2).xy;
@@ -106,8 +113,9 @@
 				// ==================================主摄像机遮挡剔除==================================
 				float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, screen_uv).r;
 				float sceneViewDepth = LinearEyeDepth(depth, _ZBufferParams); //摄像机空间的深度
-				float rainLayer1 = CalculateRainLayer(uv1, sceneViewDepth, _RainDepthRange.x, _RainDepthStart.x, float3(1, 0, 0)).r;
-				float rainLayer2 = CalculateRainLayer(uv2, sceneViewDepth, _RainDepthRange.y, _RainDepthStart.y, float3(0, 1, 0)).g;
+				float rainLayer1 = CalculateRainLayer(uv1, i.depth, sceneViewDepth, _FarDepthStart).r;
+				float rainLayer2 = CalculateRainLayer(uv2, i.depth, sceneViewDepth, _NearDepthStart).g;
+
 
 				// ==================================高度遮挡剔除==================================
 				// // 根据雨的深度还原世界坐标和投影空间坐标
@@ -131,12 +139,16 @@
 
 				// occlusion = 1;
 				// ==================================Blend Color==================================
-				half3 color = (rainLayer1 + rainLayer2) * _RainColor;
+				half rainMask = rainLayer1 + rainLayer2;
+				half3 color = _RainColor;
 				half3 mainColor = SAMPLE_TEXTURE2D(_SourceTex, sampler_SourceTex, screen_uv).rgb;
 				// half3 mainColor = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, screen_uv).rgb;
+				// color = lerp(mainColor, color, rainMask * _RainAlpha);
 
-				float3 finalCol = 1 - (1 - mainColor) * (1 - color);
+
+				// float3 finalCol = 1 - (1 - mainColor) * (1 - color);
 				// float3 finalCol = mainColor + color;
+				float3 finalCol = lerp(mainColor, color, rainMask * _RainAlpha);
 
 				return half4(finalCol, 1.f);
 			}

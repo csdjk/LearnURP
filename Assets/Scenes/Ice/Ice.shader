@@ -17,9 +17,9 @@
 		_EmissionMap ("Emission Texture", 2D) = "white" { }
 		_EmissionColor ("Emission Colour", Color) = (0, 0, 0, 0)
 
-
 		[Header(Ice)]
-		_MinMaxHeight ("Min Max Height", Vector) = (0, 1, 1, 1)
+		_MinMaxHeight ("Min Max", Vector) = (0, 1, 1, 1)
+		[Toggle(_INVERT_ICE_DIR)] _InvertIceDir ("Invert Ice Dir", Float) = 0.0
 		[Enum(X, 1, Y, 2, Z, 3)]_FreezeDirection ("Freeze Direction", Int) = 1
 		_IceDistribution ("Ice Distribution", Range(0, 1)) = 0.5
 		_IceStrength ("Ice Strength", Range(0, 1)) = 0.5
@@ -70,9 +70,7 @@
 
 		Pass
 		{
-			Name "Example"
 			Tags { "LightMode" = "UniversalForward" }
-			
 			HLSLPROGRAM
 
 			#pragma prefer_hlslcc gles
@@ -113,6 +111,9 @@
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
+			#include "Assets/Shaders/Libraries/Node.hlsl"
+			#pragma shader_feature _INVERT_ICE_DIR
+
 
 			struct Attributes
 			{
@@ -257,24 +258,7 @@
 				float3 vb = float3(0, 1, (vSample - normalSample) * Strength);
 				return normalize(cross(va, vb));
 			}
-			float FresnelEffect(float3 Normal, float3 ViewDir, float Power)
-			{
-				return pow((1.0 - saturate(dot(normalize(Normal), normalize(ViewDir)))), Power);
-			}
-			float FresnelEffect(float3 Normal, float3 ViewDir, float Power, float Scale)
-			{
-				return Scale + (1 - Scale) * pow((1.0 - saturate(dot(normalize(Normal), normalize(ViewDir)))), Power);
-			}
-			float Remap(float In, float2 InMinMax, float2 OutMinMax)
-			{
-				return OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-			}
-			float SubsurfaceScattering(float3 viewDirWS, float3 lightDir, float3 normalWS, float distortion, float power, float scale)
-			{
-				float3 H = (lightDir + normalWS * distortion);
-				float I = pow(saturate(dot(viewDirWS, -H)), power) * scale;
-				return I;
-			}
+			
 			SurfaceData InitializeSurfaceData(Varyings IN)
 			{
 				SurfaceData surfaceData = (SurfaceData)0;
@@ -292,11 +276,11 @@
 				float3 screenColor = SampleSceneColor(screenPos.xy);
 
 				// fresnel
-				// float fresnel = FresnelEffect(IN.normalWS, IN.viewDirWS, _ScaterPower) * _ScatterColor;
-				half3 fresnel = FresnelEffect(IN.normalWS, IN.viewDirWS, _ScaterPower, _ScaterScale) * _ScatterColor;
+				float3 viewWS = SafeNormalize(IN.viewDirWS);
+				// half3 fresnel = FresnelEffect(IN.normalWS, viewWS, _ScaterPower, _ScaterScale) * _ScatterColor;
 				// SSS
 				half3 customLightDir = normalize(IN.positionWS - GetCameraPositionWS());
-				half3 sss = SubsurfaceScattering(IN.viewDirWS, customLightDir, IN.normalWS, _ScaterDistortion, _ScaterPower, _ScaterScale) * _ScatterColor;
+				half3 sss = SubsurfaceScattering(viewWS, customLightDir, IN.normalWS, _ScaterDistortion, _ScaterPower, _ScaterScale) * _ScatterColor;
 
 				// ice color
 				half3 iceFinalColor = (iceColor + screenColor) * _IceColor + sss;
@@ -304,14 +288,16 @@
 				iceFinalColor = lerp(surfaceData.albedo, iceFinalColor, _IceStrength);
 				
 
-
 				half2 range = _MinMaxHeight.xy;
 				float maxHeight = lerp(range.x, range.y, _IceDistribution) + 0.001;
 				half iceHeight = Remap(IN.positionHeight, float2(range.x, maxHeight), float2(0, 1));
 				iceHeight = smoothstep(_IceSmoothness, 1, iceHeight);
 				// iceHeight = lerp(iceHeight, 1, step(1, _IceDistribution));
 				iceHeight = _IceDistribution == 1 ? 0 : iceHeight;
-
+				// 反转冰冻方向
+				#ifdef _INVERT_ICE_DIR
+					iceHeight = 1 - iceHeight;
+				#endif
 				surfaceData.albedo = lerp(iceFinalColor, surfaceData.albedo, iceHeight);
 
 				// half3 iceNormal = NormalFromTexture(TEXTURE2D_ARGS(_IceMap, sampler_IceMap), IN.uv.zw, 0.5, _IceBumpScale);
@@ -321,15 +307,9 @@
 				half3 originNormal = SampleNormal(IN.uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
 				// surfaceData.normalTS = BlendNormal(originNormal, iceNormal);
 				surfaceData.normalTS = lerp(iceNormal, originNormal, iceHeight);
-
-
 				surfaceData.emission = SampleEmission(IN.uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
 				surfaceData.occlusion = 1;
 				surfaceData.smoothness = lerp(1, _Smoothness, iceHeight);
-
-				// float fresnel = FresnelEffect(IN.normalWS, IN.viewDirWS, 5) * _ScatterColor;
-				// surfaceData.albedo = iceHeight;
-
 				return surfaceData;
 			}
 
@@ -337,9 +317,7 @@
 			{
 				SurfaceData surfaceData = InitializeSurfaceData(IN);
 
-				// return half4(surfaceData.albedo,1);
 				InputData inputData = InitializeInputData(IN, surfaceData.normalTS);
-				
 				half4 color = UniversalFragmentPBR(inputData, surfaceData.albedo, surfaceData.metallic,
 				surfaceData.specular, surfaceData.smoothness, surfaceData.occlusion,
 				surfaceData.emission, surfaceData.alpha);
@@ -348,9 +326,7 @@
 
 				color.a = saturate(color.a);
 
-
-
-				return color; // float4(inputData.bakedGI,1);
+				return color;
 
 			}
 			ENDHLSL

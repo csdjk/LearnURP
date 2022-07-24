@@ -9,9 +9,6 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// 自定义快捷键
-/// </summary>
 public class CustomShortcuts
 {
     [MenuItem("LCLTools/CustomKeys/播放 _F3")]
@@ -41,6 +38,7 @@ public class CustomShortcuts
         if (trsArr == null) return;
         foreach (var trs in trsArr)
         {
+            Undo.RecordObject(trs, "Reset Position");
             trs.localPosition = Vector3.zero;
         }
     }
@@ -55,6 +53,7 @@ public class CustomShortcuts
         if (trsArr == null) return;
         foreach (var trs in trsArr)
         {
+            Undo.RecordObject(trs, "Show Objects");
             trs.gameObject.SetActive(!trs.gameObject.activeSelf);
         }
     }
@@ -97,6 +96,7 @@ public class CustomShortcuts
         }
 
         go.transform.SetSiblingIndex(index);
+        Undo.RegisterCreatedObjectUndo(go, "CreateCustomModel");
     }
 
     [MenuItem("GameObject/CreateCustomModel/Jan", false, 0)]

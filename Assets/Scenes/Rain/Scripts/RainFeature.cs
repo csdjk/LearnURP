@@ -7,6 +7,14 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class RainFeature : ScriptableRendererFeature
 {
+    [System.Serializable]
+    public class RainLayerData
+    {
+        public Vector2 tilling = new Vector2(10f, 10f);
+        public Vector2 speed = new Vector2(0f, 50f);
+        [Range(0, 30)]
+        public float depthStart = 0f;
+    }
 
     [System.Serializable]
     public class RainSettings
@@ -17,29 +25,13 @@ public class RainFeature : ScriptableRendererFeature
         public Mesh rainMesh;
         public Texture2D rainTexture = null;
         public Color rainColor = Color.gray;
+        [Range(0f, 1f)]
+        public float rainAlpha = 1f;
 
-
-        // Far Rain
-        public Vector2 tillingFar = new Vector2(20f, 5f);
-        public Vector2 speedFar = new Vector2(0f, 10f);
-        // Near Rain
-        public Vector2 tillingNear = new Vector2(10f, 8f);
-        public Vector2 speedNear = new Vector2(0f, 30f);
-
-
-        public Vector4 rainDepthRange = Vector4.one;
-        public Vector4 rainDepthStart = Vector4.zero;
+        public RainLayerData layerFar;
+        public RainLayerData layerNear;
 
         public Vector3 windDir = Vector3.zero;
-
-
-
-        [Range(0.25f, 4f)]
-        public float lightExponent = 1f;
-        [Range(0.25f, 4f)]
-        public float lightIntensity1 = 1f;
-        [Range(0.25f, 4f)]
-        public float lightIntensity2 = 1f;
 
         [HideInInspector]
         public Material rainMaterial = null;
@@ -58,10 +50,12 @@ public class RainFeature : ScriptableRendererFeature
         }
         if (!settings.rainMaterial)
         {
-            var shader = settings.rainShader ?? Shader.Find("Hidden/DodRain1");
-            if (!shader)
+            if (!settings.rainShader)
+            {
+                settings.rainShader = Shader.Find("LcL/Rain");
                 return;
-            settings.rainMaterial = new Material(shader);
+            }
+            settings.rainMaterial = new Material(settings.rainShader);
             settings.rainMaterial.hideFlags = HideFlags.DontSave;
         }
         blitPass = new RainPass(name, settings);
@@ -124,27 +118,30 @@ public class RainFeature : ScriptableRendererFeature
             var mat = settings.rainMaterial;
             command.SetGlobalTexture("_SourceTex", source);
             command.SetGlobalTexture("_RainTexture", settings.rainTexture);
-            command.SetGlobalVector("_FarRainData", new Vector4(settings.tillingFar.x, settings.tillingFar.y, settings.speedFar.x, settings.speedFar.y));
-            command.SetGlobalVector("_NearRainData", new Vector4(settings.tillingNear.x, settings.tillingNear.y, settings.speedNear.x, settings.speedNear.y));
-
             command.SetGlobalVector("_RainColor", settings.rainColor);
+            command.SetGlobalFloat("_RainAlpha", settings.rainAlpha);
 
-            command.SetGlobalVector("_RainDepthRange", settings.rainDepthRange);
-
+            var layerFar = settings.layerFar;
+            var layerNear = settings.layerNear;
 
             if (RainRay.Instance)
             {
-                // x:far , y: near
-                settings.rainDepthStart.x = RainRay.Instance.boundSize + 5;
-                settings.rainDepthStart.y = RainRay.Instance.boundSize;
-                Debug.Log(settings.rainDepthStart);
+                layerFar.depthStart = RainRay.Instance.boundSize + 2;
+                layerNear.depthStart = RainRay.Instance.boundSize;
+                Debug.Log(layerNear.depthStart);
 
                 settings.windDir.y = RainRay.Instance.transform.rotation.y;
             }
-            command.SetGlobalVector("_RainDepthStart", settings.rainDepthStart);
-            command.SetGlobalFloat("_LightExponent", settings.lightExponent);
-            command.SetGlobalFloat("_LightIntensity1", settings.lightIntensity1);
-            command.SetGlobalFloat("_LightIntensity2", settings.lightIntensity2);
+
+            // far layer
+            command.SetGlobalVector("_FarTillingSpeed", new Vector4(layerFar.tilling.x, layerFar.tilling.y, layerFar.speed.x, layerFar.speed.y));
+            command.SetGlobalFloat("_FarDepthStart", layerFar.depthStart);
+
+            // near layer
+            command.SetGlobalVector("_NearTillingSpeed", new Vector4(layerNear.tilling.x, layerNear.tilling.y, layerNear.speed.x, layerNear.speed.y));
+            command.SetGlobalFloat("_NearDepthStart", layerNear.depthStart);
+
+
 
             var pos = cam.transform.position;
             // pos = Vector3.zero;

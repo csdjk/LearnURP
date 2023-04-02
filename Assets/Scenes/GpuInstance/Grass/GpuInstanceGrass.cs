@@ -9,7 +9,7 @@ public class GpuInstanceGrass : MonoBehaviour
 {
     public int seed = 1;
 
-    [Range(1, 10000)]
+    [Range(1, 1000000)]
     public int grassCount = 1;
     [Range(1, 1000)]
     public float radius = 100;

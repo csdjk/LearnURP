@@ -2,14 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GpuInstanceGrassPlane
   m_Shader: {fileID: 4800000, guid: 3455264fe6b83814bbfc399dc1dfeab2, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -20,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: e37de82b168e37e468e73b7371aff100, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -67,6 +68,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0df7a0b61c9dfa6408ae01459c10ffec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _BumpScale: 2
     - _Cull: 0
@@ -78,7 +80,7 @@ Material:
     - _IndirectStrength: 0.169
     - _LambertFactor: 0.618
     - _Metallic: 0
-    - _OcclusionStrength: 0.177
+    - _OcclusionStrength: 0.456
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ScaterPower: 1
@@ -99,7 +101,7 @@ Material:
     - _TreeSwayDisp: 0.3
     - _TreeSwaySpeed: 0.5
     - _VertexDarkening: 0.1
-    - _WindAmbientStrength: 0.063
+    - _WindAmbientStrength: 0.054
     - _WindGustFreq: 10
     - _WindGustStrength: 0.262
     - _WindGustTint: 0.179
@@ -123,8 +125,8 @@ Material:
     - _tree_sway_stutter_influence: 0.2
     - _wind_size: 15
     m_Colors:
-    - _BaseColor: {r: 0.11390791, g: 0.745283, b: 0, a: 1}
-    - _BaseColor2: {r: 0.7650273, g: 1, b: 0, a: 1}
+    - _BaseColor: {r: 0.097914554, g: 0.6415094, b: 0, a: 1}
+    - _BaseColor2: {r: 0.75014853, g: 1, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseColorHigh: {r: 0.7548395, g: 0.9056604, b: 0, a: 1}
     - _DiffuseColorLow: {r: 0.047882777, g: 0.254717, b: 0, a: 1}
@@ -138,3 +140,4 @@ Material:
     - _WindDir: {r: 1, g: 0, b: 0, a: 0}
     - _WindDirection: {r: 1, g: 0, b: 0, a: 0}
     - _wind_dir: {r: 0.5, g: 0.05, b: 0.5, a: 0}
+  m_BuildTextureStacks: []

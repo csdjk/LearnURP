@@ -1,25 +1,29 @@
-﻿Shader "Custom/LambertShaderExample" {
-	Properties {
-		_BaseMap ("Example Texture", 2D) = "white" {}
+﻿Shader "Custom/LambertShaderExample"
+{
+	Properties
+	{
+		_BaseMap ("Example Texture", 2D) = "white" { }
 		_BaseColor ("Example Colour", Color) = (0, 0.66, 0.73, 1)
 		_Cutoff ("Alpha Cutoff", Float) = 0.5
 	}
-	SubShader { 
-		Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
 		
 		HLSLINCLUDE
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			
-			CBUFFER_START(UnityPerMaterial)
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+		
+		CBUFFER_START(UnityPerMaterial)
 			float4 _BaseMap_ST;
 			float4 _BaseColor;
 			float _Cutoff;
-			CBUFFER_END
+		CBUFFER_END
 		ENDHLSL
 		
-		Pass {
+		Pass
+		{
 			Name "Example"
-			Tags { "LightMode"="UniversalForward" }
+			Tags { "LightMode" = "UniversalForward" }
 			
 			HLSLPROGRAM
 			#pragma vertex vert
@@ -31,27 +35,30 @@
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-			struct Attributes {
-				float4 positionOS	: POSITION;
-				float2 uv 		: TEXCOORD0;
-				float4 color		: COLOR;
+			struct Attributes
+			{
+				float4 positionOS : POSITION;
+				float2 uv : TEXCOORD0;
+				float4 color : COLOR;
 
-				float4 normalOS		: NORMAL;
+				float4 normalOS : NORMAL;
 			};
 
-			struct Varyings {
-				float4 positionCS	: SV_POSITION;
-				float2 uv		: TEXCOORD0;
-				float4 color		: COLOR;
+			struct Varyings
+			{
+				float4 positionCS : SV_POSITION;
+				float2 uv : TEXCOORD0;
+				float4 color : COLOR;
 
-				float3 normalWS		: NORMAL;
-				float3 positionWS	: TEXCOORD2;
+				float3 normalWS : NORMAL;
+				float3 positionWS : TEXCOORD2;
 			};
 			
 			TEXTURE2D(_BaseMap);
 			SAMPLER(sampler_BaseMap);
 			
-			Varyings vert(Attributes IN) {
+			Varyings vert(Attributes IN)
+			{
 				Varyings OUT;
 
 				VertexPositionInputs positionInputs = GetVertexPositionInputs(IN.positionOS.xyz);
@@ -68,7 +75,8 @@
 				return OUT;
 			}
 			
-			half4 frag(Varyings IN) : SV_Target {
+			half4 frag(Varyings IN) : SV_Target
+			{
 				half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);
 				half4 color = baseMap * _BaseColor * IN.color;
 
@@ -81,9 +89,10 @@
 			ENDHLSL
 		}
 
-		Pass {
+		Pass
+		{
 			Name "ShadowCaster"
-			Tags { "LightMode"="ShadowCaster" }
+			Tags { "LightMode" = "ShadowCaster" }
 
 			ZWrite On
 			ZTest LEqual
@@ -101,7 +110,7 @@
 			// GPU Instancing
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
-            
+			
 			#pragma vertex ShadowPassVertex
 			#pragma fragment ShadowPassFragment
 			

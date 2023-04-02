@@ -225,6 +225,7 @@ Varyings LitPassVertex(Attributes input, uint instanceID : SV_InstanceID)
 
     //Vertex color
     output.color = ApplyVertexColor(_BaseColor.rgb, output.mask.b, _OcclusionStrength, _HueVariation);
+    // output.color = 1;
     //Apply per-vertex light if enabled in pipeline
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
         //Pass to fragment shader to apply in Lighting function

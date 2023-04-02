@@ -103,15 +103,15 @@ Material:
     - _VertexDarkening: 0.1
     - _WindAmbientStrength: 0.054
     - _WindGustFreq: 10
-    - _WindGustStrength: 0.262
-    - _WindGustTint: 0.179
+    - _WindGustStrength: 0.483
+    - _WindGustTint: 0.064
     - _WindNoiseStrength: 10.73
     - _WindObjectRand: 0
     - _WindPower: 0.76
     - _WindRandStrength: 0
     - _WindSize: 0.68
     - _WindSpeed: 1.25
-    - _WindSwinging: 0.144
+    - _WindSwinging: 1
     - _WindVertexRand: 0
     - _Wind_size: 15
     - _b_influence: 1

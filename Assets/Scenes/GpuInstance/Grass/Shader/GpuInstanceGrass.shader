@@ -61,7 +61,7 @@
             #pragma prefer_hlslcc gles
             #pragma exclude_renderers d3d11_9x
             #pragma target 2.0
-            
+           #pragma enable_d3d11_debug_symbols
             // -------------------------------------
             // Enable feature
             #define _ALPHATEST_ON

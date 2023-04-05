@@ -16,8 +16,6 @@ public class CommandBufferExample : ScriptableRendererFeature
     {
         public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         public Mesh drawMesh = null;
-        public RenderTexture renderTexture = null;
-        public Material drawMaterial = null;
         public Color color = Color.white;
     }
 
@@ -29,9 +27,6 @@ public class CommandBufferExample : ScriptableRendererFeature
     /// </summary>
     public override void Create()
     {
-        if (!settings.renderTexture)
-            settings.renderTexture = RenderTexture.GetTemporary(1024, 1024, 0);
-
         blitPass = new CommandExamplePass(name, settings);
         blitPass.renderPassEvent = settings.renderPassEvent;
     }
@@ -40,14 +35,12 @@ public class CommandBufferExample : ScriptableRendererFeature
     // 当为每个摄像机设置渲染器时，会调用此方法。
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (settings.drawMaterial == null)
+        if (settings.drawMesh == null)
         {
-            Debug.LogWarning("blit材质丢失");
             return;
         }
         blitPass.SetTarget(renderer.cameraColorTarget);
         renderer.EnqueuePass(blitPass);
-
     }
 
 
@@ -56,6 +49,10 @@ public class CommandBufferExample : ScriptableRendererFeature
     /// </summary>
     public class CommandExamplePass : ScriptableRenderPass
     {
+        static readonly int m_RenderTexture = Shader.PropertyToID("_RenderTexture");
+        static readonly string m_Shader = "lcl/CommandBuffer/BakeTexture";
+        //create material
+        private Material m_Material;
         private Settings settings;
         private RenderTargetIdentifier source;
         private ProfilingSampler m_ProfilingSampler;
@@ -63,6 +60,7 @@ public class CommandBufferExample : ScriptableRendererFeature
         public CommandExamplePass(string tag, Settings settings)
         {
             m_ProfilingSampler = new ProfilingSampler(tag);
+            m_Material = CoreUtils.CreateEngineMaterial(m_Shader);
             this.settings = settings;
         }
 
@@ -70,20 +68,42 @@ public class CommandBufferExample : ScriptableRendererFeature
         {
             source = cameraColorTarget;
         }
+
+        // 配置此渲染通道的输入和输出目标。
+        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
+        {
+            cmd.GetTemporaryRT(m_RenderTexture, cameraTextureDescriptor);
+            ConfigureTarget(m_RenderTexture);
+            ConfigureClear(ClearFlag.All, Color.clear);
+        }
+
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
+
             CommandBuffer command = CommandBufferPool.Get();
+            var camera = renderingData.cameraData.camera;
+            // renderingData.cameraData.isSceneViewCamera
             using (new ProfilingScope(command, m_ProfilingSampler))
             {
-                settings.drawMaterial.SetColor("_Color", settings.color);
-                command.SetRenderTarget(settings.renderTexture);
-                command.DrawMesh(settings.drawMesh, Matrix4x4.identity, settings.drawMaterial, 0, 0);
-                command.Blit(settings.renderTexture, source);
+                m_Material.SetColor("_Color", settings.color);
+                command.DrawMesh(settings.drawMesh, Matrix4x4.identity, m_Material, 0, 0);
+                command.Blit(m_RenderTexture, source);
             }
             context.ExecuteCommandBuffer(command);
             CommandBufferPool.Release(command);
         }
 
+        public override void FrameCleanup(CommandBuffer cmd)
+        {
+            cmd.ReleaseTemporaryRT(m_RenderTexture);
+        }
 
+        void Dispose(bool disposing)
+        {
+            if (m_Material != null)
+            {
+                CoreUtils.Destroy(m_Material);
+            }
+        }
     }
 }

@@ -54,9 +54,13 @@ CBUFFER_START(UnityPerMaterial)
     half _WindGustFreq;
     half _WindGustTint;
 
-    // #if !defined(_ADVANCED_LIGHTING)
     float4 _BaseColor2;
-    // #endif
+
+
+    // 交互对象坐标和范围（w）
+    float4 _PlayerPos;
+    // 下压强度
+    float _PushStrength;
 CBUFFER_END
 
 // -----------------------------Properties End--------------------------------
@@ -104,7 +108,7 @@ VertexInputs GetVertexInputs(Attributes v)
 
 struct VertexOutput
 {
-    float3 positionWS; 
+    float3 positionWS;
     float4 positionCS;
     float4 positionNDC;
     float3 viewDir;
@@ -169,6 +173,15 @@ VertexOutput GetVertexOutput(VertexInputs input, float rand, WindSettings s)
     float4 windVec = GetWindOffset(input.positionOS.xyz, positionWS, rand, s); //Less wind on shorter grass
     float3 offsets = windVec.xyz;
 
+    // Player 交互
+    float3 offsetDir = normalize(_PlayerPos.xyz - positionWS.xyz);
+    float dis = distance(positionWS.xyz, _PlayerPos.xyz);
+    float radius = _PlayerPos.w;
+    
+    float isPushRange = smoothstep(dis, dis + 0.8, radius);
+    // float isPushRange = 1-smoothstep(radius,radius+0.8,dis);
+    offsets.xz = offsetDir.xz * isPushRange + offsetDir.xz * (1 - isPushRange);
+    
     //Apply Wind offset
     positionWS.xz += offsets.xz;
     positionWS.y -= offsets.y;

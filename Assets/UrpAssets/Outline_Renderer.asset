@@ -18,25 +18,6 @@ MonoBehaviour:
     blitMaterial: {fileID: 2100000, guid: e8c6d46e395155244a40b3ce3336a8f3, type: 2}
     renderTexture: {fileID: 0}
     color: {r: 1, g: 0.32956016, b: 0.3066038, a: 0}
---- !u!114 &-6082005299652362842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df43388d34ae3fa43aaba054e8d6bb78, type: 3}
-  m_Name: CommandBufferExample
-  m_EditorClassIdentifier: 
-  m_Active: 0
-  settings:
-    renderPassEvent: 600
-    drawMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-    renderTexture: {fileID: 8400000, guid: aca0ada8a146d4242a8abbe596010f07, type: 2}
-    drawMaterial: {fileID: 2100000, guid: 016371feddc715c43afa85d9cde30065, type: 2}
-    color: {r: 1, g: 0.052788474, b: 0, a: 1}
 --- !u!114 &-1007707825938243561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,8 +75,7 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -1007707825938243561}
   - {fileID: -8747075795490540246}
-  - {fileID: -6082005299652362842}
-  m_RendererFeatureMap: 17e0914512e703f22a755e72e8249c86a67d2d60676098ab
+  m_RendererFeatureMap: 17e0914512e703f22a755e72e8249c86
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -167,6 +147,4 @@ MonoBehaviour:
   settings:
     renderPassEvent: 400
     drawMesh: {fileID: 0}
-    renderTexture: {fileID: 8400000, guid: aca0ada8a146d4242a8abbe596010f07, type: 2}
-    drawMaterial: {fileID: 2100000, guid: c4ae8946104138f4a9f1076a5a2e6921, type: 2}
     color: {r: 1, g: 1, b: 1, a: 1}

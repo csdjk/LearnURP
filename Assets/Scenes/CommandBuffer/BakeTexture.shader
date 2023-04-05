@@ -25,7 +25,7 @@
             struct v2f
             {
                 float2 uv : TEXCOORD0;
-				float3 worldPos : TEXCOORD1;
+                float3 worldPos : TEXCOORD1;
                 float4 vertex : SV_POSITION;
             };
 
@@ -48,11 +48,10 @@
 
             fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv)*_Color;
+                fixed4 col = tex2D(_MainTex, i.uv) * _Color;
                 return col;
             }
             ENDCG
-
         }
     }
 }

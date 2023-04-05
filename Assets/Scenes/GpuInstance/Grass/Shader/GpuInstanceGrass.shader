@@ -61,7 +61,7 @@
             #pragma prefer_hlslcc gles
             #pragma exclude_renderers d3d11_9x
             #pragma target 2.0
-           #pragma enable_d3d11_debug_symbols
+            // #pragma enable_d3d11_debug_symbols
             // -------------------------------------
             // Enable feature
             #define _ALPHATEST_ON
@@ -111,10 +111,8 @@
 
             #pragma vertex LitPassVertex
             #pragma fragment ForwardPassFragment
-            // #pragma enable_d3d11_debug_symbols
             
             ENDHLSL
-
         }
 
         // Pass
@@ -164,6 +162,7 @@
         //     ENDHLSL
 
         // }
+
     }
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
     // CustomEditor "StylizedGrass.StylizedGrassShaderGUI"

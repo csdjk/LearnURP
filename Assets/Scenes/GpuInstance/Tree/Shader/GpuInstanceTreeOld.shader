@@ -323,7 +323,6 @@
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            
             struct appdata
             {
                 float4 positionOS : POSITION;

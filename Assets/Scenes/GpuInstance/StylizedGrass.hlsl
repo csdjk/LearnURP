@@ -163,25 +163,22 @@ float4 ApplyWind(float4 positionOS)
 VertexOutput GetVertexOutput(VertexInputs input, float rand, WindSettings s)
 {
     VertexOutput data = (VertexOutput)0;
-    // // 横向wind
-    // #if defined(_HEIGHT_WIND)
-    // 	input.positionOS = ApplyWind(input.positionOS);
-    // #endif
 
     float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
-    
-    float4 windVec = GetWindOffset(input.positionOS.xyz, positionWS, rand, s); //Less wind on shorter grass
+    //草的顶点越接近下面的风力越小
+    float4 windVec = GetWindOffset(input.positionOS.xyz, positionWS, rand, s);
     float3 offsets = windVec.xyz;
 
     // Player 交互
-    float3 offsetDir = normalize(_PlayerPos.xyz - positionWS.xyz);
+    float3 offsetDir = normalize(positionWS.xyz - _PlayerPos.xyz);
     float dis = distance(positionWS.xyz, _PlayerPos.xyz);
     float radius = _PlayerPos.w;
     
-    float isPushRange = smoothstep(dis, dis + 0.8, radius);
-    // float isPushRange = 1-smoothstep(radius,radius+0.8,dis);
-    offsets.xz = offsetDir.xz * isPushRange + offsetDir.xz * (1 - isPushRange);
-    
+    float isPushRange = smoothstep(dis, dis + 0.2, radius) * s.mask;
+    offsets.xz = lerp(offsets.xz, offsets + offsetDir.xz * _PushStrength, isPushRange);
+    // offsets.y = lerp(offsets.y, offsets.y + _PushStrength*0.1, isPushRange);
+
+
     //Apply Wind offset
     positionWS.xz += offsets.xz;
     positionWS.y -= offsets.y;
@@ -192,6 +189,7 @@ VertexOutput GetVertexOutput(VertexInputs input, float rand, WindSettings s)
     float4 ndc = data.positionCS * 0.5f;
     data.positionNDC.xy = float2(ndc.x, ndc.y * _ProjectionParams.x) + ndc.w;
     data.positionNDC.zw = data.positionCS.zw;
+    return data;
 
     #ifdef LIGHTING_PASS
 
@@ -238,7 +236,6 @@ Varyings LitPassVertex(Attributes input, uint instanceID : SV_InstanceID)
 
     //Vertex color
     output.color = ApplyVertexColor(_BaseColor.rgb, output.mask.b, _OcclusionStrength, _HueVariation);
-    // output.color = 1;
     //Apply per-vertex light if enabled in pipeline
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
         //Pass to fragment shader to apply in Lighting function
@@ -391,6 +388,7 @@ half4 ForwardPassFragment(Varyings input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+    // return half4(input.color.rgb, 1);
     
     float3 positionWS = input.positionWS.xyz;
 

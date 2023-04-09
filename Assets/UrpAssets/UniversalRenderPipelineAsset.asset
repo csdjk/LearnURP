@@ -28,7 +28,7 @@ MonoBehaviour:
   m_OpaqueDownsampling: 3
   m_SupportsTerrainHoles: 0
   m_StoreActionsOptimization: 0
-  m_SupportsHDR: 0
+  m_SupportsHDR: 1
   m_MSAA: 8
   m_RenderScale: 1
   m_UpscalingFilter: 0

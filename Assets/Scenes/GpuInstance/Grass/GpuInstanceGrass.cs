@@ -27,12 +27,12 @@ public class GpuInstanceGrass : MonoBehaviour
     [Range(0, 10)]
     public float crashRadius;
     // 下压强度
-    [Range(0, 100)]
+    [Range(0, 10)]
     public float pushStrength;
 
     private int cachedTreeCount = -1;
     private ComputeBuffer grassBuffer;
-
+    List<GrassInfo> grassInfos = new List<GrassInfo>();
     void Start()
     {
         UpdateBuffers();
@@ -65,11 +65,10 @@ public class GpuInstanceGrass : MonoBehaviour
 
     void UpdateBuffers()
     {
-
-
         if (grassBuffer != null)
             grassBuffer.Release();
-        List<GrassInfo> grassInfos = new List<GrassInfo>();
+
+        grassInfos.Clear();
 
         for (int i = 0; i < grassCount; i++)
         {
@@ -80,7 +79,6 @@ public class GpuInstanceGrass : MonoBehaviour
             // Quaternion upToNormal = Quaternion.FromToRotation(Vector3.up, Ve);
 
             // 缩放
-            // float randScale = Random.Range(0.2f, 0.3f);
             var localToWorld = Matrix4x4.TRS(transform.TransformPoint(randPos), Quaternion.Euler(0, rot, 0), grassScale);
 
             //贴图参数，暂时不用管

@@ -2,14 +2,17 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ice
   m_Shader: {fileID: 4800000, guid: a7ec92088465c954a99faa09a8bc3028, type: 3}
-  m_ShaderKeywords: _INVERT_ICE_DIR _NORMALMAP
+  m_ValidKeywords:
+  - _INVERT_ICE_DIR
+  m_InvalidKeywords:
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -39,6 +42,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: 231bd30c27b214c4cb592595f3797b0c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -48,7 +52,7 @@ Material:
     - _EnableEmission: 0
     - _FreezeDirection: 1
     - _FresnelPower: 50
-    - _IceBumpScale: 1
+    - _IceBumpScale: 1.37
     - _IceDistribution: 0.471
     - _IceHeight: 0.961
     - _IceSmoothness: 0.618
@@ -66,3 +70,4 @@ Material:
     - _IceColor: {r: 0.27843142, g: 0.6588704, b: 1, a: 1}
     - _MinMaxHeight: {r: -1, g: 1, b: 0, a: 0}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

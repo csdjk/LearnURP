@@ -15,8 +15,6 @@ public class SimplePostProcess : ScriptableRendererFeature
     public class Settings
     {
         public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
-        public Material blitMaterial = null;
-        public RenderTexture renderTexture = null;
         public Color color = new Color(1, 1, 1, 0);
     }
 
@@ -28,10 +26,7 @@ public class SimplePostProcess : ScriptableRendererFeature
     /// </summary>
     public override void Create()
     {
-        if (!settings.renderTexture)
-            settings.renderTexture = RenderTexture.GetTemporary(1280, 720, 0);
         blitPass = new CustomPass(name, settings);
-
         blitPass.renderPassEvent = settings.renderPassEvent;
     }
 
@@ -39,13 +34,6 @@ public class SimplePostProcess : ScriptableRendererFeature
     // 当为每个摄像机设置渲染器时，会调用此方法。
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (settings.blitMaterial == null)
-        {
-            Debug.LogWarning("blit材质丢失");
-            return;
-        }
-        // blitPass.Setup(renderer.cameraDepth);
-        blitPass.Setup(renderer.cameraColorTarget);
         renderer.EnqueuePass(blitPass);
     }
 
@@ -56,29 +44,31 @@ public class SimplePostProcess : ScriptableRendererFeature
     /// </summary>
     public class CustomPass : ScriptableRenderPass
     {
-        private Settings settings;
+        readonly string m_ShaderName = "LcL/PostProcess/SimplePostProcess";
+        private Settings m_Setting;
         string m_ProfilerTag;
-        RenderTargetIdentifier source;
+        Material m_Material;
 
         public CustomPass(string tag, Settings settings)
         {
             m_ProfilerTag = tag;
-            this.settings = settings;
+            m_Setting = settings;
+            m_Material = CoreUtils.CreateEngineMaterial(m_ShaderName);
         }
 
-        public void Setup(RenderTargetIdentifier src)
-        {
-            source = src;
-        }
+
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer command = CommandBufferPool.Get(m_ProfilerTag);
-            settings.blitMaterial.SetColor("_Color",settings.color);
-            command.Blit(source, settings.renderTexture, settings.blitMaterial);
-            command.Blit(settings.renderTexture, source);
+            m_Material.SetColor("_Color", m_Setting.color);
+
+            var source = renderingData.cameraData.renderer.cameraColorTarget;
+
+            Blit(command, ref renderingData, m_Material, 0);
             context.ExecuteCommandBuffer(command);
             CommandBufferPool.Release(command);
         }
+
     }
 }

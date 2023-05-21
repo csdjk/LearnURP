@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4692342853411692576
+--- !u!114 &-930199660128440313
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,28 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2559dc86915f1464aaace364eff3df28, type: 3}
-  m_Name: NewRainFeature
+  m_Script: {fileID: 11500000, guid: ac1ebbbe52435fe4b9b5faba38337fbf, type: 3}
+  m_Name: ReconstructWorldPosition
   m_EditorClassIdentifier: 
   m_Active: 1
-  settings:
-    renderPassEvent: 550
-    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
-    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
-      type: 3}
-    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
-    rainColor: {r: 1, g: 1, b: 1, a: 1}
-    rainAlpha: 1
-    layerFar:
-      tilling: {x: 20, y: 5}
-      speed: {x: 0, y: 10}
-      depthStart: 0
-    layerNear:
-      tilling: {x: 20, y: 5}
-      speed: {x: 0, y: 10}
-      depthStart: 0
-    windDir: {x: 0, y: 0, z: 0}
-    rainMaterial: {fileID: 0}
+  m_RenderPassEvent: 350
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,22 +24,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: RainRenderer
+  m_Name: DepthPipelineAsset_Renderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: 6046573293261611231}
-  m_RendererFeatureMap: dfe038c55fbee953
+  - {fileID: -930199660128440313}
+  m_RendererFeatureMap: 07f0da67564417f3
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
     blitPS: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}
     copyDepthPS: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
-    screenSpaceShadowPS: {fileID: 4800000, guid: 0f854b35a0cf61a429bd5dcfea30eddd,
-      type: 3}
+    screenSpaceShadowPS: {fileID: 0}
     samplingPS: {fileID: 4800000, guid: 04c410c9937594faa893a11dceb85f7e, type: 3}
     stencilDeferredPS: {fileID: 4800000, guid: e9155b26e1bc55942a41e518703fe304, type: 3}
     fallbackErrorPS: {fileID: 4800000, guid: e6e9a19c3678ded42a3bc431ebef7dbd, type: 3}
@@ -68,7 +50,7 @@ MonoBehaviour:
       type: 3}
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486,
       type: 3}
-  m_AssetVersion: 1
+  m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -79,44 +61,14 @@ MonoBehaviour:
     overrideStencilState: 0
     stencilReference: 0
     stencilCompareFunction: 8
-    passOperation: 0
+    passOperation: 2
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_DepthPrimingMode: 0
+  m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
---- !u!114 &6046573293261611231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2559dc86915f1464aaace364eff3df28, type: 3}
-  m_Name: NewRainFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    renderPassEvent: 550
-    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
-    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
-      type: 3}
-    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
-    rainColor: {r: 1, g: 1, b: 1, a: 1}
-    rainAlpha: 0.911
-    layerFar:
-      tilling: {x: 10, y: 10}
-      speed: {x: 0, y: 30}
-      depthStart: 1.5
-    layerNear:
-      tilling: {x: 10, y: 10}
-      speed: {x: 0, y: 50}
-      depthStart: 0
-    windDir: {x: 0, y: 0, z: 0}
-    rainMaterial: {fileID: 0}

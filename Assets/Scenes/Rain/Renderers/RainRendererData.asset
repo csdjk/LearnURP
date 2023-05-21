@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8747075795490540246
+--- !u!114 &-4692342853411692576
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,54 +9,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 856644bf24be19548b0c9ddaa1f420e4, type: 3}
-  m_Name: SimplePostProcess
+  m_Script: {fileID: 11500000, guid: 2559dc86915f1464aaace364eff3df28, type: 3}
+  m_Name: NewRainFeature
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   settings:
     renderPassEvent: 550
-    blitMaterial: {fileID: 2100000, guid: e8c6d46e395155244a40b3ce3336a8f3, type: 2}
-    renderTexture: {fileID: 0}
-    color: {r: 1, g: 0.32956016, b: 0.3066038, a: 0}
---- !u!114 &-1007707825938243561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: Outline
-  m_EditorClassIdentifier: 
-  m_Active: 0
-  settings:
-    passTag: Outline
-    Event: 300
-    filterSettings:
-      RenderQueueType: 0
-      LayerMask:
-        serializedVersion: 2
-        m_Bits: 256
-      PassNames: []
-    overrideMaterial: {fileID: 2100000, guid: 461a3eff00a7841488c02e1de4f9dcba, type: 2}
-    overrideMaterialPassIndex: 0
-    overrideDepthState: 0
-    depthCompareFunction: 4
-    enableWrite: 1
-    stencilSettings:
-      overrideStencilState: 0
-      stencilReference: 0
-      stencilCompareFunction: 8
-      passOperation: 0
-      failOperation: 0
-      zFailOperation: 0
-    cameraSettings:
-      overrideCamera: 0
-      restoreCamera: 1
-      offset: {x: 0, y: 0, z: 0, w: 0}
-      cameraFieldOfView: 60
+    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
+    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
+      type: 3}
+    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
+    rainColor: {r: 1, g: 1, b: 1, a: 1}
+    rainAlpha: 1
+    layerFar:
+      tilling: {x: 20, y: 5}
+      speed: {x: 0, y: 10}
+      depthStart: 0
+    layerNear:
+      tilling: {x: 20, y: 5}
+      speed: {x: 0, y: 10}
+      depthStart: 0
+    windDir: {x: 0, y: 0, z: 0}
+    rainMaterial: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,15 +41,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: Outline_Renderer
+  m_Name: RainRendererData
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -1007707825938243561}
-  - {fileID: -8747075795490540246}
-  m_RendererFeatureMap: 17e0914512e703f22a755e72e8249c86
+  - {fileID: 6046573293261611231}
+  m_RendererFeatureMap: dfe038c55fbee953
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -117,7 +90,7 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
---- !u!114 &77357847420292816
+--- !u!114 &6046573293261611231
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,25 +99,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb34854f8a21b5242ba9dd8bb3377c9b, type: 3}
-  m_Name: NewSaturationRendererFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_Intensity: 1.55
---- !u!114 &5654231777200511494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df43388d34ae3fa43aaba054e8d6bb78, type: 3}
-  m_Name: NewCommandBufferExample
+  m_Script: {fileID: 11500000, guid: 2559dc86915f1464aaace364eff3df28, type: 3}
+  m_Name: NewRainFeature
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    renderPassEvent: 400
-    drawMesh: {fileID: 0}
-    color: {r: 1, g: 1, b: 1, a: 1}
+    renderPassEvent: 550
+    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
+    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
+      type: 3}
+    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
+    rainColor: {r: 1, g: 1, b: 1, a: 1}
+    rainAlpha: 0.911
+    layerFar:
+      tilling: {x: 10, y: 10}
+      speed: {x: 0, y: 30}
+      depthStart: 1.5
+    layerNear:
+      tilling: {x: 10, y: 10}
+      speed: {x: 0, y: 50}
+      depthStart: 0
+    windDir: {x: 0, y: 0, z: 0}
+    rainMaterial: {fileID: 0}

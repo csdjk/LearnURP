@@ -1,4 +1,4 @@
-﻿Shader "Unlit/SimplePostProcess"
+﻿Shader "LcL/PostProcess/SimplePostProcess"
 {
     Properties
     {

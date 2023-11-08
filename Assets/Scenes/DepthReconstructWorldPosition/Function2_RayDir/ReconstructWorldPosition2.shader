@@ -68,9 +68,24 @@ Shader "LcL/Depth/ReconstructWorldPosition2"
                 float2 uv = input.uv;
                 float depth = SampleSceneDepth(uv);
                 
-                depth = Linear01Depth(depth, _ZBufferParams);
-                //worldpos = campos + 射线方向 * depth
-                float3 worldPos = GetCurrentViewPosition() + depth * input.rayDir.xyz;
+                if (IsPerspectiveProjection())
+                {
+                    // 透视相机下，_CameraDepthTexture存储的是ndc.z值，且：不是线性的。
+                    depth = Linear01Depth(depth, _ZBufferParams);
+                    //worldpos = campos + 射线方向 * depth
+                    float3 worldPos = GetCurrentViewPosition() + depth * input.rayDir.xyz;
+                }
+                else
+                {
+                    // 正交摄像机的深度是反的
+
+                    // 正交相机下，_CameraDepthTexture存储的是线性值，
+                    // 并且距离镜头远的物体，深度值小，距离镜头近的物体，深度值大
+                    #if defined(UNITY_REVERSED_Z)
+                        depth = 1 - depth;
+                    #endif
+                    float3 worldPos = GetCurrentViewPosition() + depth * _CameraForward + input.rayDir.xyz;
+                }
                 return float4(worldPos, 1);
             }
             ENDHLSL

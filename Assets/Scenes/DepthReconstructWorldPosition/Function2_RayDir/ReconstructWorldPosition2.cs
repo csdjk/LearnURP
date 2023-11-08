@@ -83,6 +83,8 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
 
             command.Clear();
             command.SetGlobalMatrix("_ViewPortRay", CalculateMatrix(camera));
+            command.SetGlobalVector("_CameraForward", camera.transform.forward * camera.farClipPlane);
+
             if (m_Setting.useVertexID)
             {
                 command.EnableShaderKeyword("_USE_VERTEX_ID");

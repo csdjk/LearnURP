@@ -1,21 +1,21 @@
-Shader "LcL/Depth/ReconstructWorldPosition4"
+Shader "LcL/Depth/ReconstructWorldPosition_Self"
 {
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
-        // ZTest Always ZWrite Off Cull Off
+        Tags { "RenderType" = "Opaque" "Queue" = "Transparent+100" "RenderPipeline" = "UniversalPipeline" }
+        ZTest Always ZWrite Off Cull Off
+        
+        HLSLINCLUDE
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+        
+        ENDHLSL
         Pass
         {
-            Name "ReconstructWorldPosition_Object"
-            Tags { "LightMode" = "UniversalForward" }
-            
             HLSLPROGRAM
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-
             #pragma vertex vert
             #pragma fragment frag
-
+            
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -25,42 +25,40 @@ Shader "LcL/Depth/ReconstructWorldPosition4"
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
-                float4 screenPos : TEXCOORD0;
-                float3 viewWS : TEXCOORD1;
-                float viewSpaceZ : TEXCOORD2;
+                float2 uv : TEXCOORD0;
+                float4 viewRayWS : TEXCOORD1;
             };
             
             Varyings vert(Attributes input)
             {
                 Varyings output;
+                
                 VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
                 output.positionCS = positionInputs.positionCS;
-                // output.uv = input.uv;
-                output.screenPos = ComputeScreenPos(positionInputs.positionCS);
 
-
-                output.viewWS = GetCurrentViewPosition() - positionInputs.positionWS;
-                output.viewSpaceZ = mul(UNITY_MATRIX_V, float4(output.viewWS, 0.0)).z;
-                
+                output.viewRayWS.xyz = GetWorldSpaceViewDir(positionInputs.positionWS);
+                // 由于Unity的视图空间是右手坐标系，z需要取反（view space z）
+                output.viewRayWS.w = -mul(UNITY_MATRIX_V, float4(output.viewRayWS.xyz, 0.0)).z;
                 return output;
             }
             
             half4 frag(Varyings input) : SV_Target
             {
-                // float2 uv = input.uv;
-                float2 uv = input.screenPos.xy / input.screenPos.w;
-                
-                float depth = SampleSceneDepth(uv);
-                
+                float2 screenUV = input.positionCS.xy / _ScaledScreenParams.xy;
+
+                #if UNITY_REVERSED_Z
+                    real depth = SampleSceneDepth(screenUV);
+                #else
+                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(screenUV));
+                #endif
+                // 参考https://zhuanlan.zhihu.com/p/590873962
                 depth = LinearEyeDepth(depth, _ZBufferParams);
-                //worldpos = campos + 射线方向 * depth
-                input.viewWS *= -depth / input.viewSpaceZ;
+                // VP = VR/VZ * VD
+                input.viewRayWS.xyz = input.viewRayWS.xyz / input.viewRayWS.w * depth;
+                // MP = MV + VP
+                float3 worldPos = GetCurrentViewPosition() + input.viewRayWS.xyz;
 
-                float3 worldPos = GetCurrentViewPosition() + input.viewWS;
-
-                // return float4(1, 1, 1, 1);
-                return float4(worldPos, 1);
-
+                return half4(worldPos, 1);
             }
             ENDHLSL
         }

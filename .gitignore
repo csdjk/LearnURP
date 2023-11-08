@@ -33,6 +33,7 @@ sysinfo.txt
 *.unitypackage
 .vscode/
 .vs/
+.history/
 
 # 忽略文件目录
 Assets/VacuumShaders

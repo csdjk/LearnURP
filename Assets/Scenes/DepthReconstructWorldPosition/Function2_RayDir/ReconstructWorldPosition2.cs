@@ -32,7 +32,8 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
         string m_ProfilerTag;
         ReconstructPositionSettings m_Setting;
         Material m_Material;
-
+        static readonly int m_CameraForwardID = Shader.PropertyToID("_CameraForward");
+        static readonly int m_FrustumCornersRayID = Shader.PropertyToID("_ViewPortRay");
         public ReconstructRenderPass(string tag, ReconstructPositionSettings settings)
         {
             m_ProfilerTag = tag;
@@ -44,8 +45,47 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
         {
 
         }
+        /// <summary>
+        /// 计算相机在远裁剪面处的四个角的方向向量(正交相机)
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <param name="commandBuffer"></param>
+        private void CalculateFrustumCornersRayOrtho(Camera camera, CommandBuffer commandBuffer)
+        {
+            var aspect = camera.aspect;
+            var far = camera.farClipPlane;
+            var orthoSize = camera.orthographicSize;
+            var right = camera.transform.right;
+            var up = camera.transform.up;
+            var forward = camera.transform.forward;
 
-        public Matrix4x4 CalculateMatrix(Camera camera)
+            //计算相机在远裁剪面处的xyz三方向向量
+            var rightVec = right * orthoSize * aspect;
+            var upVec = up * orthoSize;
+
+            //构建四个角的方向向量
+            var topLeft = -rightVec + upVec;
+            var topRight = rightVec + upVec;
+            var bottomLeft = -rightVec - upVec;
+            var bottomRight = rightVec - upVec;
+
+            var viewPortRay = Matrix4x4.identity;
+
+            //计算近裁剪平面四个角对应向量，并存储在一个矩阵类型的变量中
+            viewPortRay.SetRow(0, bottomLeft);
+            viewPortRay.SetRow(1, topLeft);
+            viewPortRay.SetRow(2, topRight);
+            viewPortRay.SetRow(3, bottomRight);
+            commandBuffer.SetGlobalMatrix(m_FrustumCornersRayID, viewPortRay);
+            commandBuffer.SetGlobalVector(m_CameraForwardID, forward * far);
+        }
+
+        /// <summary>
+        /// 计算相机在远裁剪面处的四个角的方向向量(透视相机)
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <param name="commandBuffer"></param>
+        private void CalculateFrustumCornersRay(Camera camera, CommandBuffer commandBuffer)
         {
             var aspect = camera.aspect;
             var far = camera.farClipPlane;
@@ -67,14 +107,13 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
 
             var viewPortRay = Matrix4x4.identity;
 
+            //计算近裁剪平面四个角对应向量，并存储在一个矩阵类型的变量中
             viewPortRay.SetRow(0, bottomLeft);
             viewPortRay.SetRow(1, topLeft);
             viewPortRay.SetRow(2, topRight);
             viewPortRay.SetRow(3, bottomRight);
-
-            return viewPortRay;
+            commandBuffer.SetGlobalMatrix(m_FrustumCornersRayID, viewPortRay);
         }
-
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -82,8 +121,6 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
             var camera = renderingData.cameraData.camera;
 
             command.Clear();
-            command.SetGlobalMatrix("_ViewPortRay", CalculateMatrix(camera));
-            command.SetGlobalVector("_CameraForward", camera.transform.forward * camera.farClipPlane);
 
             if (m_Setting.useVertexID)
             {
@@ -93,7 +130,14 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
             {
                 command.DisableShaderKeyword("_USE_VERTEX_ID");
             }
-
+            if (camera.orthographic)
+            {
+                CalculateFrustumCornersRayOrtho(camera, cmd);
+            }
+            else
+            {
+                CalculateFrustumCornersRay(camera, cmd);
+            }
             Blit(command, ref renderingData, m_Material, 0);
 
             context.ExecuteCommandBuffer(command);

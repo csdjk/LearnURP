@@ -132,11 +132,11 @@ public class ReconstructWorldPosition2 : ScriptableRendererFeature
             }
             if (camera.orthographic)
             {
-                CalculateFrustumCornersRayOrtho(camera, cmd);
+                CalculateFrustumCornersRayOrtho(camera, command);
             }
             else
             {
-                CalculateFrustumCornersRay(camera, cmd);
+                CalculateFrustumCornersRay(camera, command);
             }
             Blit(command, ref renderingData, m_Material, 0);
 

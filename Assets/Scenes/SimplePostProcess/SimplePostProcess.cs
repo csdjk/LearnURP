@@ -56,7 +56,14 @@ public class SimplePostProcess : ScriptableRendererFeature
             m_Material = CoreUtils.CreateEngineMaterial(m_ShaderName);
         }
 
+        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+        {
+            // var cameraColorTarget = renderingData.cameraData.renderer.cameraColorTarget;
+            // ConfigureTarget(new RenderTargetIdentifier(cameraColorTarget, 0, CubemapFace.Unknown, -1));
 
+            // ConfigureClear(ClearFlag.None, Color.white);
+            // ConfigureClear(ClearFlag.All, Color.black);
+        }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {

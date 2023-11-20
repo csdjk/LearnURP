@@ -1,0 +1,26 @@
+#pragma kernel CSMain
+// #pragma enable_d3d11_debug_symbols
+
+RWStructuredBuffer<float4> Result;
+[numthreads(2, 2, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID, uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThreadID,  uint index : SV_GroupIndex)
+{
+    // 计算线程索引
+    uint threadIndex = id.x + id.y * 2 + id.z * 4;
+
+    // // 计算线程组索引
+    // uint groupIndex = groupID.x + groupID.y * 4 + groupID.z * 16;
+
+    // // 计算线程在线程组中的索引
+    // uint groupThreadIndex = groupThreadID.x + groupThreadID.y * 8 + groupThreadID.z * 64;
+
+    // // 计算所有id和index
+    // uint3 totalID = id + groupID * 8;
+    // uint totalIndex = threadIndex + groupIndex * 64 + groupThreadIndex;
+
+    // // 将结果写入输出缓冲区
+    // Result[threadIndex] = float4(totalID.x, totalID.y, totalID.z, totalIndex);
+
+
+    Result[threadIndex] = float4(groupID.x, groupID.y, groupID.z, 0);
+}

@@ -58,10 +58,10 @@ Material:
     - _EnableEmission: 0
     - _NoiseSpped: 100
     - _RippleSpeed: 250
-    - _RippleStrength: 0.83
+    - _RippleStrength: 0.718
     - _RippleTilling: 20
     - _Smoothness: 2
-    - _WaterHeight: 0.671
+    - _WaterHeight: 0.811
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}

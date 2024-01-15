@@ -58,10 +58,10 @@ Material:
     - _IceSmoothness: 0.618
     - _IceStrength: 0.789
     - _InvertIceDir: 1
-    - _RefractionAmount: 0.275
+    - _RefractionAmount: 0.762
     - _ScaterDistortion: 0.848
-    - _ScaterPower: 1.78
-    - _ScaterScale: 0.87
+    - _ScaterPower: 2.3
+    - _ScaterScale: 0.61
     - _Smoothness: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

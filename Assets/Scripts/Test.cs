@@ -12,7 +12,7 @@ public class Test : MonoBehaviour
         //     var sv = UnityEditor.SceneView.sceneViews[i] as UnityEditor.SceneView;
         // }
 
-
+        Debug.Log("Test OnEnable");
         var sceneViews = SceneView.sceneViews;
         for (var i = 0; i < sceneViews.Count; i++)
         {

@@ -1,0 +1,59 @@
+root = true
+
+[*]
+charset                  = utf-8
+end_of_line              = lf
+indent_size              = 2
+indent_style             = space
+insert_final_newline     = true
+trim_trailing_whitespace = true
+
+# https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions
+[*.cs]
+## 接口示例：IPascalCase
+dotnet_naming_rule.interface_rule.symbols                                 = interface_symbol
+dotnet_naming_rule.interface_rule.style                                   = interface_style
+dotnet_naming_rule.interface_rule.severity                                = warning
+dotnet_naming_symbols.interface_symbol.applicable_kinds                   = interface
+dotnet_naming_style.interface_style.required_prefix                       = I
+dotnet_naming_style.interface_style.capitalization                        = pascal_case
+
+## 类，结构，枚举，委托，方法，属性，事件示例: PascalCase
+dotnet_naming_rule.pascal_case_rule.symbols                               = pascal_case_symbol
+dotnet_naming_rule.pascal_case_rule.style                                 = pascal_case_style
+dotnet_naming_rule.pascal_case_rule.severity                              = warning
+dotnet_naming_symbols.pascal_case_symbol.applicable_kinds                 = class,struct,enum,delegate,method,property,event
+dotnet_naming_style.pascal_case_style.capitalization                      = pascal_case
+
+## 私有字段示例: _camelCase
+dotnet_naming_rule.private_field_rule.symbols                             = private_field_symbol
+dotnet_naming_rule.private_field_rule.style                               = private_field_style
+dotnet_naming_rule.private_field_rule.severity                            = warning
+dotnet_naming_symbols.private_field_symbol.applicable_kinds               = field
+dotnet_naming_symbols.private_field_symbol.applicable_accessibilities     = private
+dotnet_naming_style.private_field_style.required_prefix                   = m_
+dotnet_naming_style.private_field_style.capitalization                    = pascal_case
+
+## 非私有字段示例: camelCase
+dotnet_naming_rule.non_private_field_rule.symbols                         = non_private_field_symbol
+dotnet_naming_rule.non_private_field_rule.style                           = non_private_field_style
+dotnet_naming_rule.non_private_field_rule.severity                        = warning
+dotnet_naming_symbols.non_private_field_symbol.applicable_kinds           = field
+dotnet_naming_symbols.non_private_field_symbol.applicable_accessibilities = public,internal,protected,protected_internal
+dotnet_naming_style.non_private_field_style.capitalization                = camel_case
+
+## 参数示例: camelCase
+dotnet_naming_rule.parameter_rule.symbols                                 = parameter_symbol
+dotnet_naming_rule.parameter_rule.style                                   = parameter_style
+dotnet_naming_rule.parameter_rule.severity                                = warning
+dotnet_naming_symbols.parameter_symbol.applicable_kinds                   = parameter
+dotnet_naming_style.parameter_style.capitalization                        = camel_case
+
+## 常量示例: ALL_UPPER
+dotnet_naming_rule.const_rule.symbols                                     = const_symbol
+dotnet_naming_rule.const_rule.style                                       = const_style
+dotnet_naming_rule.const_rule.severity                                    = warning
+dotnet_naming_symbols.const_symbol.required_modifiers                     = const
+dotnet_naming_symbols.const_symbol.applicable_kinds                       = field
+dotnet_naming_style.const_style.capitalization                            = all_upper
+dotnet_naming_style.const_style.word_separator                            = _

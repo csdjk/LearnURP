@@ -12,6 +12,10 @@
 
 ![1705320482504](image/README/1705320482504.png)
 
-### [RainRipple](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
+### [RainRipple](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/RainRipple/)
 
-![1705320482504](image/README/RainRipple.gif)
+
+<video controls>
+  <source src="image/README/RainRipple.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>

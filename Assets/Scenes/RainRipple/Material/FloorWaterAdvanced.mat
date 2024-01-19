@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FloorWaterAdvanced
+  m_Shader: {fileID: 4800000, guid: 6bb1d3e7d44d73f4c991e8e979cdaac9, type: 3}
+  m_ValidKeywords:
+  - _NORMALMAP
+  - _WATER_FLOW
+  - _WATER_RIPPLE
+  - _WATER_RIPPLE_ADVANCED
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: e2805b5d9deb5504db2c2207cebadedd, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: b68f5b9466f1c3e41994b1f774c58d7b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 2800000, guid: 51403a6edc5dced4d93b5280298c1a9c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 2800000, guid: f19ce2ad10f7efb47bcfaf6c10cb7860, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RippleMap:
+        m_Texture: {fileID: 2800000, guid: 64868de5891b7024284a0ba993bc3d47, type: 3}
+        m_Scale: {x: 4, y: 4}
+        m_Offset: {x: 10, y: 20}
+    - _RippleMapAdvanced:
+        m_Texture: {fileID: 2800000, guid: f29f49b3d8095e046ac5949068167ac2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RippleWeight:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 2
+    - _ColorPower: 1
+    - _Cutoff: 0.54
+    - _EnableAlphaTest: 0
+    - _EnableBumpMap: 1
+    - _EnableEmission: 0
+    - _FlowIntensity: 0.67
+    - _FlowSpeed: 8
+    - _NoiseSpped: 100
+    - _RIPPLE: 0
+    - _RIPPLE_FoldoutState: 1
+    - _Ripple: 0
+    - _RippleIntensity: 5
+    - _RippleSpeed: 15
+    - _RippleStrength: 0.718
+    - _RippleTilling: 20
+    - _RippleWeight: 1.02
+    - _Ripple_FoldoutState: 1
+    - _Smoothness: 2.6
+    - _WATER: 0
+    - _WATER_FLOW: 1
+    - _WATER_FLOW_FoldoutState: 1
+    - _WATER_FoldoutState: 1
+    - _WATER_RIPPLE: 1
+    - _WATER_RIPPLE_ADVANCED: 1
+    - _WATER_RIPPLE_FoldoutState: 1
+    - _Water: 0
+    - _WaterBlend: 0.137
+    - _WaterColorPower: 1.209
+    - _WaterHeight: 0.943
+    - _WaterMetallic: 0.269
+    - _WaterSmoothnessAdd: 0
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _FlowDirection: {r: 0, g: 0, b: 0, a: 0}
+    - _RippleGrid: {r: 8, g: 8, b: 0, a: 0}
+    - _WaterColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

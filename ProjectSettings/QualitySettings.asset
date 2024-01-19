@@ -4,7 +4,7 @@
 QualitySettings:
   m_ObjectHideFlags: 0
   serializedVersion: 5
-  m_CurrentQuality: 2
+  m_CurrentQuality: 5
   m_QualitySettings:
   - serializedVersion: 2
     name: Very Low
@@ -226,10 +226,9 @@ QualitySettings:
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 11400000, guid: fab2b292d311b614f92f3d38cd1be8ba,
       type: 2}
-    excludedTargetPlatforms:
-    - Android
+    excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
-    Android: 2
+    Android: 5
     CloudRendering: 5
     GameCoreScarlett: 5
     GameCoreXboxOne: 5
@@ -237,7 +236,7 @@ QualitySettings:
     Nintendo Switch: 5
     PS4: 5
     PS5: 5
-    Server: 0
+    Server: 5
     Stadia: 5
     Standalone: 5
     WebGL: 3

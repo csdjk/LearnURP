@@ -5,16 +5,16 @@ using UnityEngine.Rendering.Universal;
 [ExecuteAlways]
 public class AutoLoadPipelineAsset : MonoBehaviour
 {
-    private static UniversalRenderPipelineAsset _defaultPipelineAsset;
-    public static UniversalRenderPipelineAsset defaultPipelineAsset
+    private static UniversalRenderPipelineAsset m_DefaultPipelineAsset;
+    public static UniversalRenderPipelineAsset DefaultPipelineAsset
     {
         get
         {
-            if (!_defaultPipelineAsset)
+            if (!m_DefaultPipelineAsset)
             {
-                _defaultPipelineAsset = Resources.Load<UniversalRenderPipelineAsset>("UniversalRenderPipelineAsset");
+                m_DefaultPipelineAsset = Resources.Load<UniversalRenderPipelineAsset>("UniversalRenderPipelineAsset");
             }
-            return _defaultPipelineAsset;
+            return m_DefaultPipelineAsset;
         }
     }
     public UniversalRenderPipelineAsset pipelineAsset;
@@ -34,6 +34,7 @@ public class AutoLoadPipelineAsset : MonoBehaviour
         if (pipelineAsset)
         {
             GraphicsSettings.renderPipelineAsset = pipelineAsset;
+            QualitySettings.renderPipeline = pipelineAsset;
         }
         else
         {
@@ -49,9 +50,10 @@ public class AutoLoadPipelineAsset : MonoBehaviour
     // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private void ResetPipeline()
     {
-        if (defaultPipelineAsset)
+        if (DefaultPipelineAsset)
         {
-            GraphicsSettings.renderPipelineAsset = defaultPipelineAsset;
+            GraphicsSettings.renderPipelineAsset = DefaultPipelineAsset;
+            QualitySettings.renderPipeline = DefaultPipelineAsset;
         }
     }
 

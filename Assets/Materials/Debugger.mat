@@ -23,7 +23,7 @@ Material:
   m_Name: Debugger
   m_Shader: {fileID: 4800000, guid: 253efc30ad5c1e54e84ecabcc9086c48, type: 3}
   m_ValidKeywords:
-  - _SHOWVALUE_VERTEXCOLOR_A
+  - _SHOWVALUE_VERTEXCOLOR
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -79,7 +79,7 @@ Material:
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShowValue: 9
+    - _ShowValue: 5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

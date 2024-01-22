@@ -11,7 +11,7 @@ IHVImageFormatImporter:
     wrapV: 0
     wrapW: 0
   isReadable: 0
-  sRGBTexture: 1
+  sRGBTexture: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   userData: 

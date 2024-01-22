@@ -16,3 +16,6 @@
 
 https://github.com/csdjk/LearnURP/assets/33519787/a0e9e8dc-5edd-4ea5-a055-170d464d084c
 
+### [Rain](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
+
+![1705320482504](image/README/Rain.gif)

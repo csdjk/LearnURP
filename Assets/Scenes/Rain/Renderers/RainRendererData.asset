@@ -13,24 +13,6 @@ MonoBehaviour:
   m_Name: NewRainFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  settings:
-    renderPassEvent: 550
-    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
-    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
-      type: 3}
-    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
-    rainColor: {r: 1, g: 1, b: 1, a: 1}
-    rainAlpha: 1
-    layerFar:
-      tilling: {x: 20, y: 5}
-      speed: {x: 0, y: 10}
-      depthStart: 0
-    layerNear:
-      tilling: {x: 20, y: 5}
-      speed: {x: 0, y: 10}
-      depthStart: 0
-    windDir: {x: 0, y: 0, z: 0}
-    rainMaterial: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,21 +85,3 @@ MonoBehaviour:
   m_Name: RainFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  settings:
-    renderPassEvent: 550
-    rainShader: {fileID: 4800000, guid: 576f01a969f9ab9428057a6a729375a8, type: 3}
-    rainMesh: {fileID: -2583930440659930661, guid: b7bb748f08939b14282c81c924b02af2,
-      type: 3}
-    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
-    rainColor: {r: 1, g: 1, b: 1, a: 1}
-    rainAlpha: 0.911
-    layerFar:
-      tilling: {x: 10, y: 10}
-      speed: {x: 0, y: 30}
-      depthStart: 1.5
-    layerNear:
-      tilling: {x: 10, y: 10}
-      speed: {x: 0, y: 50}
-      depthStart: 0
-    windDir: {x: 0, y: 0, z: 0}
-    rainMaterial: {fileID: 0}

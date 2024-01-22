@@ -7,148 +7,90 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class RainFeature : ScriptableRendererFeature
 {
-    [System.Serializable]
-    public class RainLayerData
-    {
-        public Vector2 tilling = new Vector2(10f, 10f);
-        public Vector2 speed = new Vector2(0f, 50f);
-        [Range(0, 30)]
-        public float depthStart = 0f;
-    }
-
-    [System.Serializable]
-    public class RainSettings
-    {
-        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
-
-        public Shader rainShader;
-        public Mesh rainMesh;
-        public Texture2D rainTexture = null;
-        public Color rainColor = Color.gray;
-        [Range(0f, 1f)]
-        public float rainAlpha = 1f;
-
-        public RainLayerData layerFar;
-        public RainLayerData layerNear;
-
-        public Vector3 windDir = Vector3.zero;
-
-        [HideInInspector]
-        public Material rainMaterial = null;
-
-    }
-
-    public RainSettings settings = new RainSettings();
-    private RainPass blitPass;
+    RainPass m_RainPass;
 
     public override void Create()
     {
-        if (!isActive)
-        {
-            DestroyImmediate(settings.rainMaterial);
-            return;
-        }
-        if (!settings.rainMaterial)
-        {
-            if (!settings.rainShader)
-            {
-                settings.rainShader = Shader.Find("LcL/Rain");
-                return;
-            }
-            settings.rainMaterial = new Material(settings.rainShader);
-            settings.rainMaterial.hideFlags = HideFlags.DontSave;
-        }
-        blitPass = new RainPass(name, settings);
-        blitPass.renderPassEvent = settings.renderPassEvent;
+        m_RainPass = new RainPass();
+        m_RainPass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (settings.rainShader == null || settings.rainMesh == null)
+        if (!Rain.Instance || !Rain.Instance.rainTexture || !Rain.Instance.sceneHeightRT || !Rain.Instance.rainMesh)
         {
-            Debug.LogWarning("rainShader or rainMesh 丢失!");
             return;
         }
-        // blitPass.Setup(renderer.cameraDepth);
-        blitPass.Setup(renderer.cameraColorTarget);
-        renderer.EnqueuePass(blitPass);
+        renderer.EnqueuePass(m_RainPass);
     }
-
 
 
     public class RainPass : ScriptableRenderPass
     {
-        private RainSettings settings;
-        string m_ProfilerTag;
-        RenderTargetIdentifier source;
-        RenderTargetIdentifier tempRenderTexture = new RenderTargetIdentifier();
-        RenderTargetIdentifier tempRenderTexture2 = new RenderTargetIdentifier();
-        public RainPass(string tag, RainSettings settings)
-        {
-            m_ProfilerTag = tag;
-            this.settings = settings;
-        }
+        ProfilingSampler m_ProfilingSampler = new ProfilingSampler("RainRender");
 
-        public void Setup(RenderTargetIdentifier src)
+        static readonly int m_DepthCameraMatrixVPID = Shader.PropertyToID("_DepthCameraMatrixVP");
+        static readonly int m_SceneHeightTexID = Shader.PropertyToID("_SceneHeightTex");
+        static readonly int m_RainTextureID = Shader.PropertyToID("_RainTexture");
+        static readonly int m_RainColorID = Shader.PropertyToID("_RainColor");
+        static readonly int m_RainIntensityID = Shader.PropertyToID("_RainIntensity");
+        static readonly int m_NearTillingSpeedID = Shader.PropertyToID("_NearTillingSpeed");
+        static readonly int m_FarTillingSpeedID = Shader.PropertyToID("_FarTillingSpeed");
+        static readonly int m_NearDepthSmoothID = Shader.PropertyToID("_NearDepthSmooth");
+        static readonly int m_FarDepthSmoothID = Shader.PropertyToID("_FarDepthSmooth");
+
+        Material m_Material;
+        public RainPass()
         {
-            source = src;
+            m_Material = CoreUtils.CreateEngineMaterial("LcL/Rain");
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            var camera = renderingData.cameraData.camera;
-            CommandBuffer command = CommandBufferPool.Get(m_ProfilerTag);
-
-
-            var dest = RenderTargetHandle.CameraTarget;
-            // Configure(command, renderingData.cameraData.cameraTargetDescriptor);
-            // command.GetTemporaryRT(settings.tempRenderTexture, camera.pixelWidth, camera.pixelHeight, 0);
-
-            // command.SetGlobalTexture("_SourceTex", source);
-            // command.Blit(source, settings.tempRenderTexture);
-            // command.Blit(settings.tempRenderTexture, source, settings.rainMaterial);
-            Render(camera, command);
-
-            context.ExecuteCommandBuffer(command);
-            CommandBufferPool.Release(command);
-        }
-
-        public void Render(Camera cam, CommandBuffer command)
-        {
-            var mat = settings.rainMaterial;
-            command.SetGlobalTexture("_SourceTex", source);
-            command.SetGlobalTexture("_RainTexture", settings.rainTexture);
-            command.SetGlobalVector("_RainColor", settings.rainColor);
-            command.SetGlobalFloat("_RainAlpha", settings.rainAlpha);
-
-            var layerFar = settings.layerFar;
-            var layerNear = settings.layerNear;
-
-            if (RainRay.Instance)
+            var rainData = Rain.Instance;
+            if (!rainData)
             {
-                layerFar.depthStart = RainRay.Instance.boundSize + 2;
-                layerNear.depthStart = RainRay.Instance.boundSize;
-                Debug.Log(layerNear.depthStart);
-
-                settings.windDir.y = RainRay.Instance.transform.rotation.y;
+                return;
             }
 
-            // far layer
-            command.SetGlobalVector("_FarTillingSpeed", new Vector4(layerFar.tilling.x, layerFar.tilling.y, layerFar.speed.x, layerFar.speed.y));
-            command.SetGlobalFloat("_FarDepthStart", layerFar.depthStart);
+            var camera = renderingData.cameraData.camera;
+            CommandBuffer cmd = CommandBufferPool.Get();
+            var renderer = renderingData.cameraData.renderer;
+            var source = renderer.cameraColorTarget;
+            var dest = RenderTargetHandle.CameraTarget;
 
-            // near layer
-            command.SetGlobalVector("_NearTillingSpeed", new Vector4(layerNear.tilling.x, layerNear.tilling.y, layerNear.speed.x, layerNear.speed.y));
-            command.SetGlobalFloat("_NearDepthStart", layerNear.depthStart);
+            using (new ProfilingScope(cmd, m_ProfilingSampler))
+            {
+                context.ExecuteCommandBuffer(cmd);
+                cmd.Clear();
 
+                var layerFar = rainData.layerFar;
+                var layerNear = rainData.layerNear;
+                cmd.SetGlobalMatrix(m_DepthCameraMatrixVPID, HeightMapRender.SceneHeightMatrixVP);
+                // cmd.SetGlobalTexture("_SceneHeightTex", sceneHeightRT);
+                cmd.SetGlobalTexture(m_SceneHeightTexID, rainData.sceneHeightRT);
+                cmd.SetGlobalTexture(m_RainTextureID, rainData.rainTexture);
+                cmd.SetGlobalColor(m_RainColorID, rainData.rainColor);
+                cmd.SetGlobalVector(m_RainIntensityID, new Vector4(layerNear.intensity, layerFar.intensity, 0, 0));
 
+                cmd.SetGlobalVector(m_NearTillingSpeedID,
+                    new Vector4(layerNear.tilling.x, layerNear.tilling.y, layerNear.speed.x, layerNear.speed.y));
+                cmd.SetGlobalVector(m_FarTillingSpeedID,
+                    new Vector4(layerFar.tilling.x, layerFar.tilling.y, layerFar.speed.x, layerFar.speed.y));
 
-            var pos = cam.transform.position;
-            // pos = Vector3.zero;
-            var xform = Matrix4x4.TRS(pos, Quaternion.Euler(settings.windDir), new Vector3(1f, 1f, 1f));
-            command.SetRenderTarget(tempRenderTexture);
-            command.DrawMesh(settings.rainMesh, xform, settings.rainMaterial);
+                cmd.SetGlobalVector(m_NearDepthSmoothID,
+                    new Vector4(layerNear.depthBase, layerNear.depthRange, layerNear.threshold, layerNear.smoothness));
+                cmd.SetGlobalVector(m_FarDepthSmoothID,
+                    new Vector4(layerFar.depthBase, layerFar.depthRange, layerFar.threshold, layerFar.smoothness));
 
+                var xform = Matrix4x4.TRS(camera.transform.position, Quaternion.Euler(rainData.windDir),
+                    Vector3.one * rainData.meshScale);
+
+                cmd.DrawMesh(rainData.rainMesh, xform, m_Material);
+            }
+
+            context.ExecuteCommandBuffer(cmd);
+            CommandBufferPool.Release(cmd);
         }
     }
 }

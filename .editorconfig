@@ -2,30 +2,45 @@ root = true
 
 [*]
 charset                  = utf-8
+# 设置文件的行尾字符为 LF（Line Feed）。
 end_of_line              = lf
-indent_size              = 2
+# 设置缩进的大小为 4 个空格
+indent_size              = 4
+# 设置缩进的样式为空格
 indent_style             = space
+# 设置在文件的末尾插入一个新行,可以防止某些工具在处理文件时出现问题
 insert_final_newline     = true
+# 设置删除每一行末尾的尾随空格
 trim_trailing_whitespace = true
 
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions
 [*.cs]
 ## 接口示例：IPascalCase
+# 定义了一个命名规则 interface_rule,它将应用于 interface_symbol 定义的符号。
 dotnet_naming_rule.interface_rule.symbols                                 = interface_symbol
 dotnet_naming_rule.interface_rule.style                                   = interface_style
+# 规则被违反时，将发出的警告级别。
 dotnet_naming_rule.interface_rule.severity                                = warning
+# 指定符号的应用程序类型。可用的值为：class,struct,interface,enum,delegate,method,property,event,field,parameter,namespace,property,local,interface
 dotnet_naming_symbols.interface_symbol.applicable_kinds                   = interface
+# interface_style 样式要求的前缀，这里是 "I"。
 dotnet_naming_style.interface_style.required_prefix                       = I
-dotnet_naming_style.interface_style.capitalization                        = pascal_case
 
-## 类，结构，枚举，委托，方法，属性，事件示例: PascalCase
+# interface_style 样式的命名约定，这里是 PascalCase。
+dotnet_naming_style.interface_style.capitalization                        = pascal_case
+# camelCase：在这种命名约定中，第一个单词的首字母小写，后面每个单词的首字母大写，例如：myVariableName。
+# PascalCase：在这种命名约定中，每个单词的首字母都大写，例如：MyVariableName。
+# snake_case：在这种命名约定中，单词之间用下划线分隔，例如：my_variable_name。
+# ALL_UPPER：在这种命名约定中，所有字母都大写，例如：MY_VARIABLE_NAME。
+
+## 类，结构，枚举，委托，方法，属性，事件示例: MyClass
 dotnet_naming_rule.pascal_case_rule.symbols                               = pascal_case_symbol
 dotnet_naming_rule.pascal_case_rule.style                                 = pascal_case_style
 dotnet_naming_rule.pascal_case_rule.severity                              = warning
 dotnet_naming_symbols.pascal_case_symbol.applicable_kinds                 = class,struct,enum,delegate,method,property,event
 dotnet_naming_style.pascal_case_style.capitalization                      = pascal_case
 
-## 私有字段示例: _camelCase
+## 私有字段示例: m_VariableName
 dotnet_naming_rule.private_field_rule.symbols                             = private_field_symbol
 dotnet_naming_rule.private_field_rule.style                               = private_field_style
 dotnet_naming_rule.private_field_rule.severity                            = warning
@@ -34,7 +49,7 @@ dotnet_naming_symbols.private_field_symbol.applicable_accessibilities     = priv
 dotnet_naming_style.private_field_style.required_prefix                   = m_
 dotnet_naming_style.private_field_style.capitalization                    = pascal_case
 
-## 非私有字段示例: camelCase
+## 非私有字段示例: myVariableName
 dotnet_naming_rule.non_private_field_rule.symbols                         = non_private_field_symbol
 dotnet_naming_rule.non_private_field_rule.style                           = non_private_field_style
 dotnet_naming_rule.non_private_field_rule.severity                        = warning
@@ -42,14 +57,14 @@ dotnet_naming_symbols.non_private_field_symbol.applicable_kinds           = fiel
 dotnet_naming_symbols.non_private_field_symbol.applicable_accessibilities = public,internal,protected,protected_internal
 dotnet_naming_style.non_private_field_style.capitalization                = camel_case
 
-## 参数示例: camelCase
+## 参数示例: myVariableName
 dotnet_naming_rule.parameter_rule.symbols                                 = parameter_symbol
 dotnet_naming_rule.parameter_rule.style                                   = parameter_style
 dotnet_naming_rule.parameter_rule.severity                                = warning
 dotnet_naming_symbols.parameter_symbol.applicable_kinds                   = parameter
 dotnet_naming_style.parameter_style.capitalization                        = camel_case
 
-## 常量示例: ALL_UPPER
+## 常量示例: MY_VARIABLE_NAME
 dotnet_naming_rule.const_rule.symbols                                     = const_symbol
 dotnet_naming_rule.const_rule.style                                       = const_style
 dotnet_naming_rule.const_rule.severity                                    = warning

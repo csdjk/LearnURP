@@ -21,9 +21,9 @@ public class TerrainToObjExporter : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label("选择需要导出的地形", EditorStyles.boldLabel);
+        GUILayout.Label("閫夋嫨闇�瑕佸鍑虹殑鍦板舰", EditorStyles.boldLabel);
 
-        vertexCountLevel = (VertexCountLevel)EditorGUILayout.EnumPopup("顶点数量", vertexCountLevel);
+        vertexCountLevel = (VertexCountLevel)EditorGUILayout.EnumPopup("椤剁偣鏁伴噺", vertexCountLevel);
 
         if (GUILayout.Button("Export"))
         {
@@ -43,7 +43,7 @@ public class TerrainToObjExporter : EditorWindow
                         }
                         else
                         {
-                            Debug.LogError("没有地形被选中==========");
+                            Debug.LogError("娌℃湁鍦板舰琚�変腑==========");
                         }
                     }
                 }

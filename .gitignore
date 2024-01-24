@@ -34,6 +34,7 @@ sysinfo.txt
 .vscode/
 .vs/
 .history/
+.idea/
 backup/
 
 # 忽略文件目录

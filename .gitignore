@@ -34,6 +34,7 @@ sysinfo.txt
 .vscode/
 .vs/
 .history/
+backup/
 
 # 忽略文件目录
 Assets/VacuumShaders

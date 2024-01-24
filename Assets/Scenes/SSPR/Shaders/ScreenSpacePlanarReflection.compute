@@ -1,0 +1,207 @@
+
+//https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+#pragma kernel SSPRMain
+
+#define NUMTHREAD_X 8
+#define NUMTHREAD_Y 8
+
+SamplerState PointClampSampler;
+SamplerState LinearClampSampler;
+
+RWTexture2D<float4> ColorRT;
+RWTexture2D<float> PosWSyRT;
+
+Texture2D<float> _CameraDepthTexture;
+Texture2D<float4> _CameraOpaqueTexture;
+
+float4x4 _InverseVPMatrix;
+// 这里用自己传递的VP矩阵
+float4x4 _VPMatrix;
+
+float4 _TintColor;
+float3 _CameraDirection;
+float2 _RTSize;
+float2 _FadeOutScreenBorder;
+float2 _ScreenLRStretchData;
+float _HorizontalPlaneHeightWS;
+// ================================= 重建世界坐标 =================================
+//id: SV_DispatchThreadID
+float3 ConvertScreenIDToPosWS(uint2 id)
+{
+    // [0,RTSize-1] -> screen [0,1] uv
+    float2 screenUV = float2(id.x / (_RTSize.x), id.y / (_RTSize.y));
+    float depth = _CameraDepthTexture.SampleLevel(PointClampSampler, screenUV, 0);
+    // #if UNITY_UV_STARTS_AT_TOP
+    //     screenUV.y = 1.0 - screenUV.y;
+    // #endif
+
+
+    //重建世界坐标
+    // https://github.com/Steven-Cannavan/URP_ScreenSpacePlanarReflections/blob/master/Assets/Shaders/ReflectionShader.compute#L75
+    float4 posCS = float4(screenUV * 2.0 - 1.0, depth, 1.0);
+    #if UNITY_UV_STARTS_AT_TOP
+        posCS.y = -posCS.y;
+    #endif
+
+    //posCS -> posHWS
+    float4 posHWS = mul(_InverseVPMatrix, posCS);
+    //posHWS -> posWS
+    float3 posWS = posHWS.xyz / posHWS.w;
+    return posWS;
+}
+
+float3 MirrorPosWS(float3 inputPosWS)
+{
+    float3 reflectedPosWS = inputPosWS;
+    reflectedPosWS.y = _HorizontalPlaneHeightWS * 2 - reflectedPosWS.y;
+    return reflectedPosWS;
+}
+
+float2 ConvertReflectedPosWSToScreenUV(float3 reflectedPosWS)
+{
+    // UNITY_MATRIX_VP 如果在Metal上不正确,需要自己传递VP矩阵
+    //posWS -> posCS
+    float4 reflectedPosCS = mul(_VPMatrix, float4(reflectedPosWS, 1));
+    //posCS -> posNDC
+    float2 reflectedPosNDCxy = reflectedPosCS.xy / reflectedPosCS.w;
+    //posNDC -> screen [0,1] uv, don't saturate() to allow  out of bound access early exit
+    float2 reflectedScreenUV = reflectedPosNDCxy * 0.5 + 0.5;
+
+    //==============修复左右丢失的像素(uv拉伸)==============
+    float Threshold = _ScreenLRStretchData.x;
+    float Intensity = _ScreenLRStretchData.y;
+
+    float HeightStretch = (abs(reflectedPosWS.y - _HorizontalPlaneHeightWS));
+    float AngleStretch = (-_CameraDirection.y);
+    float ScreenStretch = saturate(abs(reflectedScreenUV.x * 2 - 1) - Threshold);
+
+    reflectedScreenUV.x = reflectedScreenUV.x * 2 - 1;
+    reflectedScreenUV.x *= 1 + HeightStretch * AngleStretch * ScreenStretch * Intensity;
+    reflectedScreenUV.x = saturate(reflectedScreenUV.x * 0.5 + 0.5);
+
+    // ==============翻转uv==============
+    #if UNITY_UV_STARTS_AT_TOP
+        reflectedScreenUV.y = 1.0 - reflectedScreenUV.y;
+    #endif
+
+    return reflectedScreenUV;
+}
+
+half ConvertOpaqueColorRTScreenUVToFadeAlphaParam(float2 screenUV, float reflectedPosWSy)
+{
+    //垂直方向淡出
+    half fadeoutAlpha = smoothstep(1, 1 - _FadeOutScreenBorder.y, screenUV.y);
+    //水平方向淡出
+    fadeoutAlpha *= smoothstep(1, 1 - _FadeOutScreenBorder.x * - (reflectedPosWSy - _HorizontalPlaneHeightWS), abs(screenUV.x * 2 - 1));
+    return fadeoutAlpha;
+}
+// ================================= Debug =================================
+// struct DebugData
+// {
+//     float4 v1;
+//     float4 v2;
+// };
+// RWStructuredBuffer<DebugData> _DebugBuffer;
+// ================================= Debug =================================
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void SSPRMain(uint3 id : SV_DispatchThreadID, uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThreadID, uint index : SV_GroupIndex)
+{
+    ColorRT[uint2(id.xy)] = float4(0, 0, 0, 0);
+    PosWSyRT[uint2(id.xy)] = 9999999;
+
+    float3 posWS = ConvertScreenIDToPosWS(id.xy);
+
+
+    // 排除低于反射平面的像素
+    if (posWS.y <= _HorizontalPlaneHeightWS)
+        return;
+
+    // 镜像翻转
+    float3 reflectedPosWS = MirrorPosWS(posWS);
+
+    // 反射的世界坐标转换为屏幕坐标
+    float2 reflectedScreenUV = ConvertReflectedPosWSToScreenUV(reflectedPosWS);
+
+    // 限制uv范围
+    float2 earlyExitTest = abs(reflectedScreenUV - 0.5);
+    if (earlyExitTest.x >= 0.5 || earlyExitTest.y >= 0.5)
+        return;
+
+    // screen uv[0,1] to [0,RTSize-1]
+    uint2 reflectedScreenID = reflectedScreenUV * _RTSize;
+
+
+    if (posWS.y < PosWSyRT[reflectedScreenID])
+    {
+        float2 screenUV = id.xy / _RTSize;
+
+        half3 inputPixelSceneColor = _CameraOpaqueTexture.SampleLevel(LinearClampSampler, screenUV, 0).rgb;
+        half fadeoutAlpha = ConvertOpaqueColorRTScreenUVToFadeAlphaParam(screenUV, reflectedPosWS.y);
+
+        float4 color = float4(inputPixelSceneColor, fadeoutAlpha);
+        color.a = saturate(color.a);
+        ColorRT[reflectedScreenID] = color;
+        PosWSyRT[reflectedScreenID] = posWS.y;
+    }
+}
+
+
+
+// ================================= 修复镂空 =================================
+#pragma kernel FillHoles
+
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void FillHoles(uint3 id : SV_DispatchThreadID)
+{
+    //fill holes inside each 2*2
+    id.xy *= 2;
+
+    //cache read
+    float4 center = ColorRT[id.xy + uint2(0, 0)];
+    float4 right = ColorRT[id.xy + uint2(0, 1)];
+    float4 bottom = ColorRT[id.xy + uint2(1, 0)];
+    float4 bottomRight = ColorRT[id.xy + uint2(1, 1)];
+
+
+
+    //find best inside 2*2
+    float4 best = center;
+    best = right.a > best.a + 0.5 ? right : best;
+    best = bottom.a > best.a + 0.5 ? bottom : best;
+    best = bottomRight.a > best.a + 0.5 ? bottomRight : best;
+
+    //write better rgba
+    ColorRT[id.xy + uint2(0, 0)] = best.a > center.a + 0.5 ? best : center;
+    ColorRT[id.xy + uint2(0, 1)] = best.a > right.a + 0.5 ? best : right;
+    ColorRT[id.xy + uint2(1, 0)] = best.a > bottom.a + 0.5 ? best : bottom;
+    ColorRT[id.xy + uint2(1, 1)] = best.a > bottomRight.a + 0.5 ? best : bottomRight;
+}
+
+// ================================= 降噪 =================================
+// #pragma kernel NoiseReduction
+
+// float2 hash22(float2 p)
+// {
+//     float3 p3 = frac(float3(p.xyx) * float3(.1031, .1030, .0973));
+//     p3 += dot(p3, p3.yzx + 33.33);
+//     return frac((p3.xx + p3.yz) * p3.zy);
+// }
+
+// float _NoiseIntensity;
+// Texture2D<half4> _MobileSSPR_ColorRT;
+// RWTexture2D<half4> BlurRT;
+
+// [numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+// void NoiseReduction(uint3 id : SV_DispatchThreadID)
+// {
+//     float2 screenUV = float2(id.x / (_RTSize.x), id.y / (_RTSize.y));
+
+//     half2 noise = (hash22(screenUV * 100) - 0.5) * _NoiseIntensity;
+//     screenUV += noise;
+
+//     half4 color = _MobileSSPR_ColorRT.SampleLevel(LinearClampSampler, screenUV, 0);
+//     BlurRT[id.xy] = color;
+// }

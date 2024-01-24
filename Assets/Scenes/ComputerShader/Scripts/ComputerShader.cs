@@ -5,7 +5,6 @@ using UnityEngine;
 public class ComputerShader : MonoBehaviour
 {
     public ComputeShader computeShader;
-    // public RenderTexture renderTexture;
     public Vector3Int threadGroupSize = new Vector3Int(2, 2, 2);
     public Vector3Int bufferSize = new Vector3Int(2, 2, 2);
     public Vector3Int numThreads = new Vector3Int(2, 2, 2);
@@ -13,10 +12,10 @@ public class ComputerShader : MonoBehaviour
     public Color threadColor = Color.red;
 
     public ComputeBuffer computeBuffer;
-    private int kernel;
+    private int m_Kernel;
     [HideInInspector]
     public Vector4[] data;
-    GUIStyle style = new GUIStyle("box");
+    GUIStyle m_Style = new GUIStyle("box");
 
     private void OnValidate()
     {
@@ -61,14 +60,14 @@ public class ComputerShader : MonoBehaviour
         // renderTexture.Create();
         RecreateComputeBuffer();
 
-        kernel = computeShader.FindKernel("CSMain");
-        style.alignment = TextAnchor.MiddleCenter;
+        m_Kernel = computeShader.FindKernel("CSMain");
+        m_Style.alignment = TextAnchor.MiddleCenter;
     }
     private void Update()
     {
         if (computeBuffer == null) return;
-        computeShader.SetBuffer(kernel, "Result", computeBuffer);
-        computeShader.Dispatch(kernel, threadGroupSize.x, threadGroupSize.y, threadGroupSize.z);
+        computeShader.SetBuffer(m_Kernel, "Result", computeBuffer);
+        computeShader.Dispatch(m_Kernel, threadGroupSize.x, threadGroupSize.y, threadGroupSize.z);
     }
     private void OnDisable()
     {
@@ -126,10 +125,10 @@ public class ComputerShader : MonoBehaviour
                     for (int z = 0; z < threadGroupSize.z; z++)
                     {
                         Gizmos.color = threadGroupColor;
-                        style.normal.textColor = threadGroupColor;
+                        m_Style.normal.textColor = threadGroupColor;
                         var groupPos = new Vector3(x, y, z);
                         Gizmos.DrawWireCube(groupPos, boxSizeGroup);
-                        Handles.Label(groupPos, $"{x} {y} {z}", style);
+                        Handles.Label(groupPos, $"{x} {y} {z}", m_Style);
 
                         var origin = groupPos - boxSizeThreadHalf;
                         // 在每个线程组里绘制每个线程，线程数量由numThreads决定，线程的位置中心点为线程组的中心点，大小为size/numThreads
@@ -140,13 +139,13 @@ public class ComputerShader : MonoBehaviour
                                 for (int k = 0; k < numThreads.z; k++)
                                 {
                                     Gizmos.color = threadColor;
-                                    style.normal.textColor = threadColor;
+                                    m_Style.normal.textColor = threadColor;
                                     // 局部坐标转换为世界坐标
                                     var threadPos = origin + new Vector3(k * boxSizeThread.x, j * boxSizeThread.y, i * boxSizeThread.z);
                                     Gizmos.DrawWireCube(threadPos, boxSizeThread - new Vector3(0.01f, 0.01f, 0.01f));
                                     var value = data[count];
 
-                                    Handles.Label(threadPos, $"{value.x} {value.y} {value.z}", style);
+                                    Handles.Label(threadPos, $"{value.x} {value.y} {value.z}", m_Style);
                                     count++;
                                 }
                             }

@@ -14,8 +14,19 @@
 
 ### [RainRipple](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/RainRipple/)
 
-https://github.com/csdjk/LearnURP/assets/33519787/a0e9e8dc-5edd-4ea5-a055-170d464d084c
+<video controls>
+  <source src="https://github.com/csdjk/LearnURP/assets/33519787/a0e9e8dc-5edd-4ea5-a055-170d464d084c" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ### [Rain](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
 
-![1705320482504](image/README/Rain.gif)
+5![1705320482504](image/README/Rain.gif)
+
+### [SSR](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/SSR/)
+
+![1705320482504](image/README/SSR.gif)
+
+### [SSPR](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/SSPR/)
+
+![1705320482504](image/README/SSPR.gif)

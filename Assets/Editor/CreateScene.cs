@@ -2,63 +2,60 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using System;
+using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
+using UnityEditor.Rendering;
+using UnityEditor.SceneManagement;
+using UnityEngine.Rendering;
 
-public class LcLEditorWindow : EditorWindow
+
+[InitializeOnLoad]
+public static class CreateSceneHandler
 {
-    [MenuItem("Window/My Editor Window")]
-    private static void ShowWindow()
+    // [InitializeOnLoadMethod]
+    static CreateSceneHandler()
     {
-        var window = GetWindow<LcLEditorWindow>();
-        window.titleContent = new GUIContent("My Editor Window");
-        window.Show();
+        EditorSceneManager.newSceneCreated += OnNewSceneCreated;
     }
 
-    void OnEnable()
+
+    static void OnNewSceneCreated(Scene scene, NewSceneSetup setup, NewSceneMode mode)
     {
-        CreateGUI();
+        Debug.Log("New scene created: " + scene.name);
     }
 
-    public void CreateGUI()
-    {
-        VisualElement root = rootVisualElement;
 
-        var label = new Label("Hello World!");
-        root.Add(label);
+    // [MenuItem("Assets/LcL/CreateScene", false, 0)]
+    // static void CreateScene(MenuCommand menuCommand)
+    // {
+    //     // 创建新的场景
+    //     Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+    //     EditorSceneManager.SetActiveScene(scene);
+    //
+    //     // 创建全局音量
+    //     var go = CoreEditorUtils.CreateGameObject("Global Volume", menuCommand.context);
+    //     var volume = go.AddComponent<Volume>();
+    //     volume.isGlobal = true;
+    //
+    //     // 创建平面
+    //     GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+    //     plane.name = "Plane";
+    //
+    //     // 创建光源
+    //     GameObject lightGameObject = new GameObject("Light");
+    //     var lightComp = lightGameObject.AddComponent<Light>();
+    //     lightComp.type = LightType.Directional;
+    //
+    //     // 创建相机
+    //     GameObject cameraGameObject = new GameObject("Main Camera");
+    //     var cameraComp = cameraGameObject.AddComponent<Camera>();
+    //     cameraComp.fieldOfView = 60;
+    //
+    //     // 保存场景,获取选择的文件夹路径
+    //     string scenePath =  AssetDatabase.GetAssetPath(Selection.activeObject);
+    //     EditorSceneManager.SaveScene(scene, scenePath);
+    // }
 
-        var button = new Button(() => { Debug.Log("Hello World"); });
-        root.Add(button);
-
-        Func<VisualElement> makeItem = () =>
-        {
-            return new Label();
-        };
-        Action<VisualElement, int> bindItem = (element, index) =>
-        {
-            (element as Label).text = "Element " + index;
-        };
-
-        var listView = new ListView(new[] { "1", "2", "3", "4", "5" }, 20, makeItem, bindItem);
-        listView.selectionType = SelectionType.Multiple;
-        listView.showAddRemoveFooter = true;
-        listView.reorderable = true;
-        listView.reorderMode = ListViewReorderMode.Animated;
-        listView.showBorder = true;
-        listView.showAddRemoveFooter = true;
-        listView.showAlternatingRowBackgrounds = AlternatingRowBackground.None;
-        listView.showBoundCollectionSize = true;
-        listView.selectionType = SelectionType.Single;
-        listView.onSelectedIndicesChange += obj =>
-        {
-            Debug.Log("onSelectedIndicesChanged");
-        };
-        listView.onItemsChosen += obj =>
-        {
-            Debug.Log("onItemsChosen");
-        };
-        listView.onSelectionChange += obj =>
-        {
-            Debug.Log("onSelectionChange");
-        };
-        root.Add(listView);
-    }
 }
+
+

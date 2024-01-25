@@ -46,7 +46,7 @@ namespace LcLGame
         const int SHADER_NUMTHREAD_X = 8;
         const int SHADER_NUMTHREAD_Y = 8;
 
-        protected override void Create()
+        public override void Create()
         {
             m_ReflectionsPass = new ScreenSpacePlanarReflectionPass(settings)
             {
@@ -54,13 +54,13 @@ namespace LcLGame
             };
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             m_ReflectionsPass?.Dispose();
             m_ReflectionsPass = null;
         }
 
-        protected override void AddRenderPasses(ScriptableRenderer renderer)
+        public override void AddRenderPasses(ScriptableRenderer renderer)
         {
             if (computeShader)
             {

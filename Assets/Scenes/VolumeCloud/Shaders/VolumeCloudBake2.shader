@@ -1,4 +1,4 @@
-Shader "Hidden/VolumeCloud"
+Shader "Hidden/VolumeCloudBake2"
 {
     Properties
     {
@@ -8,17 +8,21 @@ Shader "Hidden/VolumeCloud"
     {
         Pass
         {
+            // Blend SrcAlpha One
+            // Blend SrcAlpha OneMinusSrcAlpha
+            // Blend One OneMinusSrcAlpha
+            // Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 4.5
+            #pragma target 3.0
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-            #include "../VolumeCloudCore.hlsl"
-
-            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-            TEXTURE2D(_BlueNoiseTex); SAMPLER(sampler_BlueNoiseTex);
+            #include "VolumeCloudCore.hlsl"
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
 
             struct Attributes
             {
@@ -26,33 +30,31 @@ Shader "Hidden/VolumeCloud"
                 uint vertexID : SV_VertexID;
                 float2 uv : TEXCOORD0;
             };
+
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 viewRay : TEXCOORD1;
             };
-            
-            int _MaxStep;
-            matrix _FrustumCornersRay;
 
+
+            matrix _FrustumCornersRay;
+            int _MaxStep;
             float3 _BoundsMin;
             float3 _BoundsMax;
-            float4 _NoiseTiling;
+            float3 _NoiseTiling;
             float4 _NoiseOffset;
-            float4 _BlurTilingAndIntensity;
             float4 _Color;
             float4 _ShadowColor;
-
-            #define _DensityPower _NoiseTiling.w
-            
             float4 _CloudData;
-            #define _LightStepSize _CloudData.x
-            #define _StepSize _CloudData.y
+            #define _SDFThreshold _CloudData.x
+            #define _SDFScale _CloudData.y
             #define _DensityScale _CloudData.z
             #define _LightAbsorption  _CloudData.w
 
             float4 _ScatterData;
+
             #define _ScatterForward _ScatterData.x
             #define _ScatterBackward _ScatterData.y
             #define _ScatterWeight _ScatterData.z
@@ -87,10 +89,10 @@ Shader "Hidden/VolumeCloud"
                     // 正交相机下，_CameraDepthTexture存储的是线性值，
                     // 并且距离镜头远的物体，深度值小，距离镜头近的物体，深度值大
                     #if defined(UNITY_REVERSED_Z)
-                        depth = 1 - depth;
+                    depth = 1 - depth;
                     #endif
                     float farClipPlane = _ProjectionParams.z;
-                    
+
                     // float3 forward = UNITY_MATRIX_V[2].xyz;
                     float3 forward = unity_WorldToCamera[2].xyz;
                     float3 cameraForward = normalize(forward) * farClipPlane;
@@ -98,27 +100,28 @@ Shader "Hidden/VolumeCloud"
                 }
                 return positionWS;
             }
-
             half4 frag(Varyings input) : SV_Target
             {
+                // float4 backgroundCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
 
                 float2 screenUV = input.positionCS.xy / _ScaledScreenParams.xy;
                 float3 positionWS = ComputePositionWS(input.uv, input.viewRay);
 
-                float blueNoise = SAMPLE_TEXTURE2D(_BlueNoiseTex, sampler_BlueNoiseTex, screenUV * _BlurTilingAndIntensity.xy).r;
-                blueNoise = (blueNoise * 2 - 1) * _BlurTilingAndIntensity.z;
-
 
                 float3 rayPos = GetCameraPositionWS();
-                float3 rayDirection = normalize(positionWS - rayPos) ;
+                float3 rayDirection = normalize(positionWS - rayPos);
+
 
                 float depthEyeLinear = length(positionWS.xyz - _WorldSpaceCameraPos);
-
                 float2 rayToContainerInfo = rayBoxDst(_BoundsMin, _BoundsMax, rayPos, rayDirection);
                 float dstToBox = rayToContainerInfo.x; //相机到容器的距离
                 float dstInsideBox = rayToContainerInfo.y; // 射线穿过包围盒的距离
                 //(相机到物体的距离 - 相机到容器的距离)与射线穿过包围盒的距离，取最小值
                 float dstLimit = min(depthEyeLinear - dstToBox, dstInsideBox);
+
+
+                float3 boundBoxScale = (_BoundsMax - _BoundsMin);
+                float boundBoxScaleMax = max(max(boundBoxScale.x, boundBoxScale.y), boundBoxScale.z);
 
                 if (dstLimit < 0 || dstInsideBox == 0)
                 {
@@ -130,15 +133,15 @@ Shader "Hidden/VolumeCloud"
 
                 Light mainLight = GetMainLight();
                 float3 lightDir = mainLight.direction;
-                
-                float phase = HGScatterLerp(dot(rayDirection, lightDir), _ScatterForward, _ScatterBackward, _ScatterWeight);
+
+                float phase = HGScatterLerp(dot(rayDirection, lightDir), _ScatterForward, _ScatterBackward,
+                                            _ScatterWeight);
                 // ------------------ Ray Marching ------------------
-                // float3 cloudData;
+                float3 cloudData;
                 float transmittance = 1;
                 float totalDensity = 0;
                 float rayLength = 0;
                 float finalLight = 0;
-                float lightAccumulation = 0;
                 for (int i = 0; i < _MaxStep; i++)
                 {
                     if (rayLength >= dstLimit)
@@ -147,42 +150,30 @@ Shader "Hidden/VolumeCloud"
                     }
                     // 映射到包围盒
                     float3 uvw = (curPoint - _BoundsMin) / (_BoundsMax - _BoundsMin);
-                    uvw = uvw * _NoiseTiling.xyz + _NoiseOffset;
+                    uvw = uvw * _NoiseTiling + _NoiseOffset;
 
-                    float density = SampleDensity(uvw, _DensityScale, _DensityPower);
-                    // float density = cloudData.x * _DensityScale;
-
-                    if (density > 0)
+                    cloudData = SampleDensity(uvw);
+                    if (cloudData.x <= _SDFThreshold)
                     {
-                        totalDensity += density;
-                        float3 lightRayOrigin = curPoint;
-                        for (int j = 0; j < 5; j++)
-                        {
-                            lightRayOrigin += lightDir * _LightStepSize;
-                            uvw = (lightRayOrigin - _BoundsMin) / (_BoundsMax - _BoundsMin);
-                            uvw = uvw * _NoiseTiling.xyz + _NoiseOffset;
-                            float lightDensity = SampleDensity(uvw, _DensityScale, _DensityPower);
-                            // float lightDensity = cloudData.x * _DensityScale;
-                            lightAccumulation += lightDensity;
-                        }
-                        float lightTransmittance = exp(-lightAccumulation);
-                        float shadow = _DarknessThreshold + lightTransmittance * (1 - _DarknessThreshold);
-                        finalLight += totalDensity * shadow * transmittance * phase;
-                        transmittance *= Beer(totalDensity, _LightAbsorption);
-
-                        if (transmittance < 0.01) break;
+                        break;
                     }
-                    rayLength += _StepSize ;
-                    curPoint = curPoint + rayDirection * (_StepSize + blueNoise);
-                }
-                float transmission = exp(-totalDensity);
-                float3 rayMarchRelust = float3(finalLight, transmission, transmittance);
+                    float sdf = cloudData.x * boundBoxScaleMax * _SDFScale;
+                    float3 newPoint = curPoint + rayDirection * sdf;
 
-                float3 cloud = lerp(_Color, _ShadowColor, saturate(rayMarchRelust.x));
-                
+                    totalDensity = totalDensity + cloudData.y * _DensityScale;
+
+                    rayLength += sdf;
+                    curPoint = curPoint + rayDirection * sdf;
+                }
+
+                totalDensity = saturate(totalDensity);
+
+                // float3 cloud = lerp(_Color, _ShadowColor, 1 - saturate(density));
+                // float3 cloud = lerp(backgroundCol, 1, (totalDensity));
+
                 float4 finalColor;
-                finalColor.rgb = finalLight;
-                finalColor.a = transmittance;
+                finalColor.rgb = totalDensity;
+                finalColor.a = 1;
                 return finalColor;
             }
             ENDHLSL
@@ -190,43 +181,42 @@ Shader "Hidden/VolumeCloud"
         pass
         {
             Blend One SrcAlpha
-            
+
             HLSLPROGRAM
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            
+
             #pragma vertex vert
             #pragma fragment frag
-            
+
             TEXTURE2D(_VolumeCloud);
             SAMPLER(sampler_VolumeCloud);
-            
+
             struct appdata
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
             };
-            
+
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
-            
+
             v2f vert(appdata input)
             {
                 v2f output;
-                
+
                 VertexPositionInputs vertexPos = GetVertexPositionInputs(input.vertex.xyz);
                 output.positionCS = vertexPos.positionCS;
                 output.uv = input.uv;
                 return output;
             }
-            
+
             half4 frag(v2f input) : SV_Target
             {
                 return SAMPLE_TEXTURE2D(_VolumeCloud, sampler_VolumeCloud, input.uv);
             }
-            
             ENDHLSL
         }
     }

@@ -9,10 +9,10 @@ namespace LcLGame
     [ExecuteAlways]
     public abstract class RendererFeatureBase : MonoBehaviour
     {
-        protected abstract void Create();
-        protected abstract void AddRenderPasses(ScriptableRenderer renderer);
+        public abstract void Create();
+        public abstract void AddRenderPasses(ScriptableRenderer renderer);
 
-        protected virtual void Dispose()
+        public virtual void Dispose()
         {
         }
 
@@ -29,11 +29,11 @@ namespace LcLGame
         }
 
 
-        // private void OnValidate()
-        // {
-        //     OnDisable();
-        //     OnEnable();
-        // }
+        private void OnValidate()
+        {
+            Dispose();
+            Create();
+        }
 
         private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {

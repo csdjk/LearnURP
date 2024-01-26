@@ -94,7 +94,7 @@ Shader "Hidden/VolumeCloudBake"
                     // 正交相机下，_CameraDepthTexture存储的是线性值，
                     // 并且距离镜头远的物体，深度值小，距离镜头近的物体，深度值大
                     #if defined(UNITY_REVERSED_Z)
-                    depth = 1 - depth;
+                        depth = 1 - depth;
                     #endif
                     float farClipPlane = _ProjectionParams.z;
 
@@ -124,7 +124,7 @@ Shader "Hidden/VolumeCloudBake"
             {
                 float2 screenUV = input.positionCS.xy / _ScaledScreenParams.xy;
                 float blueNoise = SAMPLE_TEXTURE2D(_BlueNoiseTex, sampler_BlueNoiseTex,
-                                                   screenUV * _BlurTilingAndIntensity.xy).r;
+                screenUV * _BlurTilingAndIntensity.xy).r;
                 blueNoise = (blueNoise * 2 - 1) * _BlurTilingAndIntensity.z;
 
 
@@ -155,13 +155,15 @@ Shader "Hidden/VolumeCloudBake"
                 float3 lightDir = mainLight.direction;
 
                 float phase = HGScatterLerp(dot(rayDirection, lightDir), _ScatterForward, _ScatterBackward,
-                                            _ScatterWeight);
+                _ScatterWeight);
                 // ------------------ Ray Marching ------------------
                 float3 cloudData;
                 float transmittance = 1;
                 float totalDensity = 0;
                 float rayLength = 0;
                 float finalLight = 0;
+                float lightAccumulation = 0;
+
                 for (int i = 0; i < _MaxStep; i++)
                 {
                     if (rayLength >= dstLimit)
@@ -178,12 +180,28 @@ Shader "Hidden/VolumeCloudBake"
                     if (density > 0.002)
                     {
                         totalDensity += density;
-                        float shadow = _DarknessThreshold + cloudData.z * (1.0 - _DarknessThreshold);
+                        // Light
+                        // float3 lightRayOrigin = curPoint;
+                        // for (int j = 0; j < 5; j++)
+                        // {
+                        //     lightRayOrigin += lightDir * 0.1;
+                        //     uvw = (lightRayOrigin - _BoundsMin) / (_BoundsMax - _BoundsMin);
+                        //     uvw = uvw * _NoiseTiling.xyz + _NoiseOffset;
+                        //     float3 lightDensity = SampleDensity(uvw);
+                        //     lightAccumulation += lightDensity.y * _DensityScale;
+                        // }
+                        // float lightTransmittance = exp(-lightAccumulation);
+                        float lightTransmittance = cloudData.z;
+
+                        // Light
+                        // float shadow = 1;
+                        float shadow = _DarknessThreshold + lightTransmittance * (1.0 - _DarknessThreshold);
                         // float shadow = _DarknessThreshold + 1 * (1.0 - _DarknessThreshold);
 
                         finalLight += totalDensity * transmittance * shadow * phase;
+                        // finalLight += shadow;
                         transmittance *= Beer(totalDensity, _LightAbsorption);
-                        if (transmittance < 0.01)
+                        if (transmittance < 0.02)
                             break;
                     }
                     // 超过阈值，就固定步长，不然的话后面的步长会越来越接近0，相当于原地踏步
@@ -199,6 +217,8 @@ Shader "Hidden/VolumeCloudBake"
                 // float3 result = float3(finalLight, transmission, transmittance);
 
                 // float3 cloud = lerp(_Color, _ShadowColor, 1 - saturate(totalDensity));
+                // half NdotL = saturate(dot(rayDirection, lightDir));
+
 
                 float4 finalColor;
                 finalColor.rgb = finalLight;
@@ -210,7 +230,7 @@ Shader "Hidden/VolumeCloudBake"
 
         pass
         {
-            //            Blend One SrcAlpha
+            //Blend One SrcAlpha
 
             HLSLPROGRAM
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -250,7 +270,6 @@ Shader "Hidden/VolumeCloudBake"
                 half4 mainColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
                 half4 cloud = SAMPLE_TEXTURE2D(_VolumeCloud, sampler_VolumeCloud, input.uv);
                 return half4(cloud.rgb + mainColor.rgb * cloud.a, 1);
-                // return half4(lerp(cloud.rgb,mainColor.rgb,cloud.a), 1);
             }
             ENDHLSL
         }

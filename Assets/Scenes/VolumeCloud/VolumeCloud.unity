@@ -307,8 +307,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1048347424}
-  m_LocalRotation: {x: 0, y: -0.9063079, z: 0.42261827, w: 0}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: -0.1752032, y: 0.69365686, z: -0.17987119, w: -0.6751225}
+  m_LocalPosition: {x: 25.490711, y: 15.539857, z: 21.267464}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -497,37 +497,37 @@ PrefabInstance:
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.2612615
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.02
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 35.05137
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.012599954
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.00055029156
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.9993864
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.032676112
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -553,6 +553,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459864851551516604, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
@@ -592,20 +597,20 @@ MonoBehaviour:
     noiseOffset: {x: 0, y: 0, z: 0}
     blurNoise: {fileID: 2800000, guid: 5bb92e256168a454aa369217d922e1b3, type: 3}
     blurTiling: {x: 1, y: 1}
-    blurIntensity: 0.0022
+    blurIntensity: 0.0035
     color: {r: 1, g: 1, b: 1, a: 1}
     shadowColor: {r: 0, g: 0, b: 0, a: 1}
-    downSample: 2
+    downSample: 1
     maxStep: 100
     sdfThreshold: 0.0204
     stepScale: 1
     densityScale: 2.82
     densityPower: 1
-    lightAbsorptionThroughCloud: 0.176
-    darknessThreshold: 0.966
+    lightAbsorptionThroughCloud: 0.062
+    darknessThreshold: 0.335
     scatterForward: 0.162
     scatterBackward: 0.341
-    scatterWeight: 0.074
+    scatterWeight: 0.199
 --- !u!4 &1813643266
 Transform:
   m_ObjectHideFlags: 0

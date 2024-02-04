@@ -67,8 +67,8 @@ Material:
     - _EnableAlphaTest: 0
     - _EnableBumpMap: 1
     - _EnableEmission: 0
-    - _FlowIntensity: 0.783
-    - _FlowSpeed: 10
+    - _FlowIntensity: 0.481
+    - _FlowSpeed: 20
     - _NoiseSpped: 100
     - _RIPPLE: 0
     - _RIPPLE_FoldoutState: 1
@@ -88,11 +88,11 @@ Material:
     - _WATER_RIPPLE_ADVANCED: 0
     - _WATER_RIPPLE_FoldoutState: 1
     - _Water: 0
-    - _WaterBlend: 0.172
-    - _WaterColorPower: 1.482
-    - _WaterHeight: 0.93
-    - _WaterMetallic: 0
-    - _WaterSmoothnessAdd: 0
+    - _WaterBlend: 0.202
+    - _WaterColorPower: 1.712
+    - _WaterHeight: 1
+    - _WaterMetallic: 0.202
+    - _WaterSmoothnessAdd: 0.116
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}

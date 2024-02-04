@@ -18,136 +18,138 @@ SAMPLER(sampler_RippleMapAdvanced);
 
 struct WetlandData
 {
-  half3 albedo;
-  half3 normalTS;
-  half smoothness;
-  half metallic;
-  half colorPower;
+    half3 albedo;
+    half3 normalTS;
+    half smoothness;
+    half metallic;
+    half colorPower;
 };
 
 struct WaterData
 {
-  half3 color;
-  half colorPower;
-  half smoothnessAdd;
-  half metallic;
-  half height;
-  half maskBlend;
+    half3 color;
+    half colorPower;
+    half smoothnessAdd;
+    half metallic;
+    half height;
+    half maskBlend;
 };
 
 WetlandData InitWetlandData(half3 albedo, half3 normalTS, half smoothness, half metallic, half colorPower
 )
 {
-  WetlandData data;
-  data.albedo = albedo;
-  data.normalTS = normalTS;
-  data.smoothness = smoothness;
-  data.metallic = metallic;
-  data.colorPower = colorPower;
-  return data;
+    WetlandData data;
+    data.albedo = albedo;
+    data.normalTS = normalTS;
+    data.smoothness = smoothness;
+    data.metallic = metallic;
+    data.colorPower = colorPower;
+    return data;
 }
 
 WaterData InitWaterData(half3 color, half colorPower, half smoothnessAdd, half metallic, half height,
 half blend)
 {
-  WaterData data;
-  data.color = color;
-  data.colorPower = colorPower;
-  data.smoothnessAdd = smoothnessAdd;
-  data.metallic = metallic;
-  data.height = height;
-  data.maskBlend = blend;
-  return data;
+    WaterData data;
+    data.color = color;
+    data.colorPower = colorPower;
+    data.smoothnessAdd = smoothnessAdd;
+    data.metallic = metallic;
+    data.height = height;
+    data.maskBlend = blend;
+    return data;
 }
 
 float3 UnpackNormalWithScale(float2 packednormal, float scale)
 {
-  float3 normal;
-  normal.xy = (packednormal.xy * 2 - 1) * scale;
-  normal.z = sqrt(1 - saturate(dot(normal.xy, normal.xy)));
-  return normal;
+    float3 normal;
+    normal.xy = (packednormal.xy * 2 - 1) * scale;
+    normal.z = sqrt(1 - saturate(dot(normal.xy, normal.xy)));
+    return normal;
 }
 
 half3 CalculateRippleXY(float2 ripple_uv, half speed, half intensity, half2 size)
 {
-  float tile = round(_Time.y * speed);
-  float2 flip_uv = Flipbook(frac(ripple_uv), size.x, size.y, tile, float2(0, 1));
-  float4 normal = SAMPLE_TEXTURE2D(_RippleMap, sampler_RippleMap, flip_uv);
-  half3 rippleNormal = UnpackNormalWithScale(normal.xy, intensity);
-  return rippleNormal;
+    float tile = round(_Time.y * speed);
+    float2 flip_uv = Flipbook(frac(ripple_uv), size.x, size.y, tile, float2(0, 1));
+    float4 normal = SAMPLE_TEXTURE2D(_RippleMap, sampler_RippleMap, flip_uv);
+    half3 rippleNormal = UnpackNormalWithScale(normal.xy, intensity);
+    return rippleNormal;
 }
 half3 CalculateRippleZW(float2 ripple_uv, half speed, half intensity, half2 size)
 {
-  float tile = round(_Time.y * speed);
-  float2 flip_uv = Flipbook(frac(ripple_uv), size.x, size.y, tile, float2(0, 1));
-  float4 normal = SAMPLE_TEXTURE2D(_RippleMap, sampler_RippleMap, flip_uv);
-  half3 rippleNormal = UnpackNormalWithScale(normal.zw, intensity);
-  return rippleNormal;
+    float tile = round(_Time.y * speed);
+    float2 flip_uv = Flipbook(frac(ripple_uv), size.x, size.y, tile, float2(0, 1));
+    float4 normal = SAMPLE_TEXTURE2D(_RippleMap, sampler_RippleMap, flip_uv);
+    half3 rippleNormal = UnpackNormalWithScale(normal.zw, intensity);
+    return rippleNormal;
 }
 
 
 #if defined(_WATER_RIPPLE_ADVANCED)
 
-// https://seblagarde.wordpress.com/2013/01/03/water-drop-2b-dynamic-rain-and-its-effects/
-float3 CalculateRippleAdvanced(float2 uv, float currentTime, float weight, float2 intensity)
-{
-  // R：计算距圆中心的反转和归一化距离，
-  // G/B：存储距圆中心的方向，
-  // A：采用随机灰度值为圆的常数。
-  float4 ripple = SAMPLE_TEXTURE2D(_RippleMapAdvanced, sampler_RippleMapAdvanced, uv);
-  //gb 通道从[0,1]变成[-1,1]
-  ripple.yz = ripple.yz * 2.0 - 1.0;
-  //rippleTex的w通道（Alpha通道）圆圈外面都是0
-  //加上时间偏移。dropFrac 限制在[0,1)
-  float dropFrac = frac(ripple.w + currentTime);
-  //timeFrac限制在[-1,1],dropFrac - 1.0,可以确保圆圈的外面(ripple.x=0),timeFrac<=0.
-  //从而波纹外面的法线是垂直的。也就是水平的。
-  float timeFrac = dropFrac - 1.0 + ripple.x;
-  // 波纹随着时间扩大(dropFrac 变大)，dropFator越小，波纹慢慢变平
-  float dropFator = saturate(0.2 + weight * 0.8 - dropFrac);
-  //从波纹出现开始，时间越大(dropFrac 变大)，dropFator 越小，final 越小，波纹越平。
-  //sin(clamp(timeFrac * 9.0,0.0,3.0)PI)：0-3PI之间，sin就是一个波峰-波谷-波峰的函数图像，
-  //在0-3*PI之外sin函数皆为0.9.0是一个把timeFrac参数放大的因子。
-  //波纹圈内的值，比如波纹中心值，经过sin函数的计算，变成0.也就是说波纹中心点也是平的。这个平的区域，
-  // 随着时间变大，慢慢扩大，（时间越大，只有红色通道部分越小的地方(红色通道ripple.x渐变到0)，
-  //sin函数才不为0.所有波纹就会有慢慢变大的效果
-  float final = dropFator * ripple.x * sin(clamp(timeFrac * 9.0, 0.0, 3.0) * PI);
-  return float3(ripple.yz * final * 0.35 * intensity, 1.0);
-}
+    // https://seblagarde.wordpress.com/2013/01/03/water-drop-2b-dynamic-rain-and-its-effects/
+    float3 CalculateRippleAdvanced(float2 uv, float currentTime, float weight, float2 intensity, float frequency = 9, int frequencyMax = 3)
+    {
+        // R：存储到距圆中心距离的反向。类似sdf
+        // G/B：存储圆中心的方向(法线)，
+        // A：采用随机灰度值为圆的常数。
+        float4 ripple = SAMPLE_TEXTURE2D(_RippleMapAdvanced, sampler_RippleMapAdvanced, uv);
+        //gb [0,1]-> [-1,1]
+        ripple.yz = ripple.yz * 2.0 - 1.0;
+
+        //随机值加上时间偏移
+        float dropFrac = frac(ripple.w + currentTime);
+        //timeFrac限制在[-1,1],dropFrac - 1.0,可以确保圆圈的外面(ripple.x=0),timeFrac<=0.
+        //从而波纹外面的法线是垂直的。也就是水平的。
+        float timeFrac = dropFrac - 1.0 + ripple.x;
+        // 波纹随着时间扩大(dropFrac 变大)，dropFator越小，波纹慢慢变平
+        float dropFator = saturate(0.2 + weight * 0.8 - dropFrac);
+        //从波纹出现开始，时间越大(dropFrac 变大)，dropFator 越小，final 越小，波纹越平。
+        //sin(clamp(timeFrac * 9.0,0.0,3.0)PI)：0-3PI之间，sin就是一个波峰-波谷-波峰的函数图像，
+        //在0-3*PI之外sin函数皆为0.9.0是一个把timeFrac参数放大的因子。
+        //波纹圈内的值，比如波纹中心值，经过sin函数的计算，变成0.也就是说波纹中心点也是平的。这个平的区域，
+        // 随着时间变大，慢慢扩大，（时间越大，只有红色通道部分越小的地方(红色通道ripple.x渐变到0)，
+        //sin函数才不为0.所有波纹就会有慢慢变大的效果
+        float final = dropFator * ripple.x * sin(clamp(timeFrac * frequency, 0.0, frequencyMax) * PI);
+        return float3(ripple.yz * final * 0.35 * intensity, 1.0);
+    }
 
 #endif
+
+
 WetlandData BlendWater(WetlandData data, WaterData waterData, float2 uv, float4 ripple_uv, float2 rippleSpeed,
-float2 rippleIntensity, float2 rippleGrid, half weight=5)
+float2 rippleIntensity, float2 rippleGrid, half weight = 5,half rippleFrequency = 9,half rippleFrequencyMax = 3)
 {
-  half2 mask_uv = uv;
+    half2 mask_uv = uv;
 
-  half height = SAMPLE_TEXTURE2D(_HeightMap, sampler_HeightMap, mask_uv).r;
+    half height = SAMPLE_TEXTURE2D(_HeightMap, sampler_HeightMap, mask_uv).r;
 
-  half wetness = 1.0 - SmoothValue(waterData.height, waterData.maskBlend, height);
-  // 根据湿度插值
-  half3 waterColor = pow(data.albedo, waterData.colorPower) * _WaterColor.rgb;
-  half3 wetlandColor = pow(data.albedo, data.colorPower);
+    half wetness = 1.0 - SmoothValue(waterData.height, waterData.maskBlend, height);
+    // 根据湿度插值
+    half3 waterColor = pow(data.albedo, waterData.colorPower) * _WaterColor.rgb;
+    half3 wetlandColor = pow(data.albedo, data.colorPower);
 
 
-  float3 waterNormal = float3(0, 0, 1);
-  // 水滴波纹
-  #if defined(_WATER_RIPPLE)
-    #if defined(_WATER_RIPPLE_ADVANCED)
-      waterNormal = CalculateRippleAdvanced(ripple_uv.xy, _Time.x * rippleSpeed, weight,rippleIntensity);
-    #else
-      waterNormal = CalculateRippleXY(ripple_uv.xy, rippleSpeed.x, rippleIntensity.x, rippleGrid);
+    float3 waterNormal = float3(0, 0, 1);
+    // 水滴波纹
+    #if defined(_WATER_RIPPLE)
+        #if defined(_WATER_RIPPLE_ADVANCED)
+            waterNormal = CalculateRippleAdvanced(ripple_uv.xy, _Time.x * rippleSpeed, weight, rippleIntensity, rippleFrequency, rippleFrequencyMax);
+        #else
+            waterNormal = CalculateRippleXY(ripple_uv.xy, rippleSpeed.x, rippleIntensity.x, rippleGrid);
+        #endif
     #endif
-  #endif
-  //积水法线
-  #if defined(_WATER_FLOW)
-    waterNormal = BlendNormal(CalculateRippleZW(ripple_uv.zw, rippleSpeed.y, rippleIntensity.y, rippleGrid), waterNormal);
-  #endif
+    //积水法线
+    #if defined(_WATER_FLOW)
+        waterNormal = BlendNormal(CalculateRippleZW(ripple_uv.zw, rippleSpeed.y, rippleIntensity.y, rippleGrid), waterNormal);
+    #endif
 
-  data.albedo = lerp(wetlandColor, waterColor, wetness);
-  data.smoothness = lerp(saturate(data.smoothness + waterData.smoothnessAdd), _WaterColor.a, wetness);
-  data.normalTS = lerp(data.normalTS, waterNormal, wetness);
-  data.metallic = lerp(data.metallic, waterData.metallic, wetness);
-  return data;
+    data.albedo = lerp(wetlandColor, waterColor, wetness);
+    data.smoothness = lerp(saturate(data.smoothness + waterData.smoothnessAdd), _WaterColor.a, wetness);
+    data.normalTS = lerp(data.normalTS, waterNormal, wetness);
+    data.metallic = lerp(data.metallic, waterData.metallic, wetness);
+    return data;
 }
 
 

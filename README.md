@@ -4,7 +4,7 @@
 
 记录一下在URP中实现的一些效果Demo。
 
-注意需要收到修改一下URP的源码，`GetCameraColorFrontBuffer`和`SwapColorBuffer`方法的`internal`改为`public`。
+注意需要收到修改一下URP的源码，`GetCameraColorFrontBuffer`和 `SwapColorBuffer`方法的 `internal`改为 `public`。
 
 ### [Grass(GPU Instance)](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/GpuInstance/Grass)
 
@@ -16,7 +16,7 @@
 
 ### [RainRipple](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/RainRipple/)
 
-https://github.com/csdjk/LearnURP/assets/33519787/a0e9e8dc-5edd-4ea5-a055-170d464d084c
+![1707015580970](image/README/1707015580970.gif)
 
 ### [Rain](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
 

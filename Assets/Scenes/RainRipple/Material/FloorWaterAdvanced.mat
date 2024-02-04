@@ -69,16 +69,18 @@ Material:
     - _EnableBumpMap: 1
     - _EnableEmission: 0
     - _FlowIntensity: 0.67
-    - _FlowSpeed: 8
+    - _FlowSpeed: 20
     - _NoiseSpped: 100
     - _RIPPLE: 0
     - _RIPPLE_FoldoutState: 1
     - _Ripple: 0
-    - _RippleIntensity: 5
-    - _RippleSpeed: 15
+    - _RippleFrequency: 7.38
+    - _RippleFrequencyMax: 3
+    - _RippleIntensity: 7.72
+    - _RippleSpeed: 20.76
     - _RippleStrength: 0.718
     - _RippleTilling: 20
-    - _RippleWeight: 1.02
+    - _RippleWeight: 2.07
     - _Ripple_FoldoutState: 1
     - _Smoothness: 2.6
     - _WATER: 0

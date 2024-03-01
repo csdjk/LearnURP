@@ -97,20 +97,13 @@ half3 CalculateRippleZW(float2 ripple_uv, half speed, half intensity, half2 size
         float4 ripple = SAMPLE_TEXTURE2D(_RippleMapAdvanced, sampler_RippleMapAdvanced, uv);
         //gb [0,1]-> [-1,1]
         ripple.yz = ripple.yz * 2.0 - 1.0;
-
-        //随机值加上时间偏移
+        // 很容易理解,就是Time+随机值,并且截取小数部分,最后效果就是随时间逐渐变亮。
         float dropFrac = frac(ripple.w + currentTime);
-        //timeFrac限制在[-1,1],dropFrac - 1.0,可以确保圆圈的外面(ripple.x=0),timeFrac<=0.
-        //从而波纹外面的法线是垂直的。也就是水平的。
+        // 相当于把范围限制到[-1,1], 也就是说 原本是0的地方,始终是小于0的,其他值则会逐渐变大。
         float timeFrac = dropFrac - 1.0 + ripple.x;
-        // 波纹随着时间扩大(dropFrac 变大)，dropFator越小，波纹慢慢变平
+        // 相当于取反dropFrac, 随时间逐渐减弱的一个mask。也就是说控制波纹逐渐消失的一个变量。
         float dropFator = saturate(0.2 + weight * 0.8 - dropFrac);
-        //从波纹出现开始，时间越大(dropFrac 变大)，dropFator 越小，final 越小，波纹越平。
-        //sin(clamp(timeFrac * 9.0,0.0,3.0)PI)：0-3PI之间，sin就是一个波峰-波谷-波峰的函数图像，
-        //在0-3*PI之外sin函数皆为0.9.0是一个把timeFrac参数放大的因子。
-        //波纹圈内的值，比如波纹中心值，经过sin函数的计算，变成0.也就是说波纹中心点也是平的。这个平的区域，
-        // 随着时间变大，慢慢扩大，（时间越大，只有红色通道部分越小的地方(红色通道ripple.x渐变到0)，
-        //sin函数才不为0.所有波纹就会有慢慢变大的效果
+        // 波纹模拟：sin函数乘上衰减因子。
         float final = dropFator * ripple.x * sin(clamp(timeFrac * frequency, 0.0, frequencyMax) * PI);
         return float3(ripple.yz * final * 0.35 * intensity, 1.0);
     }

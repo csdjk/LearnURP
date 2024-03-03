@@ -63,7 +63,7 @@ internal class ColorBlitPass : ScriptableRenderPass
             // LcLRenderingUtils.SetSourceSize(cmd, m_Descriptor);
 
             RenderTargetIdentifier source = renderer.cameraColorTarget;
-            RenderTargetIdentifier destination = renderer.GetCameraColorFrontBuffer(cmd);
+            // RenderTargetIdentifier destination = renderer.GetCameraColorFrontBuffer(cmd);
 
 
             m_Material.SetFloat("_Intensity", intensity);

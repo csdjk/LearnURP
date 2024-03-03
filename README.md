@@ -14,6 +14,10 @@
 
 ![1705320482504](image/README/1705320482504.png)
 
+### [Ice2](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Ice/)
+
+![1709459308834](image/README/1709459308834.gif)
+
 ### [RainRipple](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/RainRipple/)
 
 ![1707015580970](image/README/1707015580970.gif)

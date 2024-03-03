@@ -22,7 +22,7 @@
 
 ![1707015580970](image/README/1707015580970.gif)
 
-### [Rain](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
+### [Rain(天刀方案)](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Rain/)
 
 ![1705320482504](image/README/Rain.gif)
 

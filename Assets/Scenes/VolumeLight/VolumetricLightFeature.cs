@@ -12,7 +12,8 @@ namespace LcLGame
         [System.Serializable]
         public class VolumetricLightSetting
         {
-            public RenderTextureResolution size = RenderTextureResolution._256;
+            [Range(0, 5)]
+            public int downSample = 1;
             [Range(0.0f, 2.0f)]
             public float exposure = 1f;
             public Color color = Color.white;
@@ -62,9 +63,8 @@ namespace LcLGame
             readonly int m_LightingColorID = Shader.PropertyToID("_LightingColor");
             readonly int m_ScreenLightPosID = Shader.PropertyToID("_ScreenLightPos");
 
-
+            ProfilingSampler m_ProfilingSampler = new ProfilingSampler("VolumetricLight");
             VolumetricLightSetting m_Settings;
-            string m_ProfilerTag;
             RenderTextureDescriptor m_Descriptor;
             Material m_Material;
 
@@ -81,7 +81,6 @@ namespace LcLGame
             }
             public VolumetricLightRenderPass(string tag, VolumetricLightSetting settings)
             {
-                m_ProfilerTag = tag;
                 m_Settings = settings;
                 m_DefaultHDRFormat = QualitySettings.activeColorSpace == ColorSpace.Linear ? GraphicsFormat.R8G8B8A8_SRGB : GraphicsFormat.R8G8B8A8_UNorm;
             }
@@ -99,21 +98,22 @@ namespace LcLGame
                 }
                 var cameraData = renderingData.cameraData;
                 var camera = cameraData.camera;
-                CommandBuffer cmd = CommandBufferPool.Get(m_ProfilerTag);
+                CommandBuffer cmd = CommandBufferPool.Get();
                 var source = renderingData.cameraData.renderer.cameraColorTarget;
-                // var width = m_Descriptor.width >> settings.downSample;
-                // var height = m_Descriptor.height >> settings.downSample;
+                var width = m_Descriptor.width >> m_Settings.downSample;
+                var height = m_Descriptor.height >> m_Settings.downSample;
 
-                var size = (int)m_Settings.size;
-
-                using (new ProfilingScope(cmd, new ProfilingSampler("VolumetricLight")))
+                using (new ProfilingScope(cmd, m_ProfilingSampler))
                 {
+                    cmd.Clear();
+                    context.ExecuteCommandBuffer(cmd);
+
                     var data = VolumetricLightData.Instance.Data;
                     foreach (var item in data)
                     {
                         if (item.TryGetViewPosition(camera, out var pos))
                         {
-                            var desc = LcLRenderingUtils.GetCompatibleDescriptor(m_Descriptor, size, size, m_DefaultHDRFormat);
+                            var desc = LcLRenderingUtils.GetCompatibleDescriptor(m_Descriptor, width, height, m_DefaultHDRFormat);
 
                             cmd.GetTemporaryRT(m_TempRT1, desc, FilterMode.Bilinear);
                             cmd.GetTemporaryRT(m_TempRT2, desc, FilterMode.Bilinear);

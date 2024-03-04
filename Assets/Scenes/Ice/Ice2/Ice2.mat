@@ -36,6 +36,9 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _EMISSION: 0
+    - _EMISSION_FoldoutState: 1
+    - _ICE: 0
+    - _ICE_FoldoutState: 1
     - _IceInnerDist: 500
     - _IceInnerTiling: 1
     - _IceNormalFlatten: 0.951
@@ -43,7 +46,7 @@ Material:
     - _IceOuterTiling: 5
     - _Metallic: 0
     - _OcclusionPower: 1
-    - _Refraction: 0.2
+    - _Refraction: 0.1965
     - _Smoothness: 1
     m_Colors:
     - _BaseColor: {r: 0.25653192, g: 1.2033919, b: 1.264762, a: 1}

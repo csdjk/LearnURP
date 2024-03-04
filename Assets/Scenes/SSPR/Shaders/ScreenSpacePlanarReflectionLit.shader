@@ -290,5 +290,5 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
             ENDHLSL
         }
     }
-    CustomEditor "LcLTools.LcLShaderGUI"
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 }

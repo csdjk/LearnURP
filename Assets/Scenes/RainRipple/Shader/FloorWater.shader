@@ -327,5 +327,5 @@
             ENDHLSL
         }
     }
-    CustomEditor "LcLTools.LcLShaderGUI"
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 }

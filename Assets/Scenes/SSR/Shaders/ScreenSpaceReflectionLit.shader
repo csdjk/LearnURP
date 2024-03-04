@@ -284,5 +284,5 @@ Shader "LcL/ScreenSpaceReflectionLit"
             ENDHLSL
         }
     }
-    CustomEditor "LcLTools.LcLShaderGUI"
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 }

@@ -357,6 +357,6 @@ Shader "LcL/UniversalLit"
             ENDHLSL
         }
     }
-    CustomEditor "LcLTools.LcLShaderGUI"
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 }
 

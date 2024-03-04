@@ -16,14 +16,14 @@ Shader "LcL/Ice2"
         [Foldout(_EMISSION)]_EMISSION ("Emission", float) = 0
         [FoldoutEnd][Emission]_EmissionColor ("Emission Color", Color) = (0, 0, 0, 0)
 
-
+        [Foldout()]_ICE ("ICE", float) = 0
         [HDR]_IceColor ("Ice Colour", Color) = (1, 1, 1, 1)
         _Refraction ("Refraction", Range(0, 0.2)) = 0.01
         _IceNormalFlatten ("Ice Normal Flatten", Range(0, 1)) = 1
         _IceInnerDist ("Inner Distance", Range(0, 500)) = 100
         _IceInnerTiling ("Inner Tiling", Float) = 1
         _IceOuterDist ("Outer Distance", Range(0, 10)) = 10
-        _IceOuterTiling ("Outer Tiling", Float) = 5
+        [FoldoutEnd]_IceOuterTiling ("Outer Tiling", Float) = 5
     }
     SubShader
     {
@@ -227,10 +227,8 @@ Shader "LcL/Ice2"
 
             half4 frag(Varyings input) : SV_Target
             {
-
                 SurfaceData surfaceData = InitializeSurfaceData(input);
                 InputData inputData = InitializeInputData(input, surfaceData.normalTS);
-
 
                 float2 screenUV = input.positionCS.xy / _ScaledScreenParams.xy;
                 screenUV = screenUV + inputData.normalWS.xy * _Refraction;
@@ -249,23 +247,18 @@ Shader "LcL/Ice2"
                 float texelSize = _BaseMap_TexelSize.x;
                 float absZ = abs(R.z);
 
-
                 float2 innerUV = input.uv * _IceInnerTiling + (R.xy * (_IceInnerDist / absZ) * texelSize);
                 float2 outerUV = input.uv * _IceOuterTiling + (R.xy * (_IceOuterDist / absZ) * texelSize);
-
 
                 float innerMask = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, innerUV).r;
                 float outerMask = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, outerUV).r;
 
                 float3 albedo = lerp(screenColor * _BaseColor.rgb, _IceColor, innerMask + outerMask);
 
-
                 surfaceData.alpha = 1;
                 surfaceData.albedo = albedo;
 
-
                 half4 color = UniversalFragmentPBR(inputData, surfaceData);
-
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
                 color.a = saturate(color.a);
@@ -307,5 +300,5 @@ Shader "LcL/Ice2"
             ENDHLSL
         }
     }
-    CustomEditor "LcLTools.LcLShaderGUI"
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 }

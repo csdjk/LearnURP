@@ -33,3 +33,9 @@
 ### [SSPR](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/SSPR/)
 
 ![1705320482504](image/README/SSPR.gif)
+
+### [FastVolumeLight](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/VolumeLight/)
+
+后处理实现，适合移动端的体积光。
+
+![1709545228438](image/README/1709545228438.gif)

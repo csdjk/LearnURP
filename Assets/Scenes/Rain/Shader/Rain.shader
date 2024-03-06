@@ -139,6 +139,7 @@
                 float nearRainDepth = nearRain.y * nearDepthBaseRange.y + nearDepthBaseRange.x;
                 float nearRainLayer = CalculateRainVisibility(screen_uv, nearRainDepth, sceneViewDepth);
 
+
                 // #if defined(_DOUBLE_RAIN)
                 float2 farRain = SAMPLE_TEXTURE2D(_RainTexture, sampler_RainTexture, i.uv.zw).yz;
                 float farRainDepth = farRain.y * farDepthBaseRange.y + farDepthBaseRange.x;

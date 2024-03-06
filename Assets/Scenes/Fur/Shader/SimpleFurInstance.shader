@@ -1,4 +1,4 @@
-Shader "LcL/SimpleFur"
+Shader "LcL/SimpleFurInstance"
 {
     Properties
     {
@@ -35,8 +35,10 @@ Shader "LcL/SimpleFur"
             Name "SimpleFur"
             Tags
             {
-                "LightMode" = "UniversalFur"
+                "LightMode" = "UniversalForward"
             }
+//            ZTest Off
+//            ZWrite Off
 
             Blend SrcAlpha OneMinusSrcAlpha
 
@@ -50,7 +52,9 @@ Shader "LcL/SimpleFur"
 
             #pragma shader_feature _ _SOFT
             #pragma shader_feature_local __ _SHADOW_ON
+            #pragma multi_compile_instancing
 
+            #define FUR_INSTANCING_ENABLED
 
             #pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
@@ -73,6 +77,7 @@ Shader "LcL/SimpleFur"
             #pragma target 2.0
             #pragma only_renderers gles gles3 glcore metal vulkan d3d11
             #pragma multi_compile_instancing
+
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
 

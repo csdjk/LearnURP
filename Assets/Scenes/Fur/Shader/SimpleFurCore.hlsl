@@ -12,7 +12,6 @@ struct Attributes
     float4 color : COLOR;
     float4 normalOS : NORMAL;
     UNITY_VERTEX_INPUT_INSTANCE_ID
-
 };
 
 struct VertexOutput
@@ -34,6 +33,7 @@ SAMPLER(sampler_MainTex);
 TEXTURE2D(_FurNoiseTex);
 SAMPLER(sampler_FurNoiseTex);
 
+uint _PassNumber;
 float _FurOffset;
 
 // 注意内存对齐(4D向量为一组)
@@ -56,16 +56,23 @@ CBUFFER_START(UnityPerMaterial)
     half _AlphaBase;
 CBUFFER_END
 
-VertexOutput LitPassVertex(Attributes input)
+VertexOutput LitPassVertex(Attributes input, uint instanceID : SV_InstanceID)
 {
     VertexOutput output;
     ZERO_INITIALIZE(VertexOutput, output);
+
+    #ifdef FUR_INSTANCING_ENABLED
+        float furOffset = (float)instanceID / _PassNumber;
+    #else
+        float furOffset = _FurOffset;
+    #endif
+
     // FUR
     //  外力影响
     half3 direction = lerp(input.normalOS.xyz, _Gravity.xyz, _GravityStrength);
     // 对发尖影响最大
-    direction = lerp(input.normalOS.xyz, direction, _FurOffset);
-    input.positionOS.xyz += direction * _FurLength * _FurOffset;
+    direction = lerp(input.normalOS.xyz, direction, furOffset);
+    input.positionOS.xyz += direction * _FurLength * furOffset;
 
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
@@ -81,15 +88,15 @@ VertexOutput LitPassVertex(Attributes input)
     // Shadow
     float4 shadowCoord = float4(0.0, 0.0, 0.0, 0.0);
     #if defined(_SHADOW_ON)
-        #if defined(_ACTOR_SHADOW)
+    #if defined(_ACTOR_SHADOW)
             shadowCoord = GetActorShadowCoord(vertexInput.positionWS);
-        #else
+    #else
             shadowCoord = GetShadowCoord(vertexInput);
-        #endif
+    #endif
     #endif
     output.shadowCoord = shadowCoord;
 
-    Light mainLight = GetMainLight(shadowCoord, vertexInput.positionWS,1);
+    Light mainLight = GetMainLight(shadowCoord, vertexInput.positionWS, 1);
     // float atten = mainLight.shadowAttenuation;
     float3 L = mainLight.direction;
     half3 lightColor = mainLight.color;
@@ -100,13 +107,9 @@ VertexOutput LitPassVertex(Attributes input)
     half NdotL = dot(N, L);
     half NdotV = max(0, dot(N, V));
 
-    half3 finalColor = half3(0, 0, 0);
-    // SH = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
     half3 SH = SampleSH(output.normalWS);
-    SH = Gamma20ToLinear(SH);
 
-    half Occlusion = _FurOffset * _FurOffset;
-    // Occlusion += 0.04;
+    half Occlusion = furOffset * furOffset;
     half3 SHL = lerp(_OcclusionColor.rgb * SH, SH, Occlusion);
 
     half Fresnel = 1 - NdotV;
@@ -116,7 +119,7 @@ VertexOutput LitPassVertex(Attributes input)
     RimLight *= _FresnelLV * SH;
     SHL += RimLight;
 
-    half DirLight = saturate(NdotL + _LightFilter + _FurOffset);
+    half DirLight = saturate(NdotL + _LightFilter + furOffset);
 
     // output.directLight = RimLight;
     output.directLight = DirLight * lightColor;
@@ -136,25 +139,24 @@ half4 LitPassFragment(VertexOutput input) : SV_Target
     float4 shadowCoord = float4(0, 0, 0, 0);
     #if defined(_SHADOW_ON)
         shadowCoord = input.shadowCoord;
-        #if defined(MAIN_LIGHT_CALCULATE_SHADOWS) && !defined(_ACTOR_SHADOW)
+    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS) && !defined(_ACTOR_SHADOW)
             shadowCoord = TransformWorldToShadowCoord(positionWS);
-        #endif
     #endif
-    Light mainLight = GetMainLight(shadowCoord, positionWS,1);
+    #endif
+    Light mainLight = GetMainLight(shadowCoord, positionWS, 1);
     float atten = mainLight.shadowAttenuation;
 
     half NdotV = saturate(dot(N, V));
 
     half3 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).rgb;
     albedo = albedo * _DiffuseColor.rgb;
-    albedo = Gamma20ToLinear(albedo);
 
     // -----------------------------Fur Alpha----------------------------
     float noise = SAMPLE_TEXTURE2D(_FurNoiseTex, sampler_FurNoiseTex, noise_uv).r;
     #if defined(_SOFT)
         noise = smoothstep(_FurOffset, 1, noise) + _AlphaBase;
     #else
-        noise = step(lerp(_CutoffStart, _CutoffEnd, _FurOffset), noise);
+    noise = step(lerp(_CutoffStart, _CutoffEnd, _FurOffset), noise);
     #endif
 
     half alpha = 1 - _FurOffset * _FurOffset;
@@ -164,11 +166,8 @@ half4 LitPassFragment(VertexOutput input) : SV_Target
 
 
     half3 finalColor = albedo * (input.directLight * atten + input.indirectLight);
-    finalColor = LinearToGamma20(finalColor);
     return half4(finalColor, saturate(alpha));
 }
-
-
 
 
 // ------------------------------Shadow Pass------------------------------
@@ -183,18 +182,18 @@ float4 GetShadowPositionHClip(Attributes input)
     #if _CASTING_PUNCTUAL_LIGHT_SHADOW
         float3 lightDirectionWS = normalize(_LightPosition - positionWS);
     #else
-        float3 lightDirectionWS = _LightDirection;
+    float3 lightDirectionWS = _LightDirection;
     #endif
 
     #if defined(_ACTOR_SHADOW)
         float4 positionCS = TransformWorldToHClip(ApplyActorShadowBias(positionWS, normalWS, lightDirectionWS));
     #else
-        float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
     #endif
 
 
     #if UNITY_REVERSED_Z
-        positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+    positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
     #else
         positionCS.z = max(positionCS.z, UNITY_NEAR_CLIP_VALUE);
     #endif

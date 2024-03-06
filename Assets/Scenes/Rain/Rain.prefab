@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4938548127243521598}
-  - component: {fileID: 4938548127243521599}
+  - component: {fileID: 1274544057}
   m_Layer: 0
   m_Name: Rain
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4938548127243521599
+--- !u!114 &1274544057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,29 +41,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 4938548127243521596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddc30e5c91b153348b8f119ebb5ed944, type: 3}
+  m_Script: {fileID: 11500000, guid: 2559dc86915f1464aaace364eff3df28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rainMesh: {fileID: -5076798556035486163, guid: c50c389b41cea30459b8b7e98f20a3f3,
-    type: 3}
-  meshScale: 1
-  rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
-  sceneHeightRT: {fileID: 2800000, guid: 36864fd96190b7246a703023c8e320e7, type: 3}
-  rainColor: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
-  layerNear:
-    tilling: {x: 20, y: 10}
-    speed: {x: 0, y: 60}
-    depthBase: 2.32
-    depthRange: 3
-    threshold: 0.5
-    smoothness: 0.5
-    intensity: 1.45
-  layerFar:
-    tilling: {x: 30, y: 20}
-    speed: {x: 0, y: 100}
-    depthBase: 7
-    depthRange: 40
-    threshold: 0.5
-    smoothness: 0.5
-    intensity: 1.45
-  windDir: {x: 0, y: 0, z: 0}
+  settings:
+    rainMesh: {fileID: -5076798556035486163, guid: c50c389b41cea30459b8b7e98f20a3f3,
+      type: 3}
+    meshScale: 1
+    rainTexture: {fileID: 2800000, guid: 2034774a80267a647a6c25e7d2f9d45a, type: 3}
+    sceneHeightRT: {fileID: 2800000, guid: 36864fd96190b7246a703023c8e320e7, type: 3}
+    rainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    layerNear:
+      tilling: {x: 20, y: 10}
+      speed: {x: 0, y: 60}
+      depthBase: 2
+      depthRange: 3
+      threshold: 0.5
+      smoothness: 0.5
+      intensity: 1.5
+    layerFar:
+      tilling: {x: 30, y: 20}
+      speed: {x: 0, y: 100}
+      depthBase: 7
+      depthRange: 40
+      threshold: 0.5
+      smoothness: 0.5
+      intensity: 1.5
+    windDir: {x: 0, y: 0, z: 0}

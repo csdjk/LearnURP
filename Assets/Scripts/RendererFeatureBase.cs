@@ -9,13 +9,17 @@ namespace LcLGame
     [ExecuteAlways]
     public abstract class RendererFeatureBase : MonoBehaviour
     {
+        protected virtual bool renderPreview => false;
         public abstract void Create();
         public abstract void AddRenderPasses(ScriptableRenderer renderer);
 
         public virtual void Dispose()
         {
         }
-
+        public virtual bool RenderPreview()
+        {
+            return false;
+        }
         private void OnEnable()
         {
             RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
@@ -38,7 +42,7 @@ namespace LcLGame
         private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             CameraType cameraType = camera.cameraType;
-            if (cameraType == CameraType.Preview)
+            if (!RenderPreview() && cameraType == CameraType.Preview)
                 return;
 
             ScriptableRenderer renderer = camera.GetUniversalAdditionalCameraData().scriptableRenderer;

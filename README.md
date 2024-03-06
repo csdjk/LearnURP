@@ -39,3 +39,7 @@
 后处理实现，适合移动端的体积光。
 
 ![1709545228438](image/README/1709545228438.gif)
+
+### [毛发](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Fur/)
+
+![1709690809134](image/README/1709690809134.png)

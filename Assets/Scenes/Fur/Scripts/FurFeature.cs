@@ -15,20 +15,20 @@ namespace LcLGame
 
         public FurSettings settings = new FurSettings();
 
-        private FurRenderPass reflectionPass;
+        private FurRenderPass m_ReflectionPass;
         public override bool RenderPreview()
         {
             return true;
         }
         public override void Create()
         {
-            reflectionPass = new FurRenderPass(settings);
-            reflectionPass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
+            m_ReflectionPass = new FurRenderPass(settings);
+            m_ReflectionPass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer)
         {
-            renderer.EnqueuePass(reflectionPass);
+            renderer.EnqueuePass(m_ReflectionPass);
         }
 
         public class FurRenderPass : ScriptableRenderPass

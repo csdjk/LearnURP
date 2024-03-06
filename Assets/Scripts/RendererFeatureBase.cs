@@ -9,7 +9,6 @@ namespace LcLGame
     [ExecuteAlways]
     public abstract class RendererFeatureBase : MonoBehaviour
     {
-        protected virtual bool renderPreview => false;
         public abstract void Create();
         public abstract void AddRenderPasses(ScriptableRenderer renderer);
 

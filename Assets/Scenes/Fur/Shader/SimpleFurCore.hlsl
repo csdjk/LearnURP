@@ -4,8 +4,6 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
-// #include "Assets/Resources/Shaders/Libs/LightCommon.hlsl"
-// #include "Assets/Resources/Shaders/Shadow/ActorShadowCore.hlsl"
 
 struct Attributes
 {

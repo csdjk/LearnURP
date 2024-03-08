@@ -90,9 +90,19 @@ float VoronoiNoise(float2 UV, float AngleOffset, float CellDensity, out float Ce
 // ==================end==================
 
 
+//From  Next Generation Post Processing in Call of Duty: Advanced Warfare [Jimenez 2014]
+// http://advances.realtimerendering.com/s2014/index.html
+// inline float InterleavedGradientNoise(float2 pixCoord, int frameCount)
+// {
+//     const float3 magic = float3(0.06711056f, 0.00583715f, 52.9829189f);
+//     float2 frameMagicScale = float2(2.083f, 4.867f);
+//     pixCoord += frameCount * frameMagicScale;
+//     return frac(magic.z * frac(dot(pixCoord, magic.xy)));
+// }
+
 // ==================GradientNoise==================
 
-float2 unity_gradientNoise_dir(float2 p)
+inline float2 unity_gradientNoise_dir(float2 p)
 {
     p = p % 289;
     float x = (34 * p.x + 1) * p.x % 289 + p.y;
@@ -101,7 +111,7 @@ float2 unity_gradientNoise_dir(float2 p)
     return normalize(float2(x - floor(x + 0.5), abs(x) - 0.5));
 }
 
-float unity_gradientNoise(float2 p)
+inline float unity_gradientNoise(float2 p)
 {
     float2 ip = floor(p);
     float2 fp = frac(p);
@@ -113,7 +123,7 @@ float unity_gradientNoise(float2 p)
     return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
 }
 
-float GradientNoise(float2 UV, float Scale)
+inline float GradientNoise(float2 UV, float Scale)
 {
     return unity_gradientNoise(UV * Scale) + 0.5;
 }
@@ -155,7 +165,7 @@ inline float unity_valueNoise(float2 uv)
     return t;
 }
 
-float SimpleNoise(float2 UV, float Scale)
+inline float SimpleNoise(float2 UV, float Scale)
 {
     float t = 0.0;
 

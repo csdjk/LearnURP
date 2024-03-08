@@ -43,3 +43,8 @@
 ### [毛发](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Fur/)
 
 ![1709690809134](image/README/1709690809134.png)
+
+### [ParallaxMapping](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/ParallaxMapping/)
+
+![1709881395783](image/README/1709881395783.png)
+![1709882630528](image/README/1709882630528.png)

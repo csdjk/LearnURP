@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!135 &229947169
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -213,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229947168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.67, y: 0.85, z: 0.84}
+  m_LocalPosition: {x: 0.28, y: 0.85, z: 0.84}
   m_LocalScale: {x: 2.0165, y: 2.0165, z: 2.0165}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -336,7 +336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &953156501
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -531,6 +531,112 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1 &1183816965
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1183816968}
+  - component: {fileID: 1183816967}
+  - component: {fileID: 1183816966}
+  m_Layer: 0
+  m_Name: LcLDebugTools
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1183816966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183816965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98bff7f4b8f7fec42856459e61cdb413, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetFrameRate: 60
+  boxWidth: 350
+  fpsBoxHeight: 260
+  fpsFontSize: 25
+  infoBoxHeight: 200
+  infoFontSize: 20
+  powerBoxHeight: 200
+  powerSize: 20
+  cpuGpuInfoActive: 1
+  powerActive: 1
+  GCMemoryActive: 1
+  systemMemoryActive: 1
+  setPassCallsActive: 1
+  drawCallsActive: 1
+  trianglesActive: 1
+  verticesActive: 1
+  enableSRPBatcherProfiler: 1
+  srpBoxSize: {x: 600, y: 600}
+  srpBoxHeight: 200
+  srpFontSize: 20
+--- !u!114 &1183816967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183816965}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0dd336be054b645a2bef8ca8880248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiBoxSize: {x: 600, y: 329.5}
+  buttonHeight: 50
+  fontSize: 25
+  showParamWindow: 0
+  paramGoList: []
+  paramObjects: []
+  showLOD: 1
+  lodLevel: 300
+  gameObjectList: []
+  sceneList: []
+  singleList:
+  - {fileID: 1551379795}
+  - {fileID: 890962106}
+  toggleList:
+  - {fileID: 1551379795}
+  - {fileID: 229947168}
+  - {fileID: 953156500}
+  buttonDataList:
+  - active: 1
+    name: Func Test
+    action: FunctionTest
+    buttonState: 0
+    paramList: []
+  renderScale: 1
+  highIterations: 200
+  highConsumption: 0
+  references:
+    version: 2
+    RefIds: []
+--- !u!4 &1183816968
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183816965}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1276811103
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,7 +862,7 @@ PrefabInstance:
     - target: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
@@ -778,7 +884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &2142662751
 AudioListener:
   m_ObjectHideFlags: 0
@@ -837,8 +943,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2142662750}
-  m_LocalRotation: {x: -0.22251649, y: -0.009360598, z: 0.0022120776, w: -0.97488153}
-  m_LocalPosition: {x: 3.9579499, y: 4.1798124, z: -2.7447839}
+  m_LocalRotation: {x: -0.2400256, y: -0.0006236518, z: 0.00008942853, w: -0.9707664}
+  m_LocalPosition: {x: -0.5516684, y: 3.5127437, z: -6.9731784}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

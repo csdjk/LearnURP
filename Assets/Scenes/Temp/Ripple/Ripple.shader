@@ -15,14 +15,14 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
 
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Assets\Shaders\Libraries\Noise.hlsl"
             #include "Assets\Shaders\Libraries\Node.hlsl"
-
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -35,9 +35,9 @@
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
+            TEXTURE2D (_MainTex);SAMPLER(sampler_MainTex);
             float4 _MainTex_ST;
-            
+
             float _Tilling;
             float _Speed;
             float _RingWidth;
@@ -45,11 +45,11 @@
             v2f vert(appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = TransformObjectToHClip(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }
-            
+
             half4 frag(v2f i) : SV_Target
             {
                 half4 col = 1;
@@ -76,7 +76,7 @@
                 col.rgb *= normalize(float3(gridUV - center, 0));
                 return col;
             }
-            ENDCG
+            ENDHLSL
 
         }
     }

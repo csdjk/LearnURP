@@ -1,0 +1,22 @@
+{
+    "default_texture_type": 0,
+    "showRenderQueue": true,
+    "showManualReloadButton": false,
+    "allowCustomLockingRenaming": false,
+    "autoMarkPropertiesAnimated": true,
+    "texturePackerCompressionWithAlphaOverwrite": -1,
+    "texturePackerCompressionNoAlphaOverwrite": -1,
+    "gradientEditorCompressionOverwrite": -1,
+    "locale": "English",
+    "gradient_name": "gradient_<hash>.png",
+    "autoSetAnchorOverride": true,
+    "humanBoneAnchor": 7,
+    "anchorOverrideObjectName": "AutoAnchorObject",
+    "autoSetAnchorAskedOnce": false,
+    "enableDeveloperMode": false,
+    "disableUnlockedShaderStrippingOnBuild": false,
+    "forceAsyncCompilationPreview": true,
+    "fixKeywordsWhenLocking": true,
+    "saveAfterLockUnlock": true,
+    "verion": "2.42.2"
+}

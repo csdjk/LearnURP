@@ -260,6 +260,7 @@ Shader "LcL/ToonBody"
                 InputData inputData = InitializeInputData(input, surfaceData.normalTS);
                 half4 color = UniversalFragmentNPR(inputData, surfaceData);
 
+                //所有角色贴图不要开启Mipmap
 
                 //r = Outline, g = Smoothness, b = Metallic, ?
                 // ILM A通道不同的颜色阈值（8个色阶）用于区分部位，进行Ramp的区分采样
@@ -297,14 +298,15 @@ Shader "LcL/ToonBody"
                 diffuseRampUV.x = halfLambert;
                 diffuseRampUV.y = (maskA * 2 + 1) * 0.0625;
 
-                                // diffuseRampUV.y = 1-diffuseRampUV.y;
-
+                // diffuseRampUV.y = 1-diffuseRampUV.y;
+diffuseRampUV.
                 half3 ramp = SAMPLE_TEXTURE2D(_DiffuseRampMultiTex, sampler_DiffuseRampMultiTex, diffuseRampUV).rgb;
-                half3 rampCool = SAMPLE_TEXTURE2D(_DiffuseCoolRampMultiTex, sampler_DiffuseCoolRampMultiTex,diffuseRampUV).rgb;
+                half3 rampCool = SAMPLE_TEXTURE2D(_DiffuseCoolRampMultiTex, sampler_DiffuseCoolRampMultiTex,
+                                                  diffuseRampUV).rgb;
 
 
-                return half4(diffuseRampUV,0, 1);
-                // return half4(ramp, 1);
+                // return half4(diffuseRampUV,0, 1);
+                return half4(ramp, 1);
 
                 NdotL = CalculateRamp(_ShadowThreshold, _ShadowSmoothness, NdotL);
 

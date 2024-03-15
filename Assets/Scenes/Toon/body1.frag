@@ -612,7 +612,9 @@ void main(){
 
     (u_xlat16_1.xyz = texture(_DiffuseRampMultiTex, u_xlat16_14.xy).xyz);
     (u_xlat16_3.xyz = texture(_DiffuseCoolRampMultiTex, u_xlat16_14.xy).xyz);
-    debugColor = vec4(u_xlat16_14.xy,0.0, 1.0);
+    debugColor = vec4(u_xlat16_1.xy,0.0, 1.0);
+
+
     (u_xlat16_31.x = (_ES_CharacterToonRampMode + (-_CharacterToonRampModeCompensation)));
     (u_xlat16_31.x = clamp(u_xlat16_31.x, 0.0, 1.0));
     (u_xlat16_14.xyz = ((-u_xlat16_1.xyz) + u_xlat16_3.xyz));

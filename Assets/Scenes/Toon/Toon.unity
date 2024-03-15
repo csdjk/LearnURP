@@ -140,6 +140,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: YinYue (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5226962530274029652, guid: fbedd45d8976eb145b9bd3b0c8db1b7b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5226962530274029653, guid: fbedd45d8976eb145b9bd3b0c8db1b7b,
         type: 3}
       propertyPath: m_RootOrder
@@ -644,7 +649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &1833336351
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -858,6 +863,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: YinYue
+      objectReference: {fileID: 0}
+    - target: {fileID: 5226962530274029652, guid: fbedd45d8976eb145b9bd3b0c8db1b7b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5226962530274029653, guid: fbedd45d8976eb145b9bd3b0c8db1b7b,
         type: 3}

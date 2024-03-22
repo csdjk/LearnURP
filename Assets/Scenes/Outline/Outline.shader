@@ -45,7 +45,7 @@
                 float3 worldNormalDir : COLOR0;
                 float3 worldPos : COLOR1;
             };
-            
+
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
             float4 _Color;
@@ -65,6 +65,7 @@
                     // 使用自带的法线计算
                     v.vertex.xyz += normalize(v.normal) * _OutlinePower * 0.7;
                 #endif
+
                 o.vertex = UnityObjectToClipPos(v.vertex);
 
                 // 如果需要使描边线不随Camera距离变大而跟着变小，就需要变换到ndc空间
@@ -80,7 +81,7 @@
             {
                 return _LineColor;
             }
-            
+
             ENDCG
         }
     }

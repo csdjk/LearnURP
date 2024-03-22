@@ -22,8 +22,10 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Body
   m_Shader: {fileID: 4800000, guid: cb132f3a189bce64b8496ad5066cbae1, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_ValidKeywords:
+  - _USE_MATERIAL_VALUES_LUT
+  m_InvalidKeywords:
+  - _ES_LEVEL_ADJUST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -73,8 +75,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _LightMap:
+        m_Texture: {fileID: 2800000, guid: d085107e2a522a747aa713cb5199e408, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaterialValuesPackLUT:
+        m_Texture: {fileID: 8400000, guid: 97bf5159cae9e1b48ac41aa240101641, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -111,44 +121,119 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ActorLightInfo: 0
+    - _ActorLightInfo_FoldoutState: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
+    - _CharacterOnly: 0
+    - _CharacterOnly_FoldoutState: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _CullMode: 0
     - _Cutoff: 0.5
+    - _DIFFUSE_RAMP: 0
+    - _DIFFUSE_RAMP_FoldoutState: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EMISSION: 0
     - _EMISSION_FoldoutState: 1
+    - _ES_CharacterDisableLocalMainLight: 1
+    - _ES_CharacterShadowFactor: 1
+    - _ES_HeightLerpBottom: 0.4
+    - _ES_HeightLerpTop: 0.2
+    - _ES_LEVEL_ADJUST_ON: 1
+    - _ES_LevelHighLight: 1
+    - _ES_LevelMid: 0.55
+    - _ES_LevelShadow: 0
+    - _ES_OutLineDarkenVal: 0
+    - _ES_OutLineLightedVal: 0
+    - _ES_SPIntensity: 1
+    - _EmissionIntensity: 7.07
+    - _EmissionThreshold: 0.348
     - _EnvironmentReflections: 1
+    - _Fresnel: 0
+    - _FresnelColorStrength: 1
+    - _Fresnel_FoldoutState: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightLerp: 0
+    - _HeightLerp_FoldoutState: 1
     - _Metallic: 0
     - _OcclusionPower: 1
     - _OcclusionStrength: 1
+    - _OffsetFactor: -0.3
+    - _OffsetUnits: -0.3
+    - _OutlineColorIntensity: 1
+    - _OutlineExtdMax: 18.16
+    - _OutlineExtdStart: 6.52
+    - _OutlineOffset: 0
+    - _OutlineScale: 0.015
+    - _OutlineWidth: 0.0171
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _RampLevel: 8
     - _ReceiveShadows: 1
+    - _Rim: 0
+    - _RimShadowCt: 1
+    - _RimShadowFeather: 0
+    - _RimShadowIntensity: 1
+    - _RimShadowOffset: 0
+    - _RimShadowWidth: 1
+    - _Rim_FoldoutState: 1
     - _SelfShadow: 0
     - _SelfShadow_FoldoutState: 1
+    - _ShadowRamp: 1
     - _ShadowSmoothness: 0.024
-    - _ShadowThreshold: 0.5
+    - _ShadowThreshold: 0.511
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _Specular: 0
     - _SpecularHighlights: 1
+    - _SpecularIntensity: 1
+    - _SpecularRoughness: 0
+    - _SpecularShadowIntensity: 0
+    - _SpecularShadowOffset: 0.75
+    - _SpecularShininess: 9.4
+    - _Specular_FoldoutState: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TOON_HAIR: 0
+    - _TOON_OUT_LINE: 1
+    - _TOON_OUT_LINE_FoldoutState: 1
+    - _Test: 0.5
+    - _Test1: 0.5
+    - _Test2: 0.5
+    - _USE_MATERIAL_VALUES_LUT: 1
+    - _USE_MATERIAL_VALUES_LUT_FoldoutState: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - _BackColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CharaWorldSpaceOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _CharacterLocalMainLightColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightDark: {r: 0, g: 0, b: 0, a: 1}
+    - _CharacterLocalMainLightDark1: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomMainLightDir: {r: 1, g: 1, b: 1, a: 0}
+    - _ES_HeightLerpBottomColor: {r: 0.3137255, g: 0.3137255, b: 0.48235294, a: 0.5}
+    - _ES_HeightLerpMiddleColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_HeightLerpTopColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.8156863}
+    - _ES_LevelShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ES_SPColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.58431375, g: 0, b: 0, a: 1}
+    - _FresnelBSI: {r: 1, g: 1, b: 0, a: 0}
+    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _NewLocalLightStrength: {r: 0, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RimShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -6,7 +6,6 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RealtimeLights.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/AmbientOcclusion.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
 
 
 half4 UniversalFragmentNPR(InputData inputData, SurfaceData surfaceData)

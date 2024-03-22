@@ -21,10 +21,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hair
-  m_Shader: {fileID: 4800000, guid: e0a079e859fcae944ac4ff60d2c08d80, type: 3}
+  m_Shader: {fileID: 4800000, guid: cb132f3a189bce64b8496ad5066cbae1, type: 3}
   m_ValidKeywords:
-  - _SHOWVALUE_TEXTURE
-  m_InvalidKeywords: []
+  - _TOON_HAIR
+  m_InvalidKeywords:
+  - _ES_LEVEL_ADJUST_ON
+  - _SHOWVALUE_TEXTURE_R
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -35,7 +37,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2254908c1605fb24c86d5fd29e0a1f4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -54,12 +56,28 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DiffuseCoolRampMultiTex:
+        m_Texture: {fileID: 2800000, guid: b3abc40630758514a9e6a82a9def3441, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseRampMultiTex:
+        m_Texture: {fileID: 2800000, guid: c7e799b9bc2ecd5469ebd8d3405db1b9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _LightMap:
+        m_Texture: {fileID: 2800000, guid: 9e2e82107d805ce4f95ef6594fc38e2a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2254908c1605fb24c86d5fd29e0a1f4e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9e2e82107d805ce4f95ef6594fc38e2a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaterialValuesPackLUT:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -92,45 +110,122 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ActorLightInfo: 0
+    - _ActorLightInfo_FoldoutState: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
     - _CUTOFF: 0
+    - _CharacterOnly: 0
+    - _CharacterOnly_FoldoutState: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ColorMask: 15
     - _Cull: 2
     - _CullMode: 2
     - _Cutoff: 0.5
+    - _DIFFUSE_RAMP: 0
+    - _DIFFUSE_RAMP_FoldoutState: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EMISSION: 0
+    - _EMISSION_FoldoutState: 1
+    - _ES_CharacterDisableLocalMainLight: 1
+    - _ES_CharacterShadowFactor: 1
+    - _ES_HeightLerpBottom: 0.4
+    - _ES_HeightLerpTop: 0.2
+    - _ES_LEVEL_ADJUST_ON: 1
+    - _ES_LevelHighLight: 1
+    - _ES_LevelMid: 0.55
+    - _ES_LevelShadow: 0
+    - _ES_OutLineDarkenVal: 0
+    - _ES_OutLineLightedVal: 0
+    - _ES_SPIntensity: 1
+    - _EmissionIntensity: 3
+    - _EmissionThreshold: 0.5
     - _EnvironmentReflections: 1
+    - _Fresnel: 0
+    - _FresnelColorStrength: 1
+    - _Fresnel_FoldoutState: 1
     - _Gamma: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightLerp: 0
+    - _HeightLerp_FoldoutState: 1
     - _Invert: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _OffsetFactor: 0
+    - _OffsetUnits: 0
+    - _OutlineColorIntensity: 0.697
+    - _OutlineExtdMax: 18.16
+    - _OutlineExtdStart: 6.52
+    - _OutlineOffset: 0
+    - _OutlineScale: 0.015
+    - _OutlineWidth: 0.0508
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _RampLevel: 8
     - _ReceiveShadows: 1
+    - _Rim: 0
+    - _RimShadowCt: 1
+    - _RimShadowFeather: 0
+    - _RimShadowIntensity: 1
+    - _RimShadowOffset: 0
+    - _RimShadowWidth: 1
+    - _Rim_FoldoutState: 1
     - _ScleraSize: 1
-    - _ShowValue: 0
+    - _SelfShadow: 0
+    - _SelfShadow_FoldoutState: 1
+    - _ShadowRamp: 1
+    - _ShowValue: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _Specular: 0
     - _SpecularHighlights: 1
+    - _SpecularIntensity: 1
+    - _SpecularRoughness: 0
+    - _SpecularShadowIntensity: 0
+    - _SpecularShadowOffset: 0.75
+    - _SpecularShininess: 1
+    - _Specular_FoldoutState: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TOON_HAIR: 1
+    - _TOON_OUT_LINE: 1
+    - _TOON_OUT_LINE_FoldoutState: 1
+    - _Test: 0.5
+    - _Test1: 0.5
+    - _USE_MATERIAL_VALUES_LUT: 0
     - _WorkflowMode: 1
     - _ZTestMode: 4
     - _ZWrite: 1
     - _ZWriteMode: 1
     m_Colors:
+    - _BackColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CharaWorldSpaceOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _CharacterLocalMainLightColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightDark: {r: 0, g: 0, b: 0, a: 1}
+    - _CharacterLocalMainLightDark1: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomMainLightDir: {r: 1, g: 1, b: 1, a: 0}
+    - _ES_HeightLerpBottomColor: {r: 0.31249994, g: 0.31249994, b: 0.218, a: 0.21960784}
+    - _ES_HeightLerpMiddleColor: {r: 1, g: 1, b: 1, a: 0.21960784}
+    - _ES_HeightLerpTopColor: {r: 1, g: 1, b: 1, a: 0.21960784}
+    - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.21960784}
+    - _ES_LevelShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ES_SPColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FresnelBSI: {r: 1, g: 1, b: 0, a: 0}
+    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _NewLocalLightStrength: {r: 0, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0.191, g: 0, b: 0, a: 1}
+    - _RimShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

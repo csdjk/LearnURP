@@ -131,7 +131,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _CullMode: 0
+    - _CullMode: 2
     - _Cutoff: 0.5
     - _DIFFUSE_RAMP: 0
     - _DIFFUSE_RAMP_FoldoutState: 1
@@ -166,13 +166,13 @@ Material:
     - _OcclusionPower: 1
     - _OcclusionStrength: 1
     - _OffsetFactor: -0.3
-    - _OffsetUnits: -0.3
+    - _OffsetUnits: 0
     - _OutlineColorIntensity: 1
     - _OutlineExtdMax: 18.16
     - _OutlineExtdStart: 6.52
     - _OutlineOffset: 0
     - _OutlineScale: 0.015
-    - _OutlineWidth: 0.0171
+    - _OutlineWidth: 0.0569
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _RampLevel: 8

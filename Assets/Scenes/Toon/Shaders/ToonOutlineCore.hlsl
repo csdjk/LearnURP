@@ -5,6 +5,7 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 
+
 struct Attributes
 {
     float4 positionOS : POSITION;
@@ -25,69 +26,80 @@ struct Varyings
 
 Varyings ToonOutlineVertex(Attributes input)
 {
+
     Varyings output;
-    //---------------miHoYo-----------------
-    float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, input.tangentOS.xyz);
-    viewNormal.z = -0.1f;
-    viewNormal = normalize(viewNormal);
+    #if defined(_USE_SELF)
+        // VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
+        // float3 normalDir = normalize(input.tangentOS);
+        // float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, normalDir);
+        // float3 ndcNormal = normalize(TransformWViewToHClip(viewNormal.xyz)) * positionInputs.positionCS.w;
+        // float width = input.color.w * _OutlineWidth;
+        // positionInputs.positionCS.xy += width * ndcNormal.xy;
+        // output.positionCS = positionInputs.positionCS;
 
-    float3 positionVS = mul(UNITY_MATRIX_MV, float4(input.positionOS.xyz, 1));
+        //
+        input.positionOS.xyz += normalize(input.tangentOS.xyz) * _OutlineWidth;
+        output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
 
-    float offset = input.color.z * _OutlineOffset;
-    float offsetZ = positionVS.z - offset * 0.0099999998;
-    offset = offsetZ / unity_CameraProjection[1].y;
-    offset = abs(offset) / _OutlineScale;
-    offset = 1 / rsqrt(offset);
+    #else
 
-    float u_xlat11 = _OutlineScale * _OutlineWidth;
-    (u_xlat11 = (u_xlat11 * input.color.w));
-    (offset = (offset * u_xlat11));
+        //---------------miHoYo-----------------
+        float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, input.tangentOS.xyz);
+        viewNormal.z = -0.1f;
+        viewNormal = normalize(viewNormal);
 
-    VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
-    float3 viewDir = positionInputs.positionWS - GetCurrentViewPosition();
-    float dist = length(viewDir);
+        float3 positionVS = mul(UNITY_MATRIX_MV, float4(input.positionOS.xyz, 1));
 
-    dist = smoothstep(_OutlineExtdStart, _OutlineExtdMax, dist);
+        float offset = input.color.z * _OutlineOffset;
+        float offsetZ = positionVS.z - offset * 0.01;
+        offset = offsetZ / unity_CameraProjection[1].y;
+        offset = abs(offset) / _OutlineScale;
+        offset = 1 / rsqrt(offset);
 
-    (dist = min(dist, 0.5));
-    (dist = (dist + 1.0));
-    (offset = (offset * dist));
-    (viewNormal.xyz = ((viewNormal.xyz * offset) + float3(positionVS.xy, offsetZ)));
-    output.positionCS = TransformWViewToHClip(viewNormal.xyz);
+        float outlineWidth = _OutlineScale * _OutlineWidth * input.color.w;
+        offset = offset * outlineWidth;
 
-    //--------------------------------
-    // VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
-    // float3 normalDir = normalize(input.normalOS);
-    // float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, normalDir);
-    // float3 ndcNormal = normalize(TransformWViewToHClip(viewNormal.xyz)) * positionInputs.positionCS.w;
-    // float width = input.color.w * _OutlineWidth;
-    // positionInputs.positionCS.xy += width * ndcNormal.xy;
-    // output.positionCS = positionInputs.positionCS;
-    //
-    // //--------------------------------
-    // output.uv = input.uv;
-    // output.color = input.color;
-    //
+        VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
+        float3 viewDir = positionInputs.positionWS - GetCurrentViewPosition();
+        float dist = length(viewDir);
 
+        dist = smoothstep(_OutlineExtdStart, _OutlineExtdMax, dist);
+
+        (dist = min(dist, 0.5));
+        (dist = (dist + 1.0));
+        (offset = (offset * dist));
+
+
+        viewNormal = viewNormal * offset.xxx + float3(positionVS.xy, offsetZ);
+        output.positionCS = TransformWViewToHClip(viewNormal);
+
+    #endif
+
+
+
+    output.uv = input.uv;
+    output.color = input.color;
     VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS);
     output.normalWS = normalInputs.normalWS;
     return output;
 }
 
-half4 ToonOutlineFragment(Varyings input): SV_Target
+half4 ToonOutlineFragment(Varyings input) : SV_Target
 {
+
+    return half4(_OutlineColor.rgb, 1);
 
     #ifdef _USE_MATERIAL_VALUES_LUT
 
-    float rampLevel = LOAD_TEXTURE2D(_LightMap, input.uv).w;
-    rampLevel = floor(rampLevel * 8);
-    float3 outlineColor = LOAD_TEXTURE2D(_MaterialValuesPackLUT, float2(rampLevel, 2));
+        float rampLevel = LOAD_TEXTURE2D(_LightMap, input.uv).w;
+        rampLevel = floor(rampLevel * 8);
+        float3 outlineColor = LOAD_TEXTURE2D(_MaterialValuesPackLUT, float2(rampLevel, 2));
     #else
-    float3 outlineColor = _OutlineColor.rgb;
+        float3 outlineColor = _OutlineColor.rgb;
     #endif
 
     #ifdef _TOON_HAIR
-    return half4(_OutlineColor.rgb, 1);
+        return half4(_OutlineColor.rgb, 1);
     #endif
 
 
@@ -100,8 +112,6 @@ half4 ToonOutlineFragment(Varyings input): SV_Target
     // darkenValInv = lerp(1-lambert, 1, _ES_OutLineDarkenVal);
 
     outlineColor = outlineColor * darkenVal + lambert * _ES_OutLineLightedVal;
-
-    // float intensityInv = 1 - _OutlineColorIntensity;
     return half4(outlineColor, 1);
 }
 #endif

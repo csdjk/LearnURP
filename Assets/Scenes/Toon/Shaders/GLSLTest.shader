@@ -95,8 +95,8 @@ Shader "LcL/GLSLTest2"
 
                 // output.screenUV = ComputeScreenPos(output.positionCS);
 
-                // VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS, input.tangentOS);
-                // output.normalWS = normalInputs.normalWS;
+                VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+                output.normalWS = normalInputs.normalWS;
 
                 // output.tangentWS = TransformWorldToViewDir(TransformObjectToWorldDir(input.tangentOS), true);
 
@@ -105,31 +105,14 @@ Shader "LcL/GLSLTest2"
                 // float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, normalDir);
 
 
-                float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, float3(input.tangentOS.xy, 0));
-                viewNormal.z = -0.1f;
-                viewNormal = normalize(viewNormal);
-
-                float3 positionCS = TransformWorldToView(TransformObjectToWorld(input.positionOS));
-
-                float offset = input.color.z * _OutlineOffset;
-
-                offset = positionCS.z - offset * 0.001;
-
-                // offset = offset/UNITY_MATRIX_P[1].y;
-                // offset = abs(offset)/_OutlineScale;
-                // offset = 1/sqrt(offset);
-
-                viewNormal.z += offset;
-
-                float3 ndcNormal = normalize(TransformWViewToHClip(viewNormal.xyz)) * positionInputs.positionCS.w;
-                positionInputs.positionCS.xy += _Test0 * ndcNormal.xy;
-
                 output.positionCS = positionInputs.positionCS;
                 return output;
             }
             #pragma enable_d3d11_debug_symbols
             half4 frag(Varyings input, half facing : VFACE) : SV_Target
             {
+                float4 color = 0;
+                color.rgb = normalize(input.normalWS);
                 // float2 uv = input.positionCS.xy / _ScaledScreenParams.xy;
 
                 // float3 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
@@ -180,14 +163,14 @@ Shader "LcL/GLSLTest2"
                 // float2 uv = _MainTex_TexelSize.zw * input.uv;
                 // float2 uv = float2(0,7);
 
-                int2 uv = floor(_MainTex_TexelSize.zw * input.uv);
-                float4 baseMap = LOAD_TEXTURE2D(_MainTex, uv);
+                // int2 uv = floor(_MainTex_TexelSize.zw * input.uv);
+                // float4 baseMap = LOAD_TEXTURE2D(_MainTex, uv);
 
-                if (uv.y == 1)
-                {
-                    baseMap.r *= 10;
-                }
-                return baseMap;
+                // if (uv.y == 1)
+                // {
+                //     baseMap.r *= 10;
+                // }
+                return color;
             }
             ENDHLSL
         }

@@ -276,6 +276,8 @@ void main(){
   (u_xlat15 = dot(u_xlat0.xyz, u_xlat0.xyz));
   (u_xlat15 = inversesqrt(u_xlat15));
   (u_xlat0.xyz = (vec3(u_xlat15) * u_xlat0.xyz));
+
+
   (u_xlat1.xyz = (hlslcc_mtx4x4unity_MatrixV[1].xyz * hlslcc_mtx4x4unity_ObjectToWorld[1].yyy));
   (u_xlat1.xyz = ((hlslcc_mtx4x4unity_MatrixV[0].xyz * hlslcc_mtx4x4unity_ObjectToWorld[1].xxx) + u_xlat1.xyz));
   (u_xlat1.xyz = ((hlslcc_mtx4x4unity_MatrixV[2].xyz * hlslcc_mtx4x4unity_ObjectToWorld[1].zzz) + u_xlat1.xyz));
@@ -296,39 +298,53 @@ void main(){
   (u_xlat2.xyz = ((hlslcc_mtx4x4unity_MatrixV[2].xyz * hlslcc_mtx4x4unity_ObjectToWorld[3].zzz) + u_xlat2.xyz));
   (u_xlat2.xyz = ((hlslcc_mtx4x4unity_MatrixV[3].xyz * hlslcc_mtx4x4unity_ObjectToWorld[3].www) + u_xlat2.xyz));
   (u_xlat1.xyz = (u_xlat1.xyz + u_xlat2.xyz));
+
+//   u_xlat1.y = u_xlat1.y+0.02;
+//   u_xlat1.x = u_xlat1.x+0.2;
+
   (u_xlat15 = (in_COLOR0.z * _OutlineOffset));
   (u_xlat1.w = (((-u_xlat15) * 0.0099999998) + u_xlat1.z));
+
   (u_xlat15 = (u_xlat1.w / hlslcc_mtx4x4unity_CameraProjection[1].y));
   (u_xlat15 = (abs(u_xlat15) / _OutlineScale));
   (u_xlat15 = inversesqrt(u_xlat15));
   (u_xlat15 = (1.0 / u_xlat15));
-  (u_xlatb11 = (vec4(0.0, 0.0, 0.0, 0.0) != vec4(_ES_OutlineDisableDistanceScale)));
-  (u_xlat15 = ((u_xlatb11) ? (_ES_OutlineFallbackScale) : (u_xlat15)));
-  (u_xlat11 = (_OutlineScale * _OutlineWidth));
+//   (u_xlatb11 = (vec4(0.0, 0.0, 0.0, 0.0) != vec4(_ES_OutlineDisableDistanceScale)));
+//   (u_xlat15 = ((u_xlatb11) ? (_ES_OutlineFallbackScale) : (u_xlat15)));
+  float outlineWidth = 0.1;
+  (u_xlat11 = (_OutlineScale * outlineWidth));
   (u_xlat11 = (u_xlat11 * in_COLOR0.w));
   (u_xlat15 = (u_xlat15 * u_xlat11));
-  (u_xlat16_3.x = ((-_OneMinusCharacterOutlineWidthScale) + 1.0));
-  (u_xlat15 = (u_xlat15 * u_xlat16_3.x));
-  (u_xlat2.xyz = (in_POSITION0.yyy * hlslcc_mtx4x4unity_ObjectToWorld[1].xyz));
-  (u_xlat2.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[0].xyz * in_POSITION0.xxx) + u_xlat2.xyz));
-  (u_xlat2.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[2].xyz * in_POSITION0.zzz) + u_xlat2.xyz));
-  (u_xlat2.xyz = (u_xlat2.xyz + hlslcc_mtx4x4unity_ObjectToWorld[3].xyz));
-  (u_xlat4.xyz = (u_xlat2.xyz + (-_WorldSpaceCameraPos.xyz)));
-  (vs_TEXCOORD6.xyz = u_xlat2.xyz);
-  (u_xlat11 = dot(u_xlat4.xyz, u_xlat4.xyz));
-  (u_xlat11 = sqrt(u_xlat11));
-  (u_xlat11 = (u_xlat11 + (-_OutlineExtdStart)));
-  (u_xlat2.x = ((-_OutlineExtdStart) + _OutlineExtdMax));
-  (u_xlat2.x = (1.0 / u_xlat2.x));
-  (u_xlat11 = (u_xlat11 * u_xlat2.x));
-  (u_xlat11 = clamp(u_xlat11, 0.0, 1.0));
-  (u_xlat2.x = ((u_xlat11 * -2.0) + 3.0));
-  (u_xlat11 = (u_xlat11 * u_xlat11));
-  (u_xlat11 = (u_xlat11 * u_xlat2.x));
-  (u_xlat11 = min(u_xlat11, 0.5));
-  (u_xlat11 = (u_xlat11 + 1.0));
-  (u_xlat15 = (u_xlat15 * u_xlat11));
-  (u_xlat0.xyz = ((u_xlat0.xyz * vec3(u_xlat15)) + u_xlat1.xyw));
+  //_OneMinusCharacterOutlineWidthScale = 0
+//   (u_xlat16_3.x = ((-_OneMinusCharacterOutlineWidthScale) + 1.0));
+//   (u_xlat15 = (u_xlat15 * u_xlat16_3.x));
+
+//   (u_xlat2.xyz = (in_POSITION0.yyy * hlslcc_mtx4x4unity_ObjectToWorld[1].xyz));
+//   (u_xlat2.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[0].xyz * in_POSITION0.xxx) + u_xlat2.xyz));
+//   (u_xlat2.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[2].xyz * in_POSITION0.zzz) + u_xlat2.xyz));
+//   (u_xlat2.xyz = (u_xlat2.xyz + hlslcc_mtx4x4unity_ObjectToWorld[3].xyz));
+//   (u_xlat4.xyz = (u_xlat2.xyz + (-_WorldSpaceCameraPos.xyz)));
+  //_OutlineScale = 0.031 , _OutlineExtdStart = 6.5 , _OutlineExtdMax = 18.1
+  //_OutlineOffset = 0 , _OutlineColorIntensity = 0 , _OutlineWidth = 0.03
+  (vs_TEXCOORD6.xyz = hlslcc_mtx4x4unity_CameraProjection[1].yyy*0.1);
+
+//   (u_xlat11 = dot(u_xlat4.xyz, u_xlat4.xyz));
+//   (u_xlat11 = sqrt(u_xlat11));
+//   (u_xlat11 = (u_xlat11 + (-_OutlineExtdStart)));
+//   (u_xlat2.x = ((-_OutlineExtdStart) + _OutlineExtdMax));
+//   (u_xlat2.x = (1.0 / u_xlat2.x));
+//   (u_xlat11 = (u_xlat11 * u_xlat2.x));
+//   (u_xlat11 = clamp(u_xlat11, 0.0, 1.0));
+//   (u_xlat2.x = ((u_xlat11 * -2.0) + 3.0));
+//   (u_xlat11 = (u_xlat11 * u_xlat11));
+//   (u_xlat11 = (u_xlat11 * u_xlat2.x));
+//   (u_xlat11 = min(u_xlat11, 0.5));
+//   (u_xlat11 = (u_xlat11 + 1.0));
+//   (u_xlat15 = (u_xlat15 * u_xlat11));
+//   (u_xlat0.xyz = ((u_xlat0.xyz * vec3(u_xlat15)) + u_xlat1.xyw));
+//   (u_xlat0.xyz = ((u_xlat0.xyz * vec3(u_xlat15)) + u_xlat1.xyw));
+  (u_xlat0.xyz = u_xlat1.xyz);
+
   (u_xlat1.x = hlslcc_mtx4x4glstate_matrix_projection[0].z);
   (u_xlat1.y = hlslcc_mtx4x4glstate_matrix_projection[1].z);
   (u_xlat1.z = hlslcc_mtx4x4glstate_matrix_projection[2].z);
@@ -346,28 +362,29 @@ void main(){
   (u_xlat0.x = hlslcc_mtx4x4glstate_matrix_projection[2].w);
   (u_xlat0.y = hlslcc_mtx4x4glstate_matrix_projection[3].w);
   (u_xlat1.w = dot(u_xlat0.xy, u_xlat0.zw));
-  (u_xlat16_3.xy = (in_COLOR0.yx * vec2(256.0, 256.0)));
-  (u_xlati0.xy = ivec2(u_xlat16_3.xy));
-  (u_xlati0.xy = ivec2(uvec2((uint(u_xlati0.x) & uint(_ShowPartID)), (uint(u_xlati0.y) & uint(_ShowPartID)))));
-  (u_xlatb10.xy = lessThan(ivec4(0, 0, 0, 0), ivec4(_HideCharaParts, _HideNPCParts, _HideCharaParts, _HideNPCParts)).xy);
-  (u_xlati5 = ((u_xlatb10.y) ? (u_xlati0.y) : (1)));
-  (u_xlati0.x = ((u_xlatb10.x) ? (u_xlati0.x) : (u_xlati5)));
-  (u_xlatb0 = (0 < u_xlati0.x));
-  (gl_Position = ((bool(u_xlatb0)) ? (u_xlat1) : (vec4(-99.0, -99.0, -99.0, 1.0))));
-  (vs_TEXCOORD0.xy = in_TEXCOORD0.xy);
-  (vs_TEXCOORD0.zw = vec2(0.0, 0.0));
-  (vs_TEXCOORD1.xyz = in_COLOR0.xyz);
-  (vs_TEXCOORD1.w = 0.0);
-  (u_xlat0.x = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[0].xyz));
-  (u_xlat0.y = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[1].xyz));
-  (u_xlat0.z = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[2].xyz));
-  (u_xlat15 = dot(u_xlat0.xyz, u_xlat0.xyz));
-  (u_xlat15 = max(u_xlat15, 0.0));
-  (u_xlat15 = inversesqrt(u_xlat15));
-  (u_xlat0.xyz = (vec3(u_xlat15) * u_xlat0.xyz));
-  (u_xlat15 = dot(u_xlat0.xyz, u_xlat0.xyz));
-  (u_xlat15 = inversesqrt(u_xlat15));
-  (vs_TEXCOORD8.xyz = (vec3(u_xlat15) * u_xlat0.xyz));
-  (vs_TEXCOORD2 = vec4(0.0, 0.0, 0.0, 0.0));
+//   (u_xlat16_3.xy = (in_COLOR0.yx * vec2(256.0, 256.0)));
+//   (u_xlati0.xy = ivec2(u_xlat16_3.xy));
+//   (u_xlati0.xy = ivec2(uvec2((uint(u_xlati0.x) & uint(_ShowPartID)), (uint(u_xlati0.y) & uint(_ShowPartID)))));
+//   (u_xlatb10.xy = lessThan(ivec4(0, 0, 0, 0), ivec4(_HideCharaParts, _HideNPCParts, _HideCharaParts, _HideNPCParts)).xy);
+//   (u_xlati5 = ((u_xlatb10.y) ? (u_xlati0.y) : (1)));
+//   (u_xlati0.x = ((u_xlatb10.x) ? (u_xlati0.x) : (u_xlati5)));
+//   (u_xlatb0 = (0 < u_xlati0.x));
+//   (gl_Position = ((bool(u_xlatb0)) ? (u_xlat1) : (vec4(-99.0, -99.0, -99.0, 1.0))));
+  (gl_Position = u_xlat1);
+//   (vs_TEXCOORD0.xy = in_TEXCOORD0.xy);
+//   (vs_TEXCOORD0.zw = vec2(0.0, 0.0));
+//   (vs_TEXCOORD1.xyz = in_COLOR0.xyz);
+//   (vs_TEXCOORD1.w = 0.0);
+//   (u_xlat0.x = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[0].xyz));
+//   (u_xlat0.y = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[1].xyz));
+//   (u_xlat0.z = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[2].xyz));
+//   (u_xlat15 = dot(u_xlat0.xyz, u_xlat0.xyz));
+//   (u_xlat15 = max(u_xlat15, 0.0));
+//   (u_xlat15 = inversesqrt(u_xlat15));
+//   (u_xlat0.xyz = (vec3(u_xlat15) * u_xlat0.xyz));
+//   (u_xlat15 = dot(u_xlat0.xyz, u_xlat0.xyz));
+//   (u_xlat15 = inversesqrt(u_xlat15));
+//   (vs_TEXCOORD8.xyz = (vec3(u_xlat15) * u_xlat0.xyz));
+//   (vs_TEXCOORD2 = vec4(0.0, 0.0, 0.0, 0.0));
   return ;
 }

@@ -2,18 +2,20 @@ Shader "LcL/ToonBody"
 {
     Properties
     {
+        [Enum(UnityEngine.Rendering.CullMode)]_CullMode ("CullMode", float) = 2
+        [Toggle(_TOON_HAIR)]_TOON_HAIR ("Is Hair", float) = 0
+
         _BaseMap ("Base Texture", 2D) = "white" { }
         _BaseColor ("Base Color", Color) = (1, 1, 1, 1)
 
-        [Toggle(_TOON_HAIR)]_TOON_HAIR ("Is Hair", float) = 0
         [ShowIf(_TOON_HAIR)]_BackColor ("Base Color", Color) = (1, 1, 1, 1)
 
-        [NoScaleOffset]_LightMap ("_LightMap(R-Outline,G-AO,B-Specular,A-RampLevel)", 2D) = "white" { }
+        [NoScaleOffset]_LightMap ("LightMap(R-Outline,G-AO,B-Specular,A-RampLevel)", 2D) = "white" { }
 
         [Foldout(_EMISSION)]_EMISSION ("Emission", float) = 0
         //        [Emission]_EmissionColor ("Emission Color", Color) = (0, 0, 0, 0)
-        _EmissionThreshold ("Emission Threshold", Range(0,1)) = 0.5
-        [FoldoutEnd]_EmissionIntensity ("Emission Intensity", Range(0,10)) = 3
+        _EmissionThreshold ("Emission Threshold", Range(0, 1)) = 0.5
+        [FoldoutEnd]_EmissionIntensity ("Emission Intensity", Range(0, 10)) = 3
 
 
         [Foldout]_DIFFUSE_RAMP ("Ramp", float) = 0
@@ -24,94 +26,92 @@ Shader "LcL/ToonBody"
         [Foldout]_Specular ("Specular", float) = 0
         [Toggle(_USE_MATERIAL_VALUES_LUT)]_USE_MATERIAL_VALUES_LUT ("UseMaterialValuesLUT", float) = 1
         [ShowIf(_USE_MATERIAL_VALUES_LUT)]_MaterialValuesPackLUT ("MaterialValuesPackLUT", 2D) = "white" { }
-        [ShowIf(_USE_MATERIAL_VALUES_LUT,0)]_SpecularColor ("Specular Color", Color) = (1,1,1,1)
-        [ShowIf(_USE_MATERIAL_VALUES_LUT,0)]_SpecularIntensity ("Specular Intensity", Range(0,1)) = 1
-        [ShowIf(_USE_MATERIAL_VALUES_LUT,0)]_SpecularRoughness ("Specular Roughness", Range(0,1)) = 0
-        [ShowIf(_USE_MATERIAL_VALUES_LUT,0)]_SpecularShininess ("Specular Shininess", Range(0,100)) = 1
-        [ShowIf(_TOON_HAIR)]_SpecularShadowOffset ("Specular Shadow Offset", Range(0,1)) = 0.75
-        [ShowIf(_TOON_HAIR)]_SpecularShadowIntensity ("Specular Shadow Intensity", Range(0,1)) = 0
+        [ShowIf(_USE_MATERIAL_VALUES_LUT, 0)]_SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
+        [ShowIf(_USE_MATERIAL_VALUES_LUT, 0)]_SpecularIntensity ("Specular Intensity", Range(0, 1)) = 1
+        [ShowIf(_USE_MATERIAL_VALUES_LUT, 0)]_SpecularRoughness ("Specular Roughness", Range(0, 1)) = 0
+        [ShowIf(_USE_MATERIAL_VALUES_LUT, 0)]_SpecularShininess ("Specular Shininess", Range(0, 100)) = 1
+        [ShowIf(_TOON_HAIR)]_SpecularShadowOffset ("Specular Shadow Offset", Range(0, 1)) = 0.75
+        [ShowIf(_TOON_HAIR)]_SpecularShadowIntensity ("Specular Shadow Intensity", Range(0, 1)) = 0
 
-        _ES_SPColor ("ES SP Color", Color) = (1,1,1,1)
-        [FoldoutEnd]_ES_SPIntensity ("SP Intensity", Range(0,10)) = 1
+        _ES_SPColor ("ES SP Color", Color) = (1, 1, 1, 1)
+        [FoldoutEnd]_ES_SPIntensity ("SP Intensity", Range(0, 10)) = 1
 
         [Foldout]_Fresnel ("Fresnel", float) = 0
-        _FresnelColor ("Fresnel Color", Color) = (1,1,1,1)
-        _FresnelColorStrength ("Fresnel Color Strength", Range(0,1)) = 1
-        [FoldoutEnd]_FresnelBSI ("Fresnel BSI",Vector) = (1,1,0,0)
+        _FresnelColor ("Fresnel Color", Color) = (1, 1, 1, 1)
+        _FresnelColorStrength ("Fresnel Color Strength", Range(0, 1)) = 1
+        [FoldoutEnd]_FresnelBSI ("Fresnel BSI", Vector) = (1, 1, 0, 0)
 
         [Foldout]_Rim ("Rim", float) = 0
-        _RimShadowColor ("Rim Shadow Color", Color) = (0,0,0,1)
-        _RimShadowCt ("Rim Shadow Ct", Range(0,10)) = 1
-        _RimShadowWidth ("Rim Shadow Width", Range(0,10)) = 1
-        _RimShadowFeather ("Rim Shadow Feather", Range(0,1)) = 0.0
-        _RimShadowIntensity ("Rim Shadow Intensity", Range(0,3)) = 1
-        [FoldoutEnd]_RimShadowOffset ("Rim Shadow Offset ",Range(0,1)) = 0.0
+        _RimShadowColor ("Rim Shadow Color", Color) = (0, 0, 0, 1)
+        _RimShadowCt ("Rim Shadow Ct", Range(0, 10)) = 1
+        _RimShadowWidth ("Rim Shadow Width", Range(0, 10)) = 1
+        _RimShadowFeather ("Rim Shadow Feather", Range(0, 1)) = 0.0
+        _RimShadowIntensity ("Rim Shadow Intensity", Range(0, 3)) = 1
+        [FoldoutEnd]_RimShadowOffset ("Rim Shadow Offset ", Range(0, 1)) = 0.0
 
         [Foldout]_HeightLerp ("Height Lerp", float) = 0
-        _ES_HeightLerpTop ("ES Height Lerp Top", Range(0,1)) = 0.2
-        _ES_HeightLerpBottom ("ES Height Lerp Bottom", Range(0,1)) = 0.4
+        _ES_HeightLerpTop ("ES Height Lerp Top", Range(0, 1)) = 0.2
+        _ES_HeightLerpBottom ("ES Height Lerp Bottom", Range(0, 1)) = 0.4
         //注意Color.a 在线性空间, 0.5 = pow(0.218,0.45)
-        _ES_HeightLerpTopColor ("ES Height Lerp Top Color", Color) = (1,1,1,0.5)
-        _ES_HeightLerpMiddleColor ("ES Height Lerp Middle Color", Color) = (1,1,1,0.5)
-        _ES_HeightLerpBottomColor ("ES Height Lerp Bottom Color", Color) = (0.3125,0.3125,0.484,0.5)
-        [FoldoutEnd]_CharaWorldSpaceOffset ("Chara World Space Offset", Vector) = (0,0,0,0)
+        _ES_HeightLerpTopColor ("ES Height Lerp Top Color", Color) = (1, 1, 1, 0.5)
+        _ES_HeightLerpMiddleColor ("ES Height Lerp Middle Color", Color) = (1, 1, 1, 0.5)
+        _ES_HeightLerpBottomColor ("ES Height Lerp Bottom Color", Color) = (0.3125, 0.3125, 0.484, 0.5)
+        [FoldoutEnd]_CharaWorldSpaceOffset ("Chara World Space Offset", Vector) = (0, 0, 0, 0)
 
 
         [Foldout]_CharacterOnly ("Character Only", float) = 0
-        _ShadowRamp ("Shadow Ramp", Range(0,1)) = 1
-        [FoldoutEnd]_Test1 ("_Test", Range(0,1)) = 0.5
+        _ShadowRamp ("Shadow Ramp", Range(0, 1)) = 1
+        [FoldoutEnd]_Test1 ("_Test", Range(0, 1)) = 0.5
 
         [Foldout]_ActorLightInfo ("Actor Light Info", float) = 0
-        _ES_LevelHighLight ("ES Level HighLight", Range(0,1)) = 1
-        _ES_LevelMid ("ES Level Mid", Range(0,1)) = 0.55
-        _ES_LevelShadow ("ES Level Shadow", Range(0,1)) = 0
+        _ES_LevelHighLight ("ES Level HighLight", Range(0, 1)) = 1
+        _ES_LevelMid ("ES Level Mid", Range(0, 1)) = 0.55
+        _ES_LevelShadow ("ES Level Shadow", Range(0, 1)) = 0
 
         //hair (1,1,1,0.5)
-        _ES_LevelHighLightColor ("ES Level HighLight Color", Color) = (1,1,1,0.5)
-        _ES_LevelShadowColor ("ES Level Shadow Color", Color) = (0,0,0,1)
+        _ES_LevelHighLightColor ("ES Level HighLight Color", Color) = (1, 1, 1, 0.5)
+        _ES_LevelShadowColor ("ES Level Shadow Color", Color) = (0, 0, 0, 1)
         //hair 1,
         [Toggle(_ES_LEVEL_ADJUST_ON)]_ES_LEVEL_ADJUST_ON ("Level Adjust", float) = 1
 
-        _NewLocalLightStrength ("New Local Light Strength", Vector) = (0,0,0,0)
+        _NewLocalLightStrength ("New Local Light Strength", Vector) = (0, 0, 0, 0)
 
 
-        _CharacterLocalMainLightDark ("_CharacterLocalMainLightDark", Vector) = (0,0,0)
-        _CharacterLocalMainLightDark1 ("_CharacterLocalMainLightDark1", Vector) = (0,0,0)
-        _CharacterLocalMainLightColor1 ("_CharacterLocalMainLightColor1", Color) = (1,1,1,1)
-        _CharacterLocalMainLightColor2 ("_CharacterLocalMainLightColor2", Color) = (1,1,1,1)
+        _CharacterLocalMainLightDark ("_CharacterLocalMainLightDark", Vector) = (0, 0, 0)
+        _CharacterLocalMainLightDark1 ("_CharacterLocalMainLightDark1", Vector) = (0, 0, 0)
+        _CharacterLocalMainLightColor1 ("_CharacterLocalMainLightColor1", Color) = (1, 1, 1, 1)
+        _CharacterLocalMainLightColor2 ("_CharacterLocalMainLightColor2", Color) = (1, 1, 1, 1)
         //hair 1,
         _ES_CharacterDisableLocalMainLight ("_ES_CharacterDisableLocalMainLight", float) = 1
 
-        _ES_CharacterShadowFactor ("_ES_CharacterShadowFactor", Range(0,1)) = 1
-        [FoldoutEnd]_Test ("_Test", Range(0,1)) = 0.5
-        _CustomMainLightDir ("Custom Main Light Dir", Vector) = (1,1,1,0)
+        _ES_CharacterShadowFactor ("_ES_CharacterShadowFactor", Range(0, 1)) = 1
+        [FoldoutEnd]_Test ("_Test", Range(0, 1)) = 0.5
+        _CustomMainLightDir ("Custom Main Light Dir", Vector) = (1, 1, 1, 0)
 
 
 
 
 
         [Foldout]_TOON_OUT_LINE ("Outline", float) = 1
-        _OutlineWidth ("Outline Width", Range(0, 0.2)) = 0.05
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
         _OutlineColorIntensity ("Outline Intensity", Range(0, 1)) = 1
-
-        _OutlineExtdStart ("Outline Extd Start", Range(0, 10)) = 6.52
-        _OutlineExtdMax ("Outline Extd Max", Range(0, 30)) = 18.16
+        _OutlineWidth ("Outline Width", Range(0, 0.2)) = 0.05
         _OutlineScale ("Outline Scale", Range(0, 1)) = 0.015
         _OutlineOffset ("Outline Offset", Range(0, 1)) = 0
+        _OutlineExtdStart ("Outline Extd Start", Range(0, 10)) = 6.52
+        _OutlineExtdMax ("Outline Extd Max", Range(0, 30)) = 18.16
 
-        [ShowIf(_TOON_HAIR,0)]_ES_OutLineLightedVal ("OutLineLightedVal", Range(0, 1)) = 0
-        [ShowIf(_TOON_HAIR,0)]_ES_OutLineDarkenVal ("OutLineDarkenVal", Range(0, 1)) = 0.0
+        [ShowIf(_TOON_HAIR, 0)]_ES_OutLineLightedVal ("OutLineLightedVal", Range(0, 1)) = 0
+        [ShowIf(_TOON_HAIR, 0)]_ES_OutLineDarkenVal ("OutLineDarkenVal", Range(0, 1)) = 0.0
 
-        _OffsetFactor ("Offset Factor", Range(-10, 10)) = -0.3
-        [FoldoutEnd]_OffsetUnits ("Offset Units", Range(-10, 10)) = -0.3
+        [FoldoutEnd]_OffsetFactor ("Offset Factor", Range(-10, 10)) = -0.3
+        //    _OffsetUnits ("Offset Units", Range(-10, 10)) = -0.3
+
     }
     SubShader
     {
-        Tags
-        {
-            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"
-        }
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Cull [_CullMode]
 
         HLSLINCLUDE
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -218,10 +218,7 @@ Shader "LcL/ToonBody"
 
         Pass
         {
-            Tags
-            {
-                "LightMode" = "UniversalForward"
-            }
+            Tags { "LightMode" = "UniversalForward" }
 
             HLSLPROGRAM
             #pragma prefer_hlslcc gles
@@ -320,7 +317,7 @@ Shader "LcL/ToonBody"
                 #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
                     inputData.shadowCoord = TransformWorldToShadowCoord(inputData.positionWS);
                 #else
-                inputData.shadowCoord = float4(0, 0, 0, 0);
+                    inputData.shadowCoord = float4(0, 0, 0, 0);
                 #endif
 
                 inputData.fogCoord = input.fogFactorAndVertexLight.x;
@@ -328,7 +325,7 @@ Shader "LcL/ToonBody"
                 return inputData;
             }
 
-            half4 frag(Varyings input, half facing:VFACE) : SV_Target
+            half4 frag(Varyings input, half facing : VFACE) : SV_Target
             {
                 InputData inputData = InitializeInputData(input);
 
@@ -336,10 +333,10 @@ Shader "LcL/ToonBody"
                 //所有角色贴图不要开启Mipmap
                 half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
                 #ifdef _TOON_HAIR
-                half4 faceColor = facing > 0 ? _BaseColor : _BackColor;
-                half4 albedo = baseMap * faceColor;
+                    half4 faceColor = facing > 0 ? _BaseColor : _BackColor;
+                    half4 albedo = baseMap * faceColor;
                 #else
-                half4 albedo = baseMap * _BaseColor;
+                    half4 albedo = baseMap * _BaseColor;
                 #endif
 
                 //r = Outline, g = AO, b = 高光强度
@@ -347,9 +344,9 @@ Shader "LcL/ToonBody"
                 half4 mask = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, input.uv);
 
                 #ifdef _TOON_HAIR
-                half shadowAO = (mask.y + mask.y);
+                    half shadowAO = (mask.y + mask.y);
                 #else
-                half shadowAO = (mask.y + mask.y) * input.color.x;
+                    half shadowAO = (mask.y + mask.y) * input.color.x;
                 #endif
 
                 // A通道不同的颜色阈值（8个色阶）用于区分部位，进行Ramp的区分采样
@@ -368,7 +365,7 @@ Shader "LcL/ToonBody"
                 lightDir = _CustomMainLightDir.www * lightDir.xyz + _MainLightPosition.xyz;
                 float3 halfDir = normalize(lightDir + viewDirWS);
                 float3 normalWS = inputData.normalWS;
-                float face = facing > 0 ? 1 : -1;
+                float face = facing > 0 ? 1 : - 1;
 
 
                 normalWS = face * normalWS;
@@ -379,9 +376,9 @@ Shader "LcL/ToonBody"
                 half halfLambert = saturate(NdotL * 0.5 + 0.5);
                 //todo:这里计算有可能有问题
                 #ifdef _TOON_HAIR
-                halfLambert = dot(halfLambert.xx, shadowAO.xx);
+                    halfLambert = dot(halfLambert.xx, shadowAO.xx);
                 #else
-                halfLambert = dot(halfLambert.xx, shadowAO.xx) * shadowAO;
+                    halfLambert = dot(halfLambert.xx, shadowAO.xx) * shadowAO;
                 #endif
 
                 halfLambert = clamp(halfLambert, 0.0, 1.0);
@@ -391,9 +388,9 @@ Shader "LcL/ToonBody"
 
                 float u_xlat54 = 1.0;
                 #ifdef _TOON_HAIR
-                half maskY = mask.y;
+                    half maskY = mask.y;
                 #else
-                half maskY = mask.y * input.color.x;
+                    half maskY = mask.y * input.color.x;
                 #endif
 
                 maskY = min(maskY, 0.8);
@@ -404,16 +401,16 @@ Shader "LcL/ToonBody"
                 half2 diffuseRampUV;
                 diffuseRampUV.x = _ShadowRamp < characterShadowFactor ? 1 : halfLambert2;
                 #ifdef _TOON_HAIR
-                diffuseRampUV.y = 0.0625;
+                    diffuseRampUV.y = 0.0625;
                 #else
-                //y 可以直接取 mask.a , 但是为了容错, 用rampLevel
-                diffuseRampUV.y = (rampLevel * 2 + 1) * 0.0625;
+                    //y 可以直接取 mask.a , 但是为了容错, 用rampLevel
+                    diffuseRampUV.y = (rampLevel * 2 + 1) * 0.0625;
                 #endif
 
 
                 half3 ramp = SAMPLE_TEXTURE2D(_DiffuseRampMultiTex, sampler_DiffuseRampMultiTex, diffuseRampUV).rgb;
                 half3 rampCool = SAMPLE_TEXTURE2D(_DiffuseCoolRampMultiTex, sampler_DiffuseCoolRampMultiTex,
-                                                  diffuseRampUV).rgb;
+                diffuseRampUV).rgb;
 
 
                 float _ES_CharacterToonRampMode = 0;
@@ -430,7 +427,7 @@ Shader "LcL/ToonBody"
                 diffuseShadowMask = 1 - smoothstep(0.0, 1.0, diffuseShadowMask.x);
                 diffuseShadowMask = diffuseShadowMask * _NewLocalLightStrength.z;
                 float3 characterLocalMainLightDark1 = diffuseShadowMask.xxx * (_CharacterLocalMainLightDark1.xyz - 1) +
-                    1;
+                1;
                 float3 darkColor1 = characterLocalMainLightDark1 * rampColor;
                 // return half4(diffuseShadowMask.xxx, 1);
 
@@ -476,18 +473,18 @@ Shader "LcL/ToonBody"
                 // Rim Shadow
 
                 #ifdef _USE_MATERIAL_VALUES_LUT
-                float3 packuv = float3(rampLevel.x, 5, 6);
-                float3 materialLUT = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy);
-                float3 materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz);
+                    float3 packuv = float3(rampLevel.x, 5, 6);
+                    float3 materialLUT = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy);
+                    float3 materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz);
 
-                float3 rimShadowColor = materialLUT;
-                float rimShadowWidth = materialLUT2.x;
-                float rimShadowFeather = materialLUT2.y;
+                    float3 rimShadowColor = materialLUT;
+                    float rimShadowWidth = materialLUT2.x;
+                    float rimShadowFeather = materialLUT2.y;
                 #else
 
-                float3 rimShadowColor = _RimShadowColor.rgb;
-                float rimShadowWidth = _RimShadowWidth;
-                float rimShadowFeather = _RimShadowFeather;
+                    float3 rimShadowColor = _RimShadowColor.rgb;
+                    float rimShadowWidth = _RimShadowWidth;
+                    float rimShadowFeather = _RimShadowFeather;
 
                 #endif
 
@@ -505,20 +502,20 @@ Shader "LcL/ToonBody"
 
                 //Specular---------------------------------
                 #ifdef _USE_MATERIAL_VALUES_LUT
-                //MaterialValuesPackLUT
-                packuv = float3(rampLevel.x, 1, 0);
-                materialLUT = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz);
-                materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy);
+                    //MaterialValuesPackLUT
+                    packuv = float3(rampLevel.x, 1, 0);
+                    materialLUT = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz);
+                    materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy);
 
-                float3 specularColor = materialLUT;
-                float specularRoughness = materialLUT2.y;
-                float specularIntensity = materialLUT2.z;
-                float specularShininess = materialLUT2.x;
+                    float3 specularColor = materialLUT;
+                    float specularRoughness = materialLUT2.y;
+                    float specularIntensity = materialLUT2.z;
+                    float specularShininess = materialLUT2.x;
                 #else
-                float3 specularColor = _SpecularColor.rgb;
-                float specularRoughness = _SpecularRoughness;
-                float specularIntensity = _SpecularIntensity;
-                float specularShininess = _SpecularShininess;
+                    float3 specularColor = _SpecularColor.rgb;
+                    float specularRoughness = _SpecularRoughness;
+                    float specularIntensity = _SpecularIntensity;
+                    float specularShininess = _SpecularShininess;
 
                 #endif
 
@@ -537,12 +534,12 @@ Shader "LcL/ToonBody"
                 float invMaskZ = 1 - mask.z;
 
                 #ifdef _TOON_HAIR
-                half shadowValue = dot(halfLambert, shadowAO) * shadowAtten;
-                float specularShadow = _SpecularShadowOffset < shadowValue ? 1.0 : _SpecularShadowIntensity;
-                specular = min(specular, 1.0);
-                specular = smoothstep(invMaskZ - specularRoughness, invMaskZ + specularRoughness, specular);
+                    half shadowValue = dot(halfLambert, shadowAO) * shadowAtten;
+                    float specularShadow = _SpecularShadowOffset < shadowValue ? 1.0 : _SpecularShadowIntensity;
+                    specular = min(specular, 1.0);
+                    specular = smoothstep(invMaskZ - specularRoughness, invMaskZ + specularRoughness, specular);
                 #else
-                specular = smoothstep(invMaskZ - specularRoughness, invMaskZ + specularRoughness, specular*shadowAtten);
+                    specular = smoothstep(invMaskZ - specularRoughness, invMaskZ + specularRoughness, specular * shadowAtten);
                 #endif
 
                 float3 specColor = specularColor * specular * specularIntensity;
@@ -570,7 +567,7 @@ Shader "LcL/ToonBody"
                 // return half4(fresnelColor.rgb, 1);
 
                 #ifdef _TOON_HAIR
-                albedo.rgb = albedo.rgb * specularShadow;
+                    albedo.rgb = albedo.rgb * specularShadow;
                 #endif
 
                 float3 color = specColor * albedo.xyz + emissionColor.xyz;
@@ -582,8 +579,8 @@ Shader "LcL/ToonBody"
                 //从上到下渐变mask(0-1), 角色世界坐标在y=0的位置
                 float heightLerpBottom = max(_ES_HeightLerpBottom, 0.001);
                 float heightLerp01 = 1 - smoothstep(_CharaWorldSpaceOffset.y,
-                                                    heightLerpBottom + _CharaWorldSpaceOffset.y,
-                                                    input.positionWS.y);
+                heightLerpBottom + _CharaWorldSpaceOffset.y,
+                input.positionWS.y);
 
 
                 //从上到下渐变mask(1-0), 角色世界坐标在y=0的位置
@@ -612,11 +609,11 @@ Shader "LcL/ToonBody"
 
                 #ifdef _USE_MATERIAL_VALUES_LUT
 
-                packuv = float3(rampLevel.x, 6, 7);
-                materialLUT.x = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy).z;
-                materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz).xyz;
-                float bloomIntensity = materialLUT.x;
-                float3 bloomColor = materialLUT2;
+                    packuv = float3(rampLevel.x, 6, 7);
+                    materialLUT.x = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xy).z;
+                    materialLUT2 = LOAD_TEXTURE2D(_MaterialValuesPackLUT, packuv.xz).xyz;
+                    float bloomIntensity = materialLUT.x;
+                    float3 bloomColor = materialLUT2;
 
                 #else
                     float bloomIntensity = 1;
@@ -633,36 +630,30 @@ Shader "LcL/ToonBody"
             ENDHLSL
         }
 
-//        Pass
-//        {
-//            Tags
-//            {
-//                "LightMode" = "ToonOutlineLit"
-//            }
-//            Offset [_OffsetFactor], [_OffsetUnits]
-//
-//            Blend SrcAlpha OneMinusSrcAlpha
-//            Cull Front
-//            ZWrite Off
-//
-//            HLSLPROGRAM
-//            #pragma shader_feature _TOON_HAIR
-//            #pragma shader_feature _USE_MATERIAL_VALUES_LUT
-//
-//            #pragma vertex ToonOutlineVertex
-//            #pragma fragment ToonOutlineFragment
-//
-//            #include "ToonOutlineCore.hlsl"
-//            ENDHLSL
-//        }
+        Pass
+        {
+            Tags { "LightMode" = "ToonOutlineLit" }
+            Offset [_OffsetFactor], 0
+
+            //    Blend SrcAlpha OneMinusSrcAlpha
+            Cull Front
+            //    ZWrite Off
+
+            HLSLPROGRAM
+            #pragma shader_feature _TOON_HAIR
+            #pragma shader_feature _USE_MATERIAL_VALUES_LUT
+
+            #pragma vertex ToonOutlineVertex
+            #pragma fragment ToonOutlineFragment
+
+            #include "ToonOutlineCore.hlsl"
+            ENDHLSL
+        }
 
         Pass
         {
             Name "ShadowCaster"
-            Tags
-            {
-                "LightMode" = "ShadowCaster"
-            }
+            Tags { "LightMode" = "ShadowCaster" }
 
             ZWrite On
             ZTest LEqual

@@ -111,14 +111,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _ActorLightInfo: 0
-    - _ActorLightInfo_FoldoutState: 1
+    - _ActorLightInfo_FoldoutState: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
     - _CUTOFF: 0
     - _CharacterOnly: 0
-    - _CharacterOnly_FoldoutState: 1
+    - _CharacterOnly_FoldoutState: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ColorMask: 15
@@ -126,12 +126,12 @@ Material:
     - _CullMode: 2
     - _Cutoff: 0.5
     - _DIFFUSE_RAMP: 0
-    - _DIFFUSE_RAMP_FoldoutState: 1
+    - _DIFFUSE_RAMP_FoldoutState: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EMISSION: 0
-    - _EMISSION_FoldoutState: 1
+    - _EMISSION_FoldoutState: 0
     - _ES_CharacterDisableLocalMainLight: 1
     - _ES_CharacterShadowFactor: 1
     - _ES_HeightLerpBottom: 0.4
@@ -148,20 +148,20 @@ Material:
     - _EnvironmentReflections: 1
     - _Fresnel: 0
     - _FresnelColorStrength: 1
-    - _Fresnel_FoldoutState: 1
+    - _Fresnel_FoldoutState: 0
     - _Gamma: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HeightLerp: 0
-    - _HeightLerp_FoldoutState: 1
+    - _HeightLerp_FoldoutState: 0
     - _Invert: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OffsetFactor: 0
     - _OffsetUnits: 0
     - _OutlineColorIntensity: 0.697
-    - _OutlineExtdMax: 18.16
+    - _OutlineExtdMax: 18
     - _OutlineExtdStart: 6.52
     - _OutlineOffset: 0
     - _OutlineScale: 0.015
@@ -176,7 +176,7 @@ Material:
     - _RimShadowIntensity: 1
     - _RimShadowOffset: 0
     - _RimShadowWidth: 1
-    - _Rim_FoldoutState: 1
+    - _Rim_FoldoutState: 0
     - _ScleraSize: 1
     - _SelfShadow: 0
     - _SelfShadow_FoldoutState: 1
@@ -191,7 +191,7 @@ Material:
     - _SpecularShadowIntensity: 0
     - _SpecularShadowOffset: 0.75
     - _SpecularShininess: 1
-    - _Specular_FoldoutState: 1
+    - _Specular_FoldoutState: 0
     - _SrcBlend: 1
     - _Surface: 0
     - _TOON_HAIR: 1

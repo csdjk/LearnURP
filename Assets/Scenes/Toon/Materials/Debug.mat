@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Debug
-  m_Shader: {fileID: 4800000, guid: e0a079e859fcae944ac4ff60d2c08d80, type: 3}
+  m_Shader: {fileID: 4800000, guid: 96f84a4e681ce2e46ab2514dc3ee1678, type: 3}
   m_ValidKeywords:
   - _SHOWVALUE_TEXTURE_B
   m_InvalidKeywords: []

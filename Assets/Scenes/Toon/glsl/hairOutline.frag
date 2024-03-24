@@ -217,7 +217,7 @@ void main(){
   (u_xlat16_0.xy = clamp(u_xlat16_0.xy, 0.0, 1.0));
   (u_xlat16_19.x = (((-_GlobalOneMinusAvatarIntensityEnable) * _GlobalOneMinusAvatarIntensity) + 1.0));
   (u_xlat16_5.xyz = (u_xlat16_19.xxx * _OutlineColor0.xyz));
-debugColor = u_xlat16_19.xxx;
+debugColor = vs_TEXCOORD6.xyz;
 
 
   (u_xlat16_19.x = (((-_OneMinusGlobalMainIntensityEnable) * _OneMinusGlobalMainIntensity) + 1.0));

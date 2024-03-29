@@ -1,6 +1,199 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4854806327785605734
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sky
+  m_Shader: {fileID: 4800000, guid: 577b8830e7c1c0a47a8694117acfad0a, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cloud01Tex:
+        m_Texture: {fileID: 2800000, guid: 0053629a7a50437448a700d433d9885d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cloud02Tex:
+        m_Texture: {fileID: 2800000, guid: a36fc8283c906e147b6ec7ee9f461dc6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorPalette:
+        m_Texture: {fileID: 2800000, guid: a89c5ec9d5b80bd4bbda7b78dfe38116, type: 3}
+        m_Scale: {x: 10, y: 10}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: 11c0f0c6ff9d7f24ea6093b58d0b74d7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarTex:
+        m_Texture: {fileID: 2800000, guid: ae54e2cce6acb6c4fadaf550d224c5f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TintColorTex:
+        m_Texture: {fileID: 2800000, guid: 8d7889f84dd53ee449b305c5de0c592a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AllCloudsAlpha: 1
+    - _AlphaClip: 0
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cloud: 0
+    - _Cloud02Multipler: 2.97
+    - _Cloud02Offset: 0.05
+    - _CloudMultiplyer: 2.35
+    - _CloudOffset: 0.05
+    - _Cloud_FoldoutState: 1
+    - _ColorPaletteFoldout: 1
+    - _ColorPaletteFoldout_FoldoutState: 1
+    - _ColorPalletteSpeed: 2.29
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _Desaturate: 1
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _ES_EP_EffectParticle: 0
+    - _ES_EP_EffectParticleBottom: 0
+    - _ES_EP_EffectParticleTop: 10
+    - _ES_EffectIntensityScale: 1
+    - _EnvironmentReflections: 1
+    - _FlowFoldout: 1
+    - _FlowFoldout_FoldoutState: 1
+    - _FlowSpeed: 0.025
+    - _FlowStrength: 0.1
+    - _GlobalOneMinusAvatarIntensity: 0
+    - _GlobalOneMinusAvatarIntensityEnable: 0
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _GradientOffset: -5.43
+    - _GradientRange: 7.56
+    - _Metallic: 0
+    - _NoiseFoldout: 1
+    - _NoiseFoldout_FoldoutState: 1
+    - _NoiseSpeed: 0
+    - _OcclusionStrength: 1
+    - _OffsetFactor: -20
+    - _OffsetUnits: -20
+    - _OneMinusGlobalMainIntensity: 0
+    - _OneMinusGlobalMainIntensityEnable: 0
+    - _Parallax: 0.005
+    - _ParticleFoldout: 1
+    - _ParticleFoldout_FoldoutState: 1
+    - _PerlinNoiseMultiply: 1.79
+    - _PerlinNoiseOffset: 0
+    - _PerlinNoiseScale: -0.005
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StarBrightness1: 1.21
+    - _StarBrightness2: 4.49
+    - _StarDepth: 15
+    - _StarFoldout: 1
+    - _StarFoldout_FoldoutState: 1
+    - _StarScintillationSpeed: 0.1
+    - _Surface: 0
+    - _TintColor: 1
+    - _TintColorTexScale: 0.662
+    - _TintColor_FoldoutState: 1
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Cloud01Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Cloud02Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudTex01UV1Coord: {r: 8, g: 5, b: -1.55, a: -1.32}
+    - _CloudTex01UV2Coord: {r: 8, g: 5, b: 0, a: 0}
+    - _CloudTex02UV1Coord: {r: 4, g: 3, b: -0.31, a: 0.97}
+    - _CloudTex02UV2Coord: {r: 2, g: 2, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PerlinNoisePosOffset: {r: 216.52, g: 10.63, b: 10, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _StarNoiseTiling: {r: 20, g: 20, b: 0, a: 0}
+    - _StarTexUV1Coord: {r: 50, g: 30, b: 0, a: 0}
+    - _StarTexUV2Coord: {r: 50, g: 30, b: 0, a: 0}
+    - _Time: {r: 7.58959, g: 151.79175, b: 303.5835, a: 455.37524}
+    - _TimeTest: {r: 7.58959, g: 151.79175, b: 303.5835, a: 455.37524}
+    - _TimeTestTest: {r: 7.58959, g: 151.79175, b: 303.5835, a: 455.37524}
+    - _TintColorTexUV1Coord: {r: 2, g: 2, b: 1.77, a: -0.02}
+    - _TintColorTexUV2Coord: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &6180158502173913281
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,46 +206,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
---- !u!21 &2100000
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Sky
-  m_Shader: {fileID: 4800000, guid: e0a079e859fcae944ac4ff60d2c08d80, type: 3}
-  m_ValidKeywords:
-  - _SHOWVALUE_NORMAL
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _BlendOp: 0
-    - _CUTOFF: 0
-    - _ColorMask: 15
-    - _CullMode: 0
-    - _Cutoff: 0.5
-    - _DstBlend: 10
-    - _Gamma: 1
-    - _Invert: 0
-    - _ScleraSize: 1
-    - _ShowValue: 10
-    - _SrcBlend: 5
-    - _ZTestMode: 4
-    - _ZWriteMode: 1
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []

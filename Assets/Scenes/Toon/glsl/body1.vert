@@ -198,27 +198,45 @@ void main(){
     (u_xlat0 = ((hlslcc_mtx4x4unity_MatrixMVP[2] * in_POSITION0.zzzz) + u_xlat0));
     (u_xlat0 = (u_xlat0 + hlslcc_mtx4x4unity_MatrixMVP[3]));
     (gl_Position = ((bool(u_xlatb1)) ? (u_xlat0) : (vec4(-99.0, -99.0, -99.0, 1.0))));
+
+//vs_TEXCOORD0 = uv
     (u_xlat1.xy = ((in_TEXCOORD0.xy * _MainTex_ST.xy) + _MainTex_ST.zw));
     (u_xlat1.zw = in_TEXCOORD1.xy);
     (vs_TEXCOORD0 = u_xlat1);
+//-----------------------
+
     (vs_TEXCOORD16.xyz = vec3(0.0, 0.0, 0.0));
     (vs_COLOR0 = in_COLOR0);
+
+
+//vs_TEXCOORD1 = screenUV
     (u_xlat1.x = (u_xlat0.y * _ProjectionParams.x));
     (u_xlat1.w = (u_xlat1.x * 0.5));
     (u_xlat1.xz = (u_xlat0.xw * vec2(0.5, 0.5)));
     (vs_TEXCOORD1.zw = u_xlat0.zw);
     (vs_TEXCOORD1.xy = (u_xlat1.zz + u_xlat1.xw));
+//-----------------------
+
+//vs_TEXCOORD2 = positionWS
     (u_xlat1.xyz = (in_POSITION0.yyy * hlslcc_mtx4x4unity_ObjectToWorld[1].xyz));
     (u_xlat1.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[0].xyz * in_POSITION0.xxx) + u_xlat1.xyz));
     (u_xlat1.xyz = ((hlslcc_mtx4x4unity_ObjectToWorld[2].xyz * in_POSITION0.zzz) + u_xlat1.xyz));
     (u_xlat1.xyz = (u_xlat1.xyz + hlslcc_mtx4x4unity_ObjectToWorld[3].xyz));
     (vs_TEXCOORD2.xyz = u_xlat1.xyz);
+//-----------------------
+
+//vs_TEXCOORD4 = viewDirWS
     (u_xlat1.xyz = ((-u_xlat1.xyz) + _WorldSpaceCameraPos.xyz));
     (vs_TEXCOORD4.xyz = u_xlat1.xyz);
+//-----------------------
+
+//vs_TEXCOORD3 = normalWS
     (u_xlat1.x = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[0].xyz));
     (u_xlat1.y = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[1].xyz));
     (u_xlat1.z = dot(in_NORMAL0.xyz, hlslcc_mtx4x4unity_WorldToObject[2].xyz));
     (vs_TEXCOORD3.xyz = u_xlat1.xyz);
+//-----------------------
+
     (vs_TEXCOORD4.w = 1.0);
     return ;
 }

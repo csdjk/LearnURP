@@ -20,12 +20,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: face
-  m_Shader: {fileID: 4800000, guid: cb132f3a189bce64b8496ad5066cbae1, type: 3}
-  m_ValidKeywords:
-  - _USE_MATERIAL_VALUES_LUT
+  m_Name: Face
+  m_Shader: {fileID: 4800000, guid: 589047fa9f7f4c0eba25e961b419871a, type: 3}
+  m_ValidKeywords: []
   m_InvalidKeywords:
   - _ES_LEVEL_ADJUST_ON
+  - _USESELFOUTLINE_ON
+  - _USE_MATERIAL_VALUES_LUT
+  - _UseUVChannel2
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -36,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 8f05af441f262434498e6f1be03ad956, type: 3}
+        m_Texture: {fileID: 2800000, guid: 99932fbde86e5fa40ba2282ee9f2b317, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -73,6 +75,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FaceMap:
+        m_Texture: {fileID: 2800000, guid: 464d6acce136a7b4f97b0bea21c8e0a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LightMap:
@@ -145,15 +151,21 @@ Material:
     - _ES_HeightLerpBottom: 0.4
     - _ES_HeightLerpTop: 0.2
     - _ES_LEVEL_ADJUST_ON: 1
+    - _ES_LevelEyeShadowIntensity: 0.095
     - _ES_LevelHighLight: 1
     - _ES_LevelMid: 0.55
     - _ES_LevelShadow: 0
     - _ES_OutLineDarkenVal: 0
     - _ES_OutLineLightedVal: 0
     - _ES_SPIntensity: 1
+    - _EYE_INFO: 0
+    - _EYE_INFO_FoldoutState: 1
     - _EmissionIntensity: 7.07
     - _EmissionThreshold: 0.348
     - _EnvironmentReflections: 1
+    - _EyeShadowAngleMin: 0.85
+    - _EyeShadowMaxAngle: 1
+    - _FaceLightOffset: 0
     - _Fresnel: 0
     - _FresnelColorStrength: 1
     - _Fresnel_FoldoutState: 1
@@ -163,6 +175,9 @@ Material:
     - _HeightLerp: 0
     - _HeightLerp_FoldoutState: 1
     - _Metallic: 0
+    - _NoseLine: 0
+    - _NoseLinePower: 4
+    - _NoseLine_FoldoutState: 1
     - _OcclusionPower: 1
     - _OcclusionStrength: 1
     - _OffsetFactor: -0.3
@@ -171,8 +186,8 @@ Material:
     - _OutlineExtdMax: 18.16
     - _OutlineExtdStart: 6.52
     - _OutlineOffset: 0
-    - _OutlineScale: 0.015
-    - _OutlineWidth: 0.0569
+    - _OutlineScale: 0.039
+    - _OutlineWidth: 0.02
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _RampLevel: 8
@@ -186,11 +201,17 @@ Material:
     - _Rim_FoldoutState: 1
     - _SelfShadow: 0
     - _SelfShadow_FoldoutState: 1
+    - _Shadow: 0
+    - _ShadowOffset: 0
     - _ShadowRamp: 1
-    - _ShadowSmoothness: 0.024
+    - _ShadowSmoothness: 0.001
     - _ShadowThreshold: 0.511
+    - _Shadow_FoldoutState: 1
+    - _SkinLight: 0
+    - _SkinLight_FoldoutState: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SpecialEyeIntensity: 1
     - _Specular: 0
     - _SpecularHighlights: 1
     - _SpecularIntensity: 1
@@ -209,8 +230,13 @@ Material:
     - _Test2: 0.5
     - _USE_MATERIAL_VALUES_LUT: 1
     - _USE_MATERIAL_VALUES_LUT_FoldoutState: 1
+    - _UseSelfOutline: 1
+    - _UseSpecialEye: 0
+    - _UseUVChannel2: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _mBloomIntensity0: 0.3
+    - _mBloomIntensity1: 0.3
     m_Colors:
     - _BackColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -219,6 +245,7 @@ Material:
     - _CharacterLocalMainLightColor2: {r: 1, g: 1, b: 1, a: 1}
     - _CharacterLocalMainLightDark: {r: 0, g: 0, b: 0, a: 1}
     - _CharacterLocalMainLightDark1: {r: 0, g: 0, b: 0, a: 1}
+    - _CharacterLocalMainLightPosition: {r: -0.0595, g: 0.43589, b: 0.89803, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomMainLightDir: {r: 1, g: 1, b: 1, a: 0}
     - _ES_HeightLerpBottomColor: {r: 0.3137255, g: 0.3137255, b: 0.48235294, a: 0.5}
@@ -226,14 +253,22 @@ Material:
     - _ES_HeightLerpTopColor: {r: 1, g: 1, b: 1, a: 0.5}
     - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.8156863}
     - _ES_LevelShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ES_LevelSkinLightColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelSkinShadowColor: {r: 1, g: 1, b: 1, a: 0.5}
     - _ES_SPColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.58431375, g: 0, b: 0, a: 1}
+    - _EyeBaseShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EyeCenter: {r: 0, g: 0, b: 0, a: 0}
+    - _EyeSPColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _EyeSPColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _EyeShadowColor: {r: 0.78741, g: 0.72036004, b: 0.71313, a: 1}
     - _FresnelBSI: {r: 1, g: 1, b: 0, a: 0}
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
     - _NewLocalLightStrength: {r: 0, g: 0, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoseLineColor: {r: 0.17143998, g: 0.074209966, b: 0.074209966, a: 1}
+    - _OutlineColor: {r: 0.066037714, g: 0.066037714, b: 0.066037714, a: 1}
     - _RimShadowColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.97, g: 0.73, b: 0.71, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

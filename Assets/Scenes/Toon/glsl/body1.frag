@@ -398,11 +398,12 @@ bool u_xlatb55;
 float u_xlat16_56;
 float u_xlat16_67;
 void main(){
-    vec4 debugColor = vec4(0.0, 0.0, 0.0, 1.0);
+    vec3 debugColor = vec3(0.0, 0.0, 0.0);
 
     vec4 hlslcc_FragCoord = vec4(gl_FragCoord.xyz, (1.0 / gl_FragCoord.w));
     (u_xlat16_0.xyz = texture(_MainTex, vs_TEXCOORD0.xy).xyz);
     (u_xlat0.xyz = (u_xlat16_0.xyz * _Color.xyz));
+
     (u_xlat16_1.xy = texture(_LightMap, vs_TEXCOORD0.xy).yw);
 
     (u_xlat16_2 = (u_xlat16_1.y * 8.0));
@@ -414,9 +415,9 @@ void main(){
     (u_xlat16_2 = (u_xlat16_20.y * u_xlat16_2));
     (u_xlat16_2 = fract(u_xlat16_2));
     (u_xlat16_2 = (u_xlat16_2 * u_xlat16_20.x));
-//    debugColor = vec4(u_xlat16_2.xxx, 1.0);
-//        debugColor = vec4(u_xlat16_2.xxx, 1.0);
 
+
+  //Shadow Atten---------------------------------------------
     (u_xlat19.xyz = (vs_TEXCOORD2.xyz + (-_CascadeShadowSplitSpheres0.xyz)));
     (u_xlat3.xyz = (vs_TEXCOORD2.xyz + (-_CascadeShadowSplitSpheres1.xyz)));
     (u_xlat4.xyz = (vs_TEXCOORD2.xyz + (-_CascadeShadowSplitSpheres2.xyz)));
@@ -540,43 +541,62 @@ void main(){
     (u_xlat16_20.x = clamp(u_xlat16_20.x, 0.0, 1.0));
     (u_xlat16_56 = ((-u_xlat16_20.x) + 1.0));
     (u_xlat16_20.x = ((_ES_CharacterShadowFactor * u_xlat16_56) + u_xlat16_20.x));
+    //shadow atten-----------------------
+
     (u_xlat16_56 = (_ES_CharacterDisableLocalMainLight + 1.0));
     (u_xlat16_56 = (u_xlat16_56 + (-abs(_DisableCharacterLocalLight.x))));
     (u_xlatb54 = (0.5 < u_xlat16_56));
     (u_xlat19.xyz = ((bool(u_xlatb54)) ? (_MainLightPosition.xyz) : (_CharacterLocalMainLightPosition.xyz)));
     (u_xlatb54 = (0.5 < _IsMonster));
     (u_xlat16_13.xyz = ((bool(u_xlatb54)) ? (_ES_MonsterLightDir.xyz) : (u_xlat19.xyz)));
+    //u_xlat16_13 = lerp(u_xlat16_13, _CustomMainLightDir, _CustomMainLightDir.www)
     (u_xlat16_14.xyz = ((-u_xlat16_13.xyz) + _CustomMainLightDir.xyz));
     (u_xlat16_13.xyz = ((_CustomMainLightDir.www * u_xlat16_14.xyz) + u_xlat16_13.xyz));
+    //---
     (u_xlat16_13.xyz = ((bool(u_xlatb54)) ? (_ES_MonsterLightDir.xyz) : (u_xlat16_13.xyz)));
+    //u_xlat16_13 = LightDir
+
+//vs_TEXCOORD4=viewDirWS
     (u_xlat16_56 = dot(vs_TEXCOORD4.xyz, vs_TEXCOORD4.xyz));
     (u_xlat16_56 = inversesqrt(u_xlat16_56));
     (u_xlat16_14.xyz = (vec3(u_xlat16_56) * vs_TEXCOORD4.xyz));
-    //vs_TEXCOORD3 = normal
+//u_xlat16_14 = normalize(viewDirWS)
+//-------------------------
+
+//vs_TEXCOORD3 = normalWS
     (u_xlat16_56 = dot(vs_TEXCOORD3.xyz, vs_TEXCOORD3.xyz));
     (u_xlat16_56 = inversesqrt(u_xlat16_56));
     (u_xlat16_15.xyz = (vec3(u_xlat16_56) * vs_TEXCOORD3.xyz));
-
+//u_xlat16_15 = normalize(normalWS)
+//-------------------------
     (u_xlat16_56 = (((((gl_FrontFacing) ? (4294967295u) : (0u)) != 0u)) ? (1.0) : (-1.0)));
     (u_xlat16_15.xyz = (vec3(u_xlat16_56) * u_xlat16_15.xyz));
-    //todo:
+
+
+//u_xlat19 = normalVS
     (u_xlat19.xyz = (u_xlat16_15.yyy * hlslcc_mtx4x4unity_MatrixV[1].xyz));
     (u_xlat19.xyz = ((hlslcc_mtx4x4unity_MatrixV[0].xyz * u_xlat16_15.xxx) + u_xlat19.xyz));
     (u_xlat19.xyz = ((hlslcc_mtx4x4unity_MatrixV[2].xyz * u_xlat16_15.zzz) + u_xlat19.xyz));
+//u_xlat3 = viewDirVS
     (u_xlat3.xyz = (u_xlat16_14.yyy * hlslcc_mtx4x4unity_MatrixV[1].xyz));
     (u_xlat3.xyz = ((hlslcc_mtx4x4unity_MatrixV[0].xyz * u_xlat16_14.xxx) + u_xlat3.xyz));
     (u_xlat3.xyz = ((hlslcc_mtx4x4unity_MatrixV[2].xyz * u_xlat16_14.zzz) + u_xlat3.xyz));
+//-------------------------
 
-
+//u_xlat16_56 = NdotL
     (u_xlat16_56 = dot(u_xlat16_15.xyz, u_xlat16_13.xyz));
 //    debugColor = vec4(u_xlat16_13.xyz, 1.0);
-    //todo: rim light
+
+    //todo: rim light---------------------------
     (u_xlat16_13.xyz = (u_xlat3.xyz + (-_RimShadowOffset.xyz)));
     (u_xlat16_67 = dot(u_xlat16_13.xyz, u_xlat16_13.xyz));
     (u_xlat16_67 = inversesqrt(u_xlat16_67));
     (u_xlat16_13.xyz = (vec3(u_xlat16_67) * u_xlat16_13.xyz));
+
     (u_xlat16_13.x = dot(u_xlat19.xyz, u_xlat16_13.xyz));
     (u_xlat16_13.x = clamp(u_xlat16_13.x, 0.0, 1.0));
+    // ----------------------------------------
+
     //todo: lightTex.y (outline)
     (u_xlat16_31.x = (u_xlat16_1.x + u_xlat16_1.x));
     (u_xlat16_31.x = (u_xlat16_31.x * vs_COLOR0.x));
@@ -585,25 +605,20 @@ void main(){
     (u_xlat16_56 = clamp(u_xlat16_56, 0.0, 1.0));
 //    halfLambert
     (u_xlat16_56 = dot(vec2(u_xlat16_56), u_xlat16_31.xx));
-//    debugColor = vec4(u_xlat16_56.xxx, 1.0);
 
 
-
+    //u_xlat54 = shadowAtten
     (u_xlatb54 = (0.5 < _ES_CharacterDisableLocalMainLight));
-
     (u_xlat19.x = ((-u_xlat16_20.x) + 1.0));
     (u_xlat19.x = ((_CharacterLocalMainLightPosition.w * u_xlat19.x) + u_xlat16_20.x));
     (u_xlat54 = ((u_xlatb54) ? (u_xlat16_20.x) : (u_xlat19.x)));
-
+    //u_xlat54 = shadowAtten
 
     (u_xlat16_20.x = (u_xlat54 * u_xlat16_56));
-
     (u_xlat16_20.x = min(u_xlat16_38.x, u_xlat16_20.x));
-
     (u_xlat16_56 = (u_xlat16_1.x * vs_COLOR0.x));
     (u_xlat16_31.x = max(u_xlat16_20.x, 0.001));
     (u_xlat16_31.x = ((u_xlat16_31.x * 0.85000002) + 0.15000001));
-    //debugColor = vec4(u_xlat16_31.xxx, 1.0);
 
     (u_xlatb1.x = (u_xlat54 < 0.1));
     (u_xlat16_56 = min(u_xlat16_56, 0.80000001));
@@ -643,7 +658,7 @@ void main(){
     (u_xlat1.x = (((-u_xlat16_56) * u_xlat16_20.x) + 1.0));
     //End
 
-    debugColor = vec4(_ES_LEVEL_ADJUST_ON.xxx, 1.0);
+    // debugColor = vec4(_ES_LEVEL_ADJUST_ON.xxx, 1.0);
 
     (u_xlat1.x = (u_xlat1.x * _NewLocalLightStrength.z));
 
@@ -666,62 +681,75 @@ void main(){
 
     (u_xlatb1.x = (0.5 < _ES_LEVEL_ADJUST_ON));
 //    debugColor = vec4(u_xlat16_31.xyz, 1.0);
-
+    //u_xlat16_20.x=diffuseMask
     (u_xlat16_20.x = dot(u_xlat16_31.xyz, vec3(1.0, 1.0, 1.0)));
     (u_xlatb37 = (2.9000001 < u_xlat16_20.x));
     (u_xlat16_20.x = ((u_xlatb19.x) ? (0.0) : (1.0)));
 
+    // levelHightLightColor = lerp(levelSkinLightColor, levelHightLightColor * 2, isSkin);
     (u_xlat16_14.xyz = (_ES_LevelSkinLightColor.www * _ES_LevelSkinLightColor.xyz));
     (u_xlat16_14.xyz = (u_xlat16_14.xyz + u_xlat16_14.xyz));
+
+// debugColor = u_xlat16_14.xyz;
+
     (u_xlat16_16.xyz = (_ES_LevelHighLightColor.www * _ES_LevelHighLightColor.xyz));
     (u_xlat16_16.xyz = ((u_xlat16_16.xyz * vec3(2.0, 2.0, 2.0)) + (-u_xlat16_14.xyz)));
     (u_xlat16_14.xyz = ((u_xlat16_20.xxx * u_xlat16_16.xyz) + u_xlat16_14.xyz));
 
+
+    //levelShadowColor = lerp(levelSkinShadowColor, levelShadowColor * 2, isSkin);
     (u_xlat16_16.xyz = (_ES_LevelSkinShadowColor.www * _ES_LevelSkinShadowColor.xyz));
     (u_xlat16_16.xyz = (u_xlat16_16.xyz + u_xlat16_16.xyz));
     (u_xlat16_17.xyz = (_ES_LevelShadowColor.www * _ES_LevelShadowColor.xyz));
     (u_xlat16_17.xyz = ((u_xlat16_17.xyz * vec3(2.0, 2.0, 2.0)) + (-u_xlat16_16.xyz)));
     (u_xlat16_16.xyz = ((u_xlat16_20.xxx * u_xlat16_17.xyz) + u_xlat16_16.xyz));
-    //todo:
-    (u_xlat16_17.xyz = (u_xlat16_31.xyz + (-vec3(vec3(_ES_LevelMid, _ES_LevelMid, _ES_LevelMid)))));
-//    debugColor = vec4(u_xlatb19.xxx, 1.0);
 
+
+//todo:rampDiffuse
+    (u_xlat16_17.xyz = (u_xlat16_31.xyz + (-vec3(vec3(_ES_LevelMid, _ES_LevelMid, _ES_LevelMid)))));
     (u_xlat16_20.xz = ((-vec2(_ES_LevelMid, _ES_LevelShadow)) + vec2(_ES_LevelHighLight, _ES_LevelMid)));
     (u_xlat16_17.xyz = (u_xlat16_17.xyz / u_xlat16_20.xxx));
     (u_xlat16_17.xyz = ((u_xlat16_17.xyz * vec3(0.5, 0.5, 0.5)) + vec3(0.5, 0.5, 0.5)));
     (u_xlat16_17.xyz = clamp(u_xlat16_17.xyz, 0.0, 1.0));
 
-//        debugColor = vec4(u_xlat16_14.xyz, 1.0);
     (u_xlat16_14.xyz = (u_xlat16_14.xyz * u_xlat16_17.xyz));
 
     //finalColor u_xlat16_14
+//todo:rampDiffuse2
     (u_xlat16_17.xyz = ((-u_xlat16_31.xyz) + vec3(vec3(_ES_LevelMid, _ES_LevelMid, _ES_LevelMid))));
     (u_xlat16_17.xyz = (u_xlat16_17.xyz / u_xlat16_20.zzz));
     (u_xlat16_17.xyz = (((-u_xlat16_17.xyz) * vec3(0.5, 0.5, 0.5)) + vec3(0.5, 0.5, 0.5)));
     (u_xlat16_17.xyz = clamp(u_xlat16_17.xyz, 0.0, 1.0));
     (u_xlat16_16.xyz = (u_xlat16_16.xyz * u_xlat16_17.xyz));
+    //u_xlat16_16=levelShadowColor
     //
+
 //    u_xlatb37==true
     (u_xlat16_14.xyz = ((bool(u_xlatb37)) ? (u_xlat16_14.xyz) : (u_xlat16_16.xyz)));
-    //u_xlatb1.x == 1
     (u_xlat16_31.xyz = ((u_xlatb1.x) ? (u_xlat16_14.xyz) : (u_xlat16_31.xyz)));
+
+
+//u_xlat16_31 = levelShadowColor
 
     (u_xlatb1.x = (0.5 < _ShadowBoost));
     //u_xlatb1.x == 0
+    //u_xlat54 = shadowAtten
+    //u_xlat16_20.x = smoothstep(0.0, 1.0, u_xlat54 * 6.66)
     (u_xlat16_20.x = (u_xlat54 * 6.6666665));
     (u_xlat16_20.x = clamp(u_xlat16_20.x, 0.0, 1.0));
     (u_xlat16_56 = ((u_xlat16_20.x * -2.0) + 3.0));
     (u_xlat16_20.x = (u_xlat16_20.x * u_xlat16_20.x));
     (u_xlat16_20.x = (u_xlat16_20.x * u_xlat16_56));
+//-----
     (u_xlat16_56 = (_ShadowBoostVal + 1.0));
     (u_xlat16_14.x = ((-u_xlat16_56) + 1.0));
     (u_xlat16_20.x = ((u_xlat16_20.x * u_xlat16_14.x) + u_xlat16_56));
     (u_xlat16_14.xyz = (u_xlat16_20.xxx * u_xlat16_31.xyz));
     (u_xlat16_31.xyz = ((u_xlatb1.x) ? (u_xlat16_14.xyz) : (u_xlat16_31.xyz)));
     (u_xlat16_14.xyz = (u_xlat0.xyz * u_xlat16_31.xyz));
-//    debugColor = vec4(u_xlat16_14.xyz, 1.0);
 
 //FinalColor:u_xlat16_14
+//vs_TEXCOORD2 = positionWS
     (u_xlat1.xyz = (vs_TEXCOORD2.xyz + (-_NewLocalLightCharCenter.xyz)));
     (u_xlat54 = dot(u_xlat1.xyz, u_xlat1.xyz));
     (u_xlat54 = inversesqrt(u_xlat54));
@@ -754,8 +782,9 @@ void main(){
         (hlslcc_movcTemp.z = ((u_xlatb1.w) ? (u_xlat16_15.z) : (u_xlat16_16.z)));
         (u_xlat16_15 = hlslcc_movcTemp);
     }
-    (u_xlat16_31.xyz = (((-u_xlat16_31.xyz) * u_xlat0.xyz) + u_xlat16_15.xyz));
     //u_xlat54.xxx==0
+
+    (u_xlat16_31.xyz = (((-u_xlat16_31.xyz) * u_xlat0.xyz) + u_xlat16_15.xyz));
     (u_xlat16_31.xyz = ((vec3(u_xlat54) * u_xlat16_31.xyz) + u_xlat16_14.xyz));
     //_CharacterLocalMainLightColor2.xyz == 0
     (u_xlat1.xyz = (u_xlat1.yyy * _CharacterLocalMainLightColor2.xyz));
@@ -781,6 +810,9 @@ void main(){
     }
     (u_xlat16_15.xyz = (_ES_RimShadowColor.www * _ES_RimShadowColor.xyz));
     (u_xlat16_31.xyz = (u_xlat16_31.xyz * u_xlat16_15.xyz));
+
+
+//rimLight
     (u_xlat16_13.x = ((-u_xlat16_13.x) + 1.0));
     (u_xlat16_13.x = max(u_xlat16_13.x, 0.001));
     (u_xlat16_13.x = log2(u_xlat16_13.x));
@@ -788,20 +820,25 @@ void main(){
     (u_xlat16_13.x = exp2(u_xlat16_13.x));
     (u_xlat16_13.x = (u_xlat16_13.x * u_xlat16_14.x));
     (u_xlat16_13.x = clamp(u_xlat16_13.x, 0.0, 1.0));
+    //smoothstep(u_xlat16_14.y,1,u_xlat16_13.x)
     (u_xlat16_14.x = ((-u_xlat16_14.y) + 1.0));
     (u_xlat16_13.x = ((-u_xlat16_14.y) + u_xlat16_13.x));
     (u_xlat16_14.x = (1.0 / u_xlat16_14.x));
     (u_xlat16_13.x = (u_xlat16_13.x * u_xlat16_14.x));
-
     (u_xlat16_13.x = clamp(u_xlat16_13.x, 0.0, 1.0));
     (u_xlat16_14.x = ((u_xlat16_13.x * -2.0) + 3.0));
     (u_xlat16_13.x = (u_xlat16_13.x * u_xlat16_13.x));
     (u_xlat16_13.x = (u_xlat16_13.x * u_xlat16_14.x));
-//    (u_xlat16_13.x = (u_xlat16_13.x * _RimShadowIntensity));
+   (u_xlat16_13.x = (u_xlat16_13.x * _RimShadowIntensity));
     (u_xlat16_13.x = (u_xlat16_13.x * _ES_RimShadowIntensity));
     (u_xlat16_13.x = (u_xlat16_13.x * 0.25));
+
+    // lerp(1,u_xlat16_31*2,u_xlat16_13);
     (u_xlat16_31.xyz = ((u_xlat16_31.xyz * vec3(2.0, 2.0, 2.0)) + vec3(-1.0, -1.0, -1.0)));
     (u_xlat16_13.xyz = ((u_xlat16_13.xxx * u_xlat16_31.xyz) + vec3(1.0, 1.0, 1.0)));
+//u_xlat16_13 = rimColor
+//todo:
+
     //u_xlat16_13.xyz 纯白
     (u_xlat16_13.xyz = (u_xlat1.xyz * u_xlat16_13.xyz));
 
@@ -857,7 +894,7 @@ void main(){
     (u_xlat1.w = u_xlat0.y);
     (SV_Target1 = u_xlat1);
 
-    SV_Target0 = debugColor;
+    SV_Target0 = vec4(debugColor,1);
     (SV_Target2 = hlslcc_FragCoord.z);
     return;
 }

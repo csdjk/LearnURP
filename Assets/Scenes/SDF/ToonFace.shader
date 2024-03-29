@@ -94,9 +94,7 @@ Shader "lcl/ToonFace"
                 float lightAtten = 1 - (dot(L.xz, forward.xz) * 0.5 + 0.5);
                 float filpU = sign(dot(L.xz, left.xz));
                 float2 shadow_uv = input.uv * float2(filpU, 1);
-                float3 shaodwRamp = SAMPLE_TEXTURE2D(_FaceShadowTex, sampler_FaceShadowTex, shadow_uv).rgb;
-
-                // float faceShadow = step(lightAtten+ _FaceLightOffset, shaodwRamp.r);
+                float3 shaodwRamp = SAMPLE_TEXTURE2D(_FaceShadowTex, sampler_FaceShadowTex, shadow_uv).a;
                 float faceShadow = SmoothValue(lightAtten + _FaceLightOffset, _ShadowSmoothness, shaodwRamp.r);
 
                 return half4(faceShadow.xxx, 1);

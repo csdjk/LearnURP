@@ -555,10 +555,14 @@ vec3 debugColor = vec3(1.0, 0.0, 0.0);
     (u_xlat16_9.xyz = log2(u_xlat16_9.xyz));
     (u_xlat16_18.xyz = (u_xlat16_18.xxx * u_xlat16_9.xyz));
     (u_xlat16_18.xyz = exp2(u_xlat16_18.xyz));
+
     (u_xlat16_6.xyz = ((u_xlat16_6.xyz * vec3(_Rimintensity)) + (-u_xlat16_18.xyz)));
     (u_xlat16_5.xyz = ((u_xlat16_5.xxx * u_xlat16_6.xyz) + u_xlat16_18.xyz));
+    debugColor = u_xlat16_5.xyz;
+
     (u_xlat16_6.xyz = ((-u_xlat16_5.xyz) + u_xlat16_8.xyz));
     (u_xlat16_7.xyz = ((vec3(vec3(_RimType0, _RimType0, _RimType0)) * u_xlat16_6.xyz) + u_xlat16_5.xyz));
+
   }
 
   //
@@ -591,7 +595,7 @@ vec3 debugColor = vec3(1.0, 0.0, 0.0);
   (u_xlat16_5.xyz = ((u_xlat16_18.xyz * _ES_HeightLerpBottomColor.www) + u_xlat16_6.xyz));
   (u_xlat16_6.xyz = (vec3(u_xlat39) * _ES_HeightLerpTopColor.xyz));
   (u_xlat16_5.xyz = ((u_xlat16_6.xyz * _ES_HeightLerpTopColor.www) + u_xlat16_5.xyz));
-debugColor = u_xlat16_5.xyz;
+// debugColor = u_xlat16_5.xyz;
   (u_xlat16_5.xyz = clamp(u_xlat16_5.xyz, 0.0, 1.0));
 
 

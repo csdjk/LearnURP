@@ -23,10 +23,12 @@ Material:
   m_Name: Hair
   m_Shader: {fileID: 4800000, guid: cb132f3a189bce64b8496ad5066cbae1, type: 3}
   m_ValidKeywords:
+  - _TOON_BACK_COLOR
   - _TOON_HAIR
   m_InvalidKeywords:
   - _ES_LEVEL_ADJUST_ON
   - _SHOWVALUE_TEXTURE_R
+  - _USESELFOUTLINE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -118,20 +120,22 @@ Material:
     - _BumpScale: 1
     - _CUTOFF: 0
     - _CharacterOnly: 0
-    - _CharacterOnly_FoldoutState: 0
+    - _CharacterOnly_FoldoutState: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ColorMask: 15
     - _Cull: 2
     - _CullMode: 2
     - _Cutoff: 0.5
+    - _DEPTH_RIM_LIGHT: 0
+    - _DEPTH_RIM_LIGHT_FoldoutState: 1
     - _DIFFUSE_RAMP: 0
     - _DIFFUSE_RAMP_FoldoutState: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EMISSION: 0
-    - _EMISSION_FoldoutState: 0
+    - _EMISSION_FoldoutState: 1
     - _ES_CharacterDisableLocalMainLight: 1
     - _ES_CharacterShadowFactor: 1
     - _ES_HeightLerpBottom: 0.4
@@ -142,19 +146,24 @@ Material:
     - _ES_LevelShadow: 0
     - _ES_OutLineDarkenVal: 0
     - _ES_OutLineLightedVal: 0
+    - _ES_Rim: 0
+    - _ES_RimShadow: 0
+    - _ES_RimShadowIntensity: 1
+    - _ES_RimShadow_FoldoutState: 1
+    - _ES_Rim_FoldoutState: 1
     - _ES_SPIntensity: 1
     - _EmissionIntensity: 3
     - _EmissionThreshold: 0.5
     - _EnvironmentReflections: 1
     - _Fresnel: 0
     - _FresnelColorStrength: 1
-    - _Fresnel_FoldoutState: 0
+    - _Fresnel_FoldoutState: 1
     - _Gamma: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HeightLerp: 0
-    - _HeightLerp_FoldoutState: 0
+    - _HeightLerp_FoldoutState: 1
     - _Invert: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
@@ -165,18 +174,25 @@ Material:
     - _OutlineExtdStart: 6.52
     - _OutlineOffset: 0
     - _OutlineScale: 0.015
-    - _OutlineWidth: 0.0508
+    - _OutlineWidth: 0.01
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _RampLevel: 8
     - _ReceiveShadows: 1
+    - _RenderType: 0
     - _Rim: 0
+    - _RimLightIntensity: 3
+    - _RimLightSmoothness: 0
+    - _RimLightThreshold: 0.5
+    - _RimLightWidth: 0.003
+    - _RimShadow: 0
     - _RimShadowCt: 1
-    - _RimShadowFeather: 0
+    - _RimShadowFeather: 0.01
     - _RimShadowIntensity: 1
     - _RimShadowOffset: 0
     - _RimShadowWidth: 1
-    - _Rim_FoldoutState: 0
+    - _RimShadow_FoldoutState: 1
+    - _Rim_FoldoutState: 1
     - _ScleraSize: 1
     - _SelfShadow: 0
     - _SelfShadow_FoldoutState: 1
@@ -191,19 +207,24 @@ Material:
     - _SpecularShadowIntensity: 0
     - _SpecularShadowOffset: 0.75
     - _SpecularShininess: 1
-    - _Specular_FoldoutState: 0
+    - _Specular_FoldoutState: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TOON_BACK_COLOR: 1
     - _TOON_HAIR: 1
+    - _TOON_HORN: 0
     - _TOON_OUT_LINE: 1
     - _TOON_OUT_LINE_FoldoutState: 1
     - _Test: 0.5
     - _Test1: 0.5
     - _USE_MATERIAL_VALUES_LUT: 0
+    - _USE_MATERIAL_VALUES_LUT_FoldoutState: 1
+    - _UseSelfOutline: 1
     - _WorkflowMode: 1
     - _ZTestMode: 4
     - _ZWrite: 1
     - _ZWriteMode: 1
+    - _mBloomIntensity0: 1
     m_Colors:
     - _BackColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -214,18 +235,24 @@ Material:
     - _CharacterLocalMainLightDark1: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomMainLightDir: {r: 1, g: 1, b: 1, a: 0}
+    - _ES_AddColor: {r: 0, g: 0, b: 0, a: 1}
     - _ES_HeightLerpBottomColor: {r: 0.31249994, g: 0.31249994, b: 0.218, a: 0.21960784}
     - _ES_HeightLerpMiddleColor: {r: 1, g: 1, b: 1, a: 0.21960784}
     - _ES_HeightLerpTopColor: {r: 1, g: 1, b: 1, a: 0.21960784}
-    - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.21960784}
-    - _ES_LevelShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+    - _ES_LevelShadowColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+    - _ES_LevelSkinLightColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelSkinShadowColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_RimShadowColor: {r: 1, g: 1, b: 1, a: 0.50196}
     - _ES_SPColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelBSI: {r: 1, g: 1, b: 0, a: 0}
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
     - _NewLocalLightStrength: {r: 0, g: 0, b: 0, a: 0}
     - _OutlineColor: {r: 0.191, g: 0, b: 0, a: 1}
-    - _RimShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RimLightColor: {r: 0.212721, g: 0.23078538, b: 0.291, a: 1}
+    - _RimShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimShadowOffset: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

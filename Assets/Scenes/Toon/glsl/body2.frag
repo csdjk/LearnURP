@@ -436,9 +436,8 @@ void main(){
         (u_xlat16_46 = u_xlat9.z);
         (u_xlat16_47 = u_xlat9.x);
 
-        (u_xlat9.xyz = texelFetch(_MaterialValuesPackLUT, ivec2(u_xlatu9.x,1), int(u_xlatu9.w)).xyz);
-
-debugColor = u_xlat9.xxx*0.1;
+        // (u_xlat9.xyz = texelFetch(_MaterialValuesPackLUT, ivec2(u_xlatu9.x,1), int(u_xlatu9.w)).xyz);
+        // debugColor = u_xlat9.xxx*0.1;
     }
     else
     {
@@ -472,7 +471,6 @@ debugColor = u_xlat9.xxx*0.1;
     //u_xlat16_32 = = PackLUT.x
     //u_xlat16_32 = PackLUT.y = _SpecularRoughness0
 
-
     (u_xlat16_33.x = ((-u_xlat16_32) + u_xlat16_20));
     (u_xlat16_32 = (u_xlat16_32 + u_xlat16_20));
     //u_xlat26.x == screenShadow
@@ -503,6 +501,7 @@ debugColor = u_xlat9.xxx*0.1;
     (u_xlat28 = clamp(u_xlat28, 0.0, 1.0));
     (u_xlat16_32 = ((u_xlatb40) ? (u_xlat28) : (0.0)));
     //u_xlat10_1 = GBufferA, u_xlat4 = Albedo
+    //lerp()
     (u_xlat16_11.xyz = ((u_xlat4.xyz * vec3(vec3(_EmissionIntensity, _EmissionIntensity, _EmissionIntensity))) + (-u_xlat10_1.xyz)));
     (u_xlat16_11.xyz = ((vec3(u_xlat16_32) * u_xlat16_11.xyz) + u_xlat10_1.xyz));
     //-----------------
@@ -523,6 +522,8 @@ debugColor = u_xlat9.xxx*0.1;
     (u_xlat16_7.xyz = ((u_xlat16_7.xyz * u_xlat4.xyz) + u_xlat16_11.xyz));
     //u_xlat3 = MainLightColor
     (u_xlat16_7.xyz = ((u_xlat16_7.xyz * u_xlat3.xyz) + u_xlat16_12.xyz));
+
+
     (u_xlat16_7.xyz = ((_ES_AddColor.xyz * u_xlat4.xyz) + u_xlat16_7.xyz));
 
     (u_xlatb40 = (_UsingDitherAlpha < 1));
@@ -590,6 +591,8 @@ debugColor = u_xlat9.xxx*0.1;
         (u_xlat2.x = (u_xlat2.x * 0.30000001));
         (u_xlat15.xyz = (((-u_xlat16_11.xyz) * vec3(0.5, 0.5, 0.5)) + _CharacterLocalMainLightColor1.xyz));
         (u_xlat2.xyz = ((u_xlat2.xxx * u_xlat15.xyz) + u_xlat16_12.xyz));
+    debugColor = u_xlat2.xyz;
+
         (u_xlat16_18.x = (u_xlat26.x * u_xlat16_18.x));
 
         //Linear01Depth(u_xlat40)
@@ -616,6 +619,7 @@ debugColor = u_xlat9.xxx*0.1;
         (u_xlat16_31 = log2(u_xlat16_31));
         (u_xlat16_31 = (u_xlat16_31 * _RimEdge));
         (u_xlat16_31 = exp2(u_xlat16_31));
+
         if ((u_xlati39 != 0))
         {
             (u_xlatu3.x = uint(int(u_xlat16_5.x)));
@@ -623,6 +627,7 @@ debugColor = u_xlat9.xxx*0.1;
             (u_xlatu3.z = 0u);
             (u_xlatu3.w = 0u);
             (u_xlat0.xyz = texelFetch(_MaterialValuesPackLUT, ivec2(u_xlatu3.xy), int(u_xlatu3.w)).xyz);
+            //边缘光平滑值
             (u_xlat16_44 = u_xlat0.y);
             (u_xlat16_19.xy = u_xlat0.xz);
         }
@@ -636,37 +641,53 @@ debugColor = u_xlat9.xxx*0.1;
         (u_xlat16_6.x = ((-u_xlat16_6.x) + 1.0));
         (u_xlat16_31 = (u_xlat16_31 + -0.81999999));
         (u_xlat16_31 = (u_xlat16_31 * 12.500003));
+
         (u_xlat16_31 = clamp(u_xlat16_31, 0.0, 1.0));
         (u_xlat16_45 = ((u_xlat16_31 * -2.0) + 3.0));
         (u_xlat16_31 = (u_xlat16_31 * u_xlat16_31));
         (u_xlat16_31 = (u_xlat16_31 * u_xlat16_45));
+
+    // debugColor = u_xlat16_31.xxx;
         (u_xlatb0 = (u_xlat16_44 < u_xlat16_31));
         (u_xlat16_31 = ((u_xlatb0) ? (u_xlat16_31) : (0.0)));
         (u_xlat16_8.xyz = (u_xlat2.xyz * vec3(u_xlat16_31)));
+    // debugColor = u_xlat16_8.xyz;
+
         (u_xlat16_11.xyz = (u_xlat16_8.xyz * vec3(_Rimintensity)));
         (u_xlat16_31 = dot(u_xlat16_11.xyz, vec3(0.212671, 0.71516001, 0.072168998)));
         (u_xlat16_31 = (u_xlat16_6.x * u_xlat16_31));
         (u_xlat16_18.x = (u_xlat16_18.x * u_xlat16_31));
         (u_xlat16_18.x = clamp(u_xlat16_18.x, 0.0, 1.0));
+        // lerp(u_xlat16_7.xyz,u_xlat16_8.xyz*_Rimintensity,u_xlat16_18.x)
         (u_xlat16_12.xyz = ((u_xlat16_8.xyz * vec3(_Rimintensity)) + (-u_xlat16_7.xyz)));
         (u_xlat16_12.xyz = ((u_xlat16_18.xxx * u_xlat16_12.xyz) + u_xlat16_7.xyz));
+    debugColor =u_xlat16_12.xyz;
+
         (u_xlat16_11.xyz = ((u_xlat16_11.xyz * vec3(vec3(_ES_RimLightAddMode, _ES_RimLightAddMode, _ES_RimLightAddMode))) + u_xlat16_12.xyz));
         (u_xlat16_31 = max(u_xlat16_6.x, 0.001));
         (u_xlat16_31 = log2(u_xlat16_31));
         (u_xlat16_31 = (u_xlat16_31 * u_xlat16_19.y));
         (u_xlat16_31 = exp2(u_xlat16_31));
         (u_xlat16_31 = (u_xlat16_31 + 1.0));
+
         (u_xlat16_6.xzw = max(u_xlat16_7.xyz, vec3(0.001, 0.001, 0.001)));
         (u_xlat16_6.xzw = log2(u_xlat16_6.xzw));
         (u_xlat16_6.xzw = (vec3(u_xlat16_31) * u_xlat16_6.xzw));
         (u_xlat16_6.xzw = exp2(u_xlat16_6.xzw));
 
-        (u_xlat16_8.xyz = ((u_xlat16_8.xyz * vec3(_Rimintensity)) + (-u_xlat16_6.xzw)));
+    // debugColor = u_xlat16_18.xxx;
+    // debugColor = u_xlat16_6.xzw;
+    // debugColor = u_xlat16_8.xyz * _Rimintensity;
         //u_xlat16_8 = RimLight
-
+        // u_xlat16_18.xyz=lerp(u_xlat16_6.xzw,u_xlat16_8.xyz * _Rimintensity,u_xlat16_18.x)
+        (u_xlat16_8.xyz = ((u_xlat16_8.xyz * vec3(_Rimintensity)) + (-u_xlat16_6.xzw)));
         (u_xlat16_18.xyz = ((u_xlat16_18.xxx * u_xlat16_8.xyz) + u_xlat16_6.xzw));
+    // debugColor = u_xlat16_11.xyz;
+
+        //u_xlat16_7.xyz = lerp(u_xlat16_18.xyz,u_xlat16_11.xyz,u_xlat16_19.x)
         (u_xlat16_6.xzw = ((-u_xlat16_18.xyz) + u_xlat16_11.xyz));
         (u_xlat16_7.xyz = ((u_xlat16_19.xxx * u_xlat16_6.xzw) + u_xlat16_18.xyz));
+
     }
 
     //上下渐变--------------------------
@@ -708,6 +729,7 @@ debugColor = u_xlat9.xxx*0.1;
     (u_xlat16_6.xyz = (vec3(u_xlat40) * _ES_HeightLerpTopColor.xyz));
     (u_xlat16_18.xyz = ((u_xlat16_6.xyz * _ES_HeightLerpTopColor.www) + u_xlat16_18.xyz));
     (u_xlat16_18.xyz = clamp(u_xlat16_18.xyz, 0.0, 1.0));
+
     (u_xlat16_18.xyz = (u_xlat16_18.xyz * u_xlat16_7.xyz));
     (u_xlat16_18.xyz = (u_xlat16_18.xyz + u_xlat16_18.xyz));
     //上下渐变--------------------------
@@ -731,27 +753,24 @@ debugColor = u_xlat9.xxx*0.1;
         (u_xlat16_6.z = 1.0);
         (u_xlat16_5.x = _mBloomIntensity0);
     }
-
+  // color = color * (bloomIntensity * bloomColor + 1);
     (u_xlat16_6.xyz = ((u_xlat16_5.xxx * u_xlat16_6.xyz) + vec3(1.0, 1.0, 1.0)));
     (u_xlat16_5.xyz = (u_xlat16_18.xyz * u_xlat16_6.xyz));
-
-    (u_xlat16_44 = (((-_GlobalOneMinusAvatarIntensityEnable) * _GlobalOneMinusAvatarIntensity) + 1.0));
+//----
     //u_xlat16_44 = 1;
+    (u_xlat16_44 = (((-_GlobalOneMinusAvatarIntensityEnable) * _GlobalOneMinusAvatarIntensity) + 1.0));
     (u_xlat16_5.xyz = (vec3(u_xlat16_44) * u_xlat16_5.xyz));
     (u_xlat16_44 = (((-_OneMinusGlobalMainIntensityEnable) * _OneMinusGlobalMainIntensity) + 1.0));
-
     (u_xlat16_6.xyz = (vec3(u_xlat16_44) * u_xlat16_5.xyz));
 
     //后面的计算应该是 Fog
     (u_xlat0.xyz = (vs_TEXCOORD2.xyz + (-_WorldSpaceCameraPos.xyz)));
     (u_xlat0.x = dot(u_xlat0.xyz, u_xlat0.xyz));
     (u_xlat0.x = sqrt(u_xlat0.x));
-
     (u_xlat16_2.xz = vec2(_ES_FogNear, _ES_FogDensity));
     (u_xlat16_2.yw = vec2(_ES_HeightFogFogNear, _ES_HeightFogDensity));
     (u_xlat16_7.x = _ES_FogFar);
     (u_xlat16_7.y = _ES_HeightFogFogFar);
-
     (u_xlat16_33.xy = ((-u_xlat16_2.xy) + u_xlat16_7.xy));
     (u_xlat16_33.xy = ((vec2(vec2(_ES_FogCharacterNearFactor, _ES_FogCharacterNearFactor)) * u_xlat16_33.xy) + u_xlat16_2.xy));
     (u_xlat16_8.xy = (u_xlat0.xx + (-u_xlat16_33.xy)));
@@ -803,6 +822,7 @@ debugColor = u_xlat9.xxx*0.1;
     (u_xlat16_7.xyz = ((vec3(u_xlat16_45) * u_xlat16_8.xyz) + u_xlat16_7.xyz));
     (u_xlat16_5.xyz = (((-u_xlat16_5.xyz) * vec3(u_xlat16_44)) + u_xlat16_7.xyz));
     //混合Fog Color(角色展示界面基本上没有fog)
+
     (u_xlat16_5.xyz = ((vec3(u_xlat16_44) * u_xlat16_5.xyz) + u_xlat16_6.xyz));
 
 //    debugColor =-u_xlat10_1.xyz + u_xlat16_5.xyz;

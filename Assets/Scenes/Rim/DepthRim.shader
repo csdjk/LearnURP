@@ -19,7 +19,6 @@ Shader "LcL/DepthRim"
 
         [Foldout()]_RIM_LIGHT ("Rim Light", float) = 0
         _RimLightColor ("Rim Light Color", Color) = (1, 1, 1, 1)
-
         _RimLightWidth ("Rim Light Width", Range(0, 0.1)) = 0.005
         _RimLightThreshold ("Rim Light Threshold", Range(0, 1)) = 0.5
         [FoldoutEnd]_RimLightSmoothness ("Rim Light Smoothness", Range(0, 1)) = 0
@@ -38,6 +37,7 @@ Shader "LcL/DepthRim"
             float4 _BaseMap_ST;
             float4 _BaseColor;
             float4 _EmissionColor;
+
             float4 _RimLightColor;
             float _BumpScale;
             float _Smoothness;

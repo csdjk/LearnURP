@@ -92,7 +92,7 @@ Shader "LcL/GLSLTest"
                 // output.uv = input.uv;
 
                 // output.color = input.color;
-                // output.viewDirWS = GetWorldSpaceViewDir(positionInputs.positionWS);
+                output.viewDirWS = GetWorldSpaceViewDir(positionInputs.positionWS);
 
                 output.screenUV = ComputeScreenPos(positionInputs.positionCS);
 
@@ -198,8 +198,17 @@ Shader "LcL/GLSLTest"
 
                 // color.r = step(0.1, _Test0);
 
-                color.rgb = input.tangentWS * input.bitangentWS;
 
+                float3 view = normalize(input.viewDirWS);
+
+
+
+                // color.rgb = TransformWorldToObjectDir(view);
+                // // color.rgb = mul((float3x3)UNITY_MATRIX_I_M, view);
+
+
+                // color.rgb = TransformWorldToObject(view);
+                color.rgb = mul(UNITY_MATRIX_I_M, float4(view, 1)).xyz;
 
                 return color;
             }

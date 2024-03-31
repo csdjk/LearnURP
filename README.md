@@ -4,7 +4,14 @@
 
 记录一下在URP中实现的一些效果Demo。
 
-注意需要收到修改一下URP的源码，`GetCameraColorFrontBuffer`和 `SwapColorBuffer`方法的 `internal`改为 `public`。
+注意需要修改一下URP的源码，暴露部分接口，把 `private`或者 `internal` 改为 `public`。
+
+|            Class            |            Function or Property            |
+| :--------------------------: | :----------------------------------------: |
+|                              |         GetCameraColorFrontBuffer         |
+|                              |              SwapColorBuffer              |
+| UniversalRenderPipelineAsset | rendererDisplayList<br />rendererIndexList |
+|                              |                                            |
 
 ### [Grass(GPU Instance)](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/GpuInstance/Grass)
 

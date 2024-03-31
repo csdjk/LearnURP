@@ -65,7 +65,7 @@
             // Universal Pipeline keywords
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            
+
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fog
@@ -73,11 +73,12 @@
             //--------------------------------------
             // GPU Instancing
             #pragma multi_compile_instancing
+
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            
+
             sampler2D _MainTex;
             sampler2D _SpecColorTex;
             sampler2D _SSSTex;
@@ -104,7 +105,7 @@
 
             #pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
-            
+
             struct Attributes //appdata
 
             {
@@ -138,7 +139,7 @@
                 Varyings output = (Varyings)0;
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_TRANSFER_INSTANCE_ID(input, output);
-                
+
 				VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
 
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
@@ -147,7 +148,7 @@
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
                 output.normalWS = normalWS;
                 output.viewDirWS = viewDirWS;
-                
+
                 #if defined(REQUIRES_WORLD_SPACE_POS_INTERPOLATOR)
                     output.positionWS = float4(positionWS, 0);
                 #endif
@@ -155,7 +156,7 @@
                 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
                     output.shadowCoord = GetShadowCoord(positionInputs);
                 #endif
-                
+
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.color = input.color;
                 return output;
@@ -163,7 +164,7 @@
 
             //--------------------------------------
             //  shader and functions
-            
+
             #define _PI 3.14159265359
             // Beckmann normal distribution function here for Specualr
             half NDFBeckmann(float roughness, float NdotH)
@@ -172,7 +173,7 @@
                 float NdotHSqr = NdotH * NdotH;
                 return max(0.000001, (1.0 / (_PI * roughnessSqr * NdotHSqr * NdotHSqr)) * exp((NdotHSqr - 1) / (roughnessSqr * NdotHSqr)));
             }
-            
+
             // Fast back scatter distribution function here for virtual back lighting
             half3 LightScatterFunction(half3 surfaceColor, half3 normalWS, half3 viewDir, Light light, half distortion, half power, half scale)
             {
@@ -183,11 +184,11 @@
                 half3 col = light.color * VdotH;
                 return col;
             }
-            
+
 
             //--------------------------------------
             //  Fragment shader and functions
-	
+
 			#if SHADER_LIBRARY_VERSION_MAJOR < 9
 				float3 GetWorldSpaceViewDir(float3 positionWS)
 				{
@@ -211,19 +212,19 @@
 
                 //  Apply lighting
                 float4 finCol = 1; //initializing
-                
+
                 float4 mainTex = tex2D(_MainTex, input.uv);
                 float4 specClorTex = tex2D(_SpecColorTex, input.uv);
                 float4 sssTex = tex2D(_SSSTex, input.uv);
                 float4 ilmTex = tex2D(_ILMTex, input.uv);
-                
+
                 float shadowThreshold = ilmTex.g;
                 shadowThreshold *= input.color.r;
                 shadowThreshold = 1 - shadowThreshold + _ShadowShift;
-                
+
                 float3 normalDir = normalize(input.normalWS);
                 float3 viewDirWS = GetWorldSpaceViewDir(input.positionWS.xyz);
-                
+
                 #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
                     float3 positionWS = input.positionWS.xyz;
                 #endif
@@ -242,12 +243,12 @@
                 float NdotH = max(0, dot(normalDir, halfDir));
                 float halfLambertForToon = NdotL * 0.5 + 0.5;
                 half atten = mainLight.shadowAttenuation * mainLight.distanceAttenuation;
-                
+
                 half3 brightCol = mainTex.rgb * (halfLambertForToon) * _BrightAddjustment;
                 half3 shadowCol = mainTex.rgb * sssTex.rgb;
                 half3 scatterOut = LightScatterFunction(shadowCol.xyz, normalDir.xyz, viewDirWS, mainLight, _Distortion, _Power, _Scale);
-                
-                
+
+
                 halfLambertForToon = saturate(halfLambertForToon);
                 half spec = NDFBeckmann(_Roughness, NdotH);
                 half SpecularMask = ilmTex.b;
@@ -255,9 +256,9 @@
                 half shadowContrast = step(shadowThreshold * _ShadowRecieveThresholdWeight, NdotL * atten);
                 half3 ToonDiffuse = brightCol * shadowContrast;
                 half3 mergedDiffuseSpecular = lerp(ToonDiffuse, specClorTex, SpecularWeight * (_SpecularPower * SpecularMask));
-                
+
                 finCol.rgb = lerp(shadowCol, mergedDiffuseSpecular, shadowContrast);
-                
+
                 finCol.rgb = lerp(finCol.rgb, finCol.rgb + (shadowCol.rgb * shadowCol.rgb), scatterOut.rgb);
                 finCol.rgb *= mainLight.color.rgb;
                 float DetailLine = ilmTex.a;
@@ -270,8 +271,8 @@
             }
             ENDHLSL
         }
-        
-        
+
+
         Pass //Shadow Caster Pass
 
         {
@@ -294,7 +295,7 @@
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
-            
+
             ENDHLSL
         }
     }

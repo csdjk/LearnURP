@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Active: 1
   settings:
     passTag: ToonOutline
-    Event: 400
+    Event: 300
     filterSettings:
       RenderQueueType: 0
       LayerMask:

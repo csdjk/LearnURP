@@ -12,6 +12,7 @@ public class ComputeTools : MonoBehaviour
     public Matrix4x4 matrixM;
     private void OnEnable()
     {
+
         //根据光照向量计算旋转角度
         Quaternion rotation = Quaternion.LookRotation(lightVector);
         Vector3 eulerAngle = rotation.eulerAngles;
@@ -20,10 +21,10 @@ public class ComputeTools : MonoBehaviour
 
 
         Matrix4x4 matrixM = new Matrix4x4(
-                  new Vector4(-0.02951f, -0.9974f, -0.06578f, 0.0f),
-                  new Vector4(0.35816f, -0.07199f, 0.93088f, 0.0f),
-                  new Vector4(-0.9332f, 0.00391f, 0.35935f, 0.0f),
-                  new Vector4(-0.00487f, 1.48987f, -0.02953f, 1.0f)
+                  new Vector4(-0.93316f, 0.00f, 0.35946f, 0.00f),
+                  new Vector4(0.00f, 1.00f, 0.00f, 0.00f),
+                  new Vector4(-0.35946f, 0.00f, -0.93316f, 0.00f),
+                  new Vector4(0.00f, 0.00f, 0.00f, 1.00f)
               );
 
         CalculateModelScaleRotationCenter(matrixM);

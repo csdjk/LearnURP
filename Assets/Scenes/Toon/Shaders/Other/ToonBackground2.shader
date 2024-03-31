@@ -6,13 +6,11 @@ Shader "LcL/ToonBackground2"
         _MainTex ("Main Texture", 2D) = "white" { }
         _MainTexScale ("Main Texture Scale", Float) = 2.37
 
-
         _EmissionTex ("Emission Texture", 2D) = "white" { }
         _EmissionColor ("Emission Color", Color) = (0.3769, 0.30657, 1.00, 1.00)
         _EmissionFlowInverse ("Emission Flow Inverse", Range(0, 1)) = 0.00
         _EmissionFlowStrength ("Emission Flow Strength", Range(0, 1)) = 1.00
         _EmissionStrength ("Emission Strength", Float) = 11.92
-        _EmissionTex_ST ("Emission Texture ST", Vector) = (1.00, 1.00, 0.00, 0.00)
         _FlipOnBackface ("Flip On Backface", Range(0, 1)) = 0.00
         _LerpColor ("Lerp Color", Color) = (1.00, 1.00, 1.00, 1.00)
         _LerpValue ("Lerp Value", Range(0, 1)) = 0.00

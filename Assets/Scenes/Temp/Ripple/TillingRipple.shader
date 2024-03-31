@@ -45,7 +45,7 @@
                 o.uv = v.uv;
                 return o;
             }
-            
+
             half4 frag(v2f i) : SV_Target
             {
                 half4 col = 1;

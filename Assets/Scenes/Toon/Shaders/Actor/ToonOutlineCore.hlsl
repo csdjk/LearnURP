@@ -29,17 +29,18 @@ Varyings ToonOutlineVertex(Attributes input)
 
     if (_UseSelfOutline == 1)
     {
-        VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
-        float3 normalDir = normalize(input.tangentOS);
-        float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, normalDir);
-        float3 ndcNormal = normalize(TransformWViewToHClip(viewNormal.xyz)) * positionInputs.positionCS.w;
-        float width = input.color.w * _OutlineWidth;
-        positionInputs.positionCS.xy += width * ndcNormal.xy;
-        output.positionCS = positionInputs.positionCS;
+        // VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
+        // float3 normalDir = normalize(input.tangentOS);
+        // float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, normalDir);
+        // float3 ndcNormal = normalize(TransformWViewToHClip(viewNormal.xyz)) * positionInputs.positionCS.w;
+        // float width = input.color.w * _OutlineWidth;
+        // positionInputs.positionCS.xy += width * ndcNormal.xy;
+        // output.positionCS = positionInputs.positionCS;
 
         //
-        // input.positionOS.xyz += normalize(input.tangentOS.xyz) * _OutlineWidth;
-        // output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+        float width = input.color.w * _OutlineWidth * 0.3;
+        input.positionOS.xyz += normalize(input.tangentOS.xyz) * width;
+        output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
     }
     else
     {

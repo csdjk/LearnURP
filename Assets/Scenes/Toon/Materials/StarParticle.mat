@@ -1,0 +1,249 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StarParticle
+  m_Shader: {fileID: 4800000, guid: a97ba9dd42293ad45ab77a6d102a4d0a, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _DEPTH_RIM_LIGHT
+  - _ES_LEVEL_ADJUST_ON
+  - _USESELFOUTLINE_ON
+  - _USE_MATERIAL_VALUES_LUT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 640b12f8b7f2146499b137984a2efc90, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseCoolRampMultiTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseRampMultiTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaterialValuesPackLUT:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicSmoothnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ActorLightInfo: 0
+    - _ActorLightInfo_FoldoutState: 1
+    - _AlphaClip: 0
+    - _Blend: 0
+    - _BumpScale: 1
+    - _CharacterOnly: 0
+    - _CharacterOnly_FoldoutState: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _CullMode: 2
+    - _Cutoff: 0.5
+    - _DEPTH_RIM_LIGHT: 1
+    - _DEPTH_RIM_LIGHT_FoldoutState: 1
+    - _DIFFUSE_RAMP: 0
+    - _DIFFUSE_RAMP_FoldoutState: 1
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EMISSION: 0
+    - _EMISSION_FoldoutState: 1
+    - _ES_CharacterDisableLocalMainLight: 1
+    - _ES_CharacterShadowFactor: 1
+    - _ES_HeightLerpBottom: 0.4
+    - _ES_HeightLerpTop: 0.2
+    - _ES_LEVEL_ADJUST_ON: 1
+    - _ES_LevelHighLight: 1
+    - _ES_LevelMid: 0.55
+    - _ES_LevelShadow: 0
+    - _ES_OutLineDarkenVal: 0
+    - _ES_OutLineLightedVal: 0
+    - _ES_RimShadow: 0
+    - _ES_RimShadowIntensity: 1
+    - _ES_RimShadow_FoldoutState: 1
+    - _ES_SPIntensity: 1
+    - _EmissionIntensity: 3
+    - _EmissionThreshold: 0.5
+    - _EnvironmentReflections: 1
+    - _Fresnel: 0
+    - _FresnelColorStrength: 1
+    - _Fresnel_FoldoutState: 1
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _HeightLerp: 0
+    - _HeightLerp_FoldoutState: 1
+    - _Metallic: 0
+    - _OcclusionPower: 1
+    - _OcclusionStrength: 1
+    - _OffsetFactor: -0.3
+    - _OutlineExtdMax: 18.16
+    - _OutlineExtdStart: 6.52
+    - _OutlineOffset: 0
+    - _OutlineScale: 0.015
+    - _OutlineWidth: 0.005
+    - _Parallax: 0.005
+    - _QueueOffset: 0
+    - _RampLevel: 8
+    - _ReceiveShadows: 1
+    - _RenderType: 0
+    - _RimLightIntensity: 2
+    - _RimLightSmoothness: 0
+    - _RimLightThreshold: 1
+    - _RimLightWidth: 0.002
+    - _RimShadow: 0
+    - _RimShadowCt: 1
+    - _RimShadowFeather: 0.01
+    - _RimShadowIntensity: 0
+    - _RimShadowWidth: 1
+    - _RimShadow_FoldoutState: 1
+    - _SelfShadow: 0
+    - _SelfShadow_FoldoutState: 1
+    - _ShadowRamp: 1
+    - _ShadowSmoothness: 0.01
+    - _ShadowThreshold: 0.5
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _Specular: 0
+    - _SpecularHighlights: 1
+    - _SpecularIntensity: 1
+    - _SpecularRoughness: 0
+    - _SpecularShadowIntensity: 0
+    - _SpecularShadowOffset: 0.75
+    - _SpecularShininess: 1
+    - _Specular_FoldoutState: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _TOON_BACK_COLOR: 0
+    - _TOON_HAIR: 0
+    - _TOON_HORN: 0
+    - _TOON_OUT_LINE: 1
+    - _TOON_OUT_LINE_FoldoutState: 1
+    - _Test: 0.5
+    - _Test1: 0.5
+    - _USE_MATERIAL_VALUES_LUT: 1
+    - _USE_MATERIAL_VALUES_LUT_FoldoutState: 1
+    - _UseSelfOutline: 1
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    - _mBloomIntensity0: 1
+    m_Colors:
+    - _BackColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CharaWorldSpaceOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _CharacterLocalMainLightColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _CharacterLocalMainLightDark: {r: 0, g: 0, b: 0, a: 1}
+    - _CharacterLocalMainLightDark1: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomMainLightDir: {r: 1, g: 1, b: 1, a: 0}
+    - _ES_AddColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ES_HeightLerpBottomColor: {r: 0.31249997, g: 0.31249997, b: 0.4839999, a: 0.5}
+    - _ES_HeightLerpMiddleColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_HeightLerpTopColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelHighLightColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelShadowColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelSkinLightColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_LevelSkinShadowColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _ES_RimShadowColor: {r: 1, g: 1, b: 1, a: 0.50196}
+    - _ES_SPColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FresnelBSI: {r: 1, g: 1, b: 0, a: 0}
+    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _NewLocalLightStrength: {r: 0, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimShadowOffset: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &7104801510264012663
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

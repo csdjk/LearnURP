@@ -1,3 +1,6 @@
+#ifndef NOISE_INCLUDED
+#define NOISE_INCLUDED
+
 float random(float2 p)
 {
     p = frac(p * 0.3183099 + .1);
@@ -138,7 +141,7 @@ inline float unity_noise_randomValue(float2 uv)
 
 inline float unity_noise_interpolate(float a, float b, float t)
 {
-    return(1.0 - t) * a + (t * b);
+    return (1.0 - t) * a + (t * b);
 }
 
 
@@ -184,3 +187,5 @@ inline float SimpleNoise(float2 UV, float Scale)
     return t;
 }
 // ==================end==============
+
+#endif

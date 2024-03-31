@@ -75,6 +75,7 @@ float u_xlat16_14;
 float u_xlat18;
 float u_xlat16_20;
 void main(){
+vec3 debugColor = vec3(1.0, 0.0, 0.0);
 
   (u_xlat0.x = dot(vs_TEXCOORD3.xyz, vs_TEXCOORD3.xyz));
   (u_xlat0.x = inversesqrt(u_xlat0.x));
@@ -94,8 +95,13 @@ void main(){
   (u_xlat16_14 = sin((-_Angle)));
   (u_xlat16_4.z = ((u_xlat16_14 * u_xlat16_2.x) + u_xlat16_9.y));
   (u_xlat16_4.y = u_xlat16_2.y);
+
+
   (u_xlat16_1.xyz = textureLod(_AdditionalReflectionCube, u_xlat16_4.xyz, _AdditionalReflectionCubeMip).xyz);
+//addReflectionColor
   (u_xlat16_2.xyz = (u_xlat16_1.xyz * _AdditionalReflectionColor.xyz));
+// debugColor.xyz = u_xlat16_1.xyz;
+
   (u_xlat18 = dot(vs_TEXCOORD2.xyz, vs_TEXCOORD2.xyz));
   (u_xlat18 = inversesqrt(u_xlat18));
   (u_xlat1.xyz = (vec3(u_xlat18) * vs_TEXCOORD2.xyz));
@@ -112,6 +118,8 @@ void main(){
   (u_xlat16_0.xzw = texture(_BottomTex, u_xlat0.xz).xyz);
   (u_xlat1.xy = ((vs_TEXCOORD1.xy * _BaseTex_ST.xy) + _BaseTex_ST.zw));
   (u_xlat16_1.xyz = texture(_BaseTex, u_xlat1.xy).xzw);
+// debugColor = u_xlat16_1.zzz;
+
   (u_xlat0.xzw = (u_xlat16_0.xzw * u_xlat16_1.yyy));
   (u_xlat16_3.xyz = (u_xlat0.xzw * _BottomColor.xyz));
   (u_xlat0.xzw = (((-u_xlat0.xzw) * _BottomColor.xyz) + _RimColor.xyz));
@@ -126,20 +134,36 @@ void main(){
   (u_xlat5.xy = (vs_TEXCOORD0.xy / vs_TEXCOORD0.ww));
   (u_xlat5.z = ((-u_xlat5.x) + 1.0));
   (u_xlat16_5.xyz = texture(_ReflectionColor, u_xlat5.zy).xyz);
+
+// blend color
   (u_xlat16_3.xyz = ((vec3(u_xlat16_20) * u_xlat16_5.xyz) + u_xlat0.xyz));
   (u_xlat16_3.xyz = ((u_xlat16_1.xxx * _BaseColor.xyz) + u_xlat16_3.xyz));
+
+
   (u_xlat16_20 = (u_xlat16_1.z * _BaseColor.w));
   (SV_Target0.w = (u_xlat16_20 * vs_TEXCOORD4.w));
   (u_xlat16_2.xyz = ((u_xlat16_3.xyz * u_xlat16_2.xyz) + (-u_xlat16_3.xyz)));
+
+// debugColor = u_xlat16_2.xyz;
+
+
   (u_xlat16_2.xyz = ((vec3(_AddtionalReflactionAlpha) * u_xlat16_2.xyz) + u_xlat16_3.xyz));
+
   (u_xlat0.xy = ((vs_TEXCOORD1.xy * _LightTex_ST.xy) + _LightTex_ST.zw));
   (u_xlat16_0.x = texture(_LightTex, u_xlat0.xy).x);
+debugColor.xy = vs_TEXCOORD1.xy;
+
+
   (u_xlat16_20 = log2(u_xlat16_0.x));
   (u_xlat16_20 = (u_xlat16_20 * _LightPower));
   (u_xlat16_20 = exp2(u_xlat16_20));
+
+
   (u_xlat16_20 = (u_xlat16_20 * _LightColor.x));
   (u_xlat16_20 = ((u_xlat16_20 * _LightIntensity) + _LightOffset));
   (u_xlat16_20 = clamp(u_xlat16_20, 0.0, 1.0));
   (SV_Target0.xyz = (vec3(u_xlat16_20) * u_xlat16_2.xyz));
+
+  SV_Target0.xyz = debugColor;
   return ;
 }

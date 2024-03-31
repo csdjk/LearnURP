@@ -2,7 +2,6 @@
 // https://github.com/csdjk/LearnUnityShader
 // 2022.4.5
 // 封装的一些功能节点
-
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
 #include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/BSDF.hlsl"

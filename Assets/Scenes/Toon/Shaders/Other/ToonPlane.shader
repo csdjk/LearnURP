@@ -2,34 +2,40 @@ Shader "LcL/ToonPlane"
 {
     Properties
     {
-        _AdditionalReflectionCube ("Additional Reflection Cube", CUBE) = "" {}
-        _ReflectionColor ("Reflection Color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _BaseTex ("Base Tex", 2D) = "white" {}
-        _BottomTex ("Bottom Tex", 2D) = "white" {}
-        _LightTex ("Light Tex", 2D) = "white" {}
-
+        _BaseTex ("Base Tex", 2D) = "white" { }
         _BaseColor ("Base Color", Color) = (0.03869, 0.04065, 0.1238, 1.0)
+
+
+        [Foldout()]_AdditionalReflection ("Additional Reflection", float) = 1
+        _AdditionalReflectionCube ("Additional Reflection Cube", CUBE) = "" { }
+        _AdditionalReflectionCubeMip ("Additional Reflection Cube Mip", Range(0, 10)) = 0.0
+        [HDR]_AdditionalReflectionColor ("Additional Reflection Color", Color) = (1.36608, 1.36608, 1.97667, 1.0)
+        _AddtionalReflactionAlpha ("Additional Reflection Alpha", Range(0, 1)) = 0.638
+        [FoldoutEnd]_Angle ("Angle", Range(0, 5)) = 3.28
+
+        [Foldout()]_Bottom ("Bottom Color", float) = 1
+        _BottomTex ("Bottom Tex", 2D) = "white" { }
         _BottomColor ("Bottom Color", Color) = (0.10946, 0.14126, 0.54572, 1.0)
+        _ViewOffset ("View Offset", Range(0, 2)) = 0.80
         _RimColor ("Rim Color", Color) = (0.8712, 0.85377, 1.0, 1.0)
+        _RimRange ("Rim Range", Range(0, 50)) = 3.20
         _MainSpeed ("Main Speed", Vector) = (0.0, 0.0, 0.0, 0.0)
-        _ReflectWeight ("Reflect Weight", Range(0, 1)) = 1.0
+        [FoldoutEnd] _BottomCorrection ("Bottom Correction", Range(0, 2)) = 0.0
+
+        [Foldout()]_Light ("Light", float) = 1
+        _LightColor ("Light Color", Color) = (1, 1, 1, 1.0)
+
+        _LightTex ("Light Tex", 2D) = "white" { }
         _LightIntensity ("Light Intensity", Range(0, 2)) = 0.909
         _LightPower ("Light Power", Range(0, 2)) = 1.29
-        _LightOffset ("Light Offset", Range(0, 2)) = 0.53
-        _ViewOffset ("View Offset", Range(0, 2)) = 0.80
-        _RimRange ("Rim Range", Range(0, 5)) = 3.20
-        _BottomCorrection ("Bottom Correction", Range(0, 2)) = 0.0
-        _AdditionalReflectionCubeMip ("Additional Reflection Cube Mip", Range(0, 2)) = 0.0
-        _AdditionalReflectionColor ("Additional Reflection Color", Color) = (1.36608, 1.36608, 1.97667, 1.0)
-        _AddtionalReflactionAlpha ("Additional Reflection Alpha", Range(0, 1)) = 0.638
-        _Angle ("Angle", Range(0, 5)) = 3.28
+        [FoldoutEnd]_LightOffset ("Light Offset", Range(0, 2)) = 0.53
+
+
+        _ReflectWeight ("Reflect Weight", Range(0, 1)) = 1.0
     }
     SubShader
     {
-        Tags
-        {
-            "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"
-        }
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent+1" }
 
         HLSLINCLUDE
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -60,10 +66,7 @@ Shader "LcL/ToonPlane"
 
         Pass
         {
-            Tags
-            {
-                "LightMode" = "UniversalForward"
-            }
+            Tags { "LightMode" = "UniversalForward" }
             Blend SrcAlpha OneMinusSrcAlpha
 
             HLSLPROGRAM
@@ -89,8 +92,8 @@ Shader "LcL/ToonPlane"
                 float4 color : COLOR;
             };
 
-            TEXTURE2D(_ReflectionColor);
-            SAMPLER(sampler_ReflectionColor);
+            TEXTURE2D(_PlanarReflectionTexture);
+            SAMPLER(sampler_PlanarReflectionTexture);
 
             TEXTURE2D(_BaseTex);
             SAMPLER(sampler_BaseTex);
@@ -121,102 +124,91 @@ Shader "LcL/ToonPlane"
 
             half4 frag(Varyings input) : SV_Target
             {
-                float2 uv = input.uv.xy;
+                float2 uv = input.uv;
+                float2 screenUV = input.positionCS / _ScaledScreenParams.xy;
+                float4 vertexColor = input.color;
 
-                float3 vs_TEXCOORD3 = input.viewDirWS;
-                float3 vs_TEXCOORD2 = input.normalWS;
-                float2 vs_TEXCOORD1 = input.uv;
-                float2 vs_TEXCOORD0 = input.positionCS / _ScaledScreenParams.xy;
-                float4 vs_TEXCOORD4 = input.color;
-                float4 u_xlat0;
-                float4 u_xlat1;
-                float4 u_xlat16_0;
-                float4 u_xlat16_1;
-                float4 u_xlat16_2;
-                float4 u_xlat16_3;
-                float4 u_xlat16_4;
-                float4 u_xlat16_5;
-                float4 u_xlat16_9;
-                float4 u_xlat16_14;
-                float4 u_xlat16_20;
-                float4 u_xlat13;
-                float4 u_xlat7;
-                float4 u_xlat5;
-                float u_xlat18;
-                float u_xlat6;
 
                 float4 finalColor = 0;
 
-                u_xlat0.x = dot(vs_TEXCOORD3.xyz, vs_TEXCOORD3.xyz);
-                u_xlat0.x = rsqrt(u_xlat0.x);
-                u_xlat0.xyz = u_xlat0.xxx * vs_TEXCOORD3.xyz;
 
-                //
-                u_xlat1.xyz = u_xlat0.yyy * UNITY_MATRIX_I_M[1].xyz;
-                u_xlat1.xyz = UNITY_MATRIX_I_M[0].xyz * u_xlat0.xxx + u_xlat1.xyz;
-                u_xlat1.xyz = UNITY_MATRIX_I_M[2].xyz * u_xlat0.zzz + u_xlat1.xyz;
-// u_xlat1.xyz = TransformWorldToObject()
+                float3 viewDirWS = normalize(input.viewDirWS);
 
-                u_xlat18 = dot(u_xlat1.xyz, u_xlat1.xyz);
-                u_xlat18 = rsqrt(u_xlat18);
-                u_xlat1.xyz = u_xlat18 * u_xlat1.xyz;
-                u_xlat16_2.xyz = u_xlat1.yyy * float3(-0.0, -2.0, -0.0) + u_xlat1.xyz;
-                u_xlat16_3.x = sin(_Angle);
-                u_xlat16_4.x = cos(_Angle);
-                u_xlat16_9.xy = u_xlat16_2.xz * u_xlat16_4.xx;
-                u_xlat16_4.x = u_xlat16_3.x * u_xlat16_2.z + u_xlat16_9.x;
-                u_xlat16_14 = sin(-_Angle);
-                u_xlat16_4.z = u_xlat16_14 * u_xlat16_2.x + u_xlat16_9.y;
-                u_xlat16_4.y = u_xlat16_2.y;
-                u_xlat16_1.xyz = SAMPLE_TEXTURECUBE_LOD(_AdditionalReflectionCube,sampler_AdditionalReflectionCube,u_xlat16_4.xyz,_AdditionalReflectionCubeMip).xyz;
-                u_xlat16_2.xyz = u_xlat16_1.xyz * _AdditionalReflectionColor.xyz;
-                u_xlat18 = dot(vs_TEXCOORD2.xyz, vs_TEXCOORD2.xyz);
-                u_xlat18 = rsqrt(u_xlat18);
-                u_xlat1.xyz = u_xlat18 * vs_TEXCOORD2.xyz;
-                u_xlat6 = dot(u_xlat1.xyz, u_xlat0.xyz);
-                u_xlat6 = -u_xlat6 + 1.0;
-                u_xlat6 = max(u_xlat6, 9.9999997e-05);
-                u_xlat6 = log2(u_xlat6);
-                u_xlat6 = u_xlat6 * _RimRange;
-                u_xlat6 = exp2(u_xlat6);
-                u_xlat1.xy = vs_TEXCOORD1.xy * _BottomTex_ST.xy + _BottomTex_ST.zw;
-                u_xlat13.xy = _Time.yy * _MainSpeed.xy;
-                u_xlat1.xy = u_xlat13.xy * float2(_BottomCorrection, _BottomCorrection) + u_xlat1.xy;
-                u_xlat0.xz = u_xlat0.xz * _ViewOffset + u_xlat1.xy;
-                u_xlat16_0.xzw = SAMPLE_TEXTURE2D(_BottomTex,sampler_BottomTex, u_xlat0.xz).xyz;
-                u_xlat1.xy = vs_TEXCOORD1.xy * _BaseTex_ST.xy + _BaseTex_ST.zw;
-                u_xlat16_1.xyz = SAMPLE_TEXTURE2D(_BaseTex,sampler_BaseTex, u_xlat1.xy).xzw;
-                u_xlat0.xzw = u_xlat16_0.xzw * u_xlat16_1.yyy;
-                u_xlat16_3.xyz = u_xlat0.xzw * _BottomColor.xyz;
-                u_xlat0.xzw = -u_xlat0.xzw * _BottomColor.xyz + _RimColor.xyz;
-                u_xlat0.xyz = u_xlat6 * u_xlat0.xzw + u_xlat16_3.xyz;
-                u_xlat7.xz = vs_TEXCOORD1.xy + float2(-0.5, -0.5);
-                u_xlat18 = dot(-u_xlat7.xz, -u_xlat7.xz);
-                u_xlat18 = sqrt(u_xlat18);
-                u_xlat18 = u_xlat18 * 2.0 + 0.30000001;
-                u_xlat18 = min(u_xlat18, 1.0);
-                u_xlat18 = -u_xlat18 + 1.0;
-                u_xlat16_20 = u_xlat18 * _ReflectWeight;
-                u_xlat5.xy = vs_TEXCOORD0.xy;
-                u_xlat5.z = -u_xlat5.x + 1.0;
-                u_xlat16_5.xyz = SAMPLE_TEXTURE2D(_ReflectionColor,sampler_ReflectionColor, u_xlat5.zy).xyz;
-                u_xlat16_3.xyz = u_xlat16_20 * u_xlat16_5.xyz + u_xlat0.xyz;
-                u_xlat16_3.xyz = u_xlat16_1.xxx * _BaseColor.xyz + u_xlat16_3.xyz;
-                u_xlat16_20 = u_xlat16_1.z * _BaseColor.w;
-                finalColor.w = u_xlat16_20 * vs_TEXCOORD4.w;
-                u_xlat16_2.xyz = u_xlat16_3.xyz * u_xlat16_2.xyz - u_xlat16_3.xyz;
-                u_xlat16_2.xyz = _AddtionalReflactionAlpha * u_xlat16_2.xyz + u_xlat16_3.xyz;
-                u_xlat0.xy = vs_TEXCOORD1.xy * _LightTex_ST.xy + _LightTex_ST.zw;
-                u_xlat16_0.x = SAMPLE_TEXTURE2D(_LightTex,sampler_LightTex, u_xlat0.xy).x;
-                u_xlat16_20 = log2(u_xlat16_0.x);
-                u_xlat16_20 = u_xlat16_20 * _LightPower;
-                u_xlat16_20 = exp2(u_xlat16_20);
-                u_xlat16_20 = u_xlat16_20 * _LightColor.x;
-                u_xlat16_20 = u_xlat16_20 * _LightIntensity + _LightOffset;
-                u_xlat16_20 = clamp(u_xlat16_20, 0.0, 1.0);
-                finalColor.xyz = u_xlat16_20 * u_xlat16_2.xyz;
+                float3 viewDirOS = TransformWorldToObjectDir(viewDirWS, true);
+                viewDirOS = viewDirOS.yyy * float3(-0.0, -2.0, -0.0) + viewDirOS;
+
+                float sinAngle = sin(_Angle);
+                float cosAngle = cos(_Angle);
+                float sinNegAngle = sin(-_Angle);
+
+                float3 rotatedViewDir;
+                rotatedViewDir.x = sinAngle * viewDirOS.z + viewDirOS.x * cosAngle;
+                rotatedViewDir.y = viewDirOS.y;
+                rotatedViewDir.z = sinNegAngle * viewDirOS.x + viewDirOS.z * cosAngle;
+
+                float3 addReflectionColor = SAMPLE_TEXTURECUBE_LOD(_AdditionalReflectionCube,
+                sampler_AdditionalReflectionCube, rotatedViewDir,
+                _AdditionalReflectionCubeMip).xyz;
+
+                // addReflectionColor = Gamma20ToLinear(addReflectionColor);
+
+                // return half4(addReflectionColor,1);
+
+                addReflectionColor = addReflectionColor * _AdditionalReflectionColor.xyz;
 
 
+                float3 normalWS = normalize(input.normalWS);
+
+                float NdotV = dot(normalWS, viewDirWS);
+                NdotV = max(1 - NdotV, 0);
+                NdotV = pow(NdotV, _RimRange);
+
+                float2 bottomUV = TRANSFORM_TEX(uv, _BottomTex);
+                bottomUV = _Time.yy * _MainSpeed.xy * _BottomCorrection + bottomUV;
+                float3 bottomColor = SAMPLE_TEXTURE2D(_BottomTex, sampler_BottomTex,
+                viewDirWS.xz * _ViewOffset +bottomUV).xyz;
+
+
+                float2 baseUV = TRANSFORM_TEX(uv, _BaseTex);
+                float3 baseColor = SAMPLE_TEXTURE2D(_BaseTex, sampler_BaseTex, baseUV).xzw;
+                float3 bottomColor0 = bottomColor * baseColor.yyy;
+                bottomColor0 = _RimColor.xyz - bottomColor0 * _BottomColor.xyz;
+                float3 rimColor = NdotV * bottomColor0 + bottomColor0 * _BottomColor.xyz;
+
+
+                float2 center = uv - 0.5;
+                float dist = length(center);
+                dist = dist * 2.0 + 0.3;
+                dist = 1.0 - min(dist, 1.0);
+
+                float reflectionMask = dist * _ReflectWeight;
+                // screenUV.x = 1.0 - screenUV.x;
+
+                float3 reflectionColor = SAMPLE_TEXTURE2D(_PlanarReflectionTexture, sampler_PlanarReflectionTexture,
+                screenUV).xyz;
+
+                // reflectionColor = LinearToGamma20(reflectionColor);
+                // reflectionColor = Gamma20ToLinear(reflectionColor);
+
+
+                // blend color
+                float3 blendColor = reflectionMask * reflectionColor + rimColor;
+                blendColor = baseColor.xxx * _BaseColor.xyz + blendColor;
+
+
+                float3 color = lerp(blendColor, blendColor * addReflectionColor, _AddtionalReflactionAlpha);
+
+                float2 lightUV = TRANSFORM_TEX(input.uv, _LightTex);
+                float lightMask = SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, lightUV).x;
+                lightMask = pow(lightMask, _LightPower);
+
+                lightMask = lightMask * _LightColor.x;
+                lightMask = lightMask * _LightIntensity + _LightOffset;
+                lightMask = clamp(lightMask, 0.0, 1.0);
+                finalColor.xyz = lightMask * color;
+
+
+                finalColor.a = baseColor.z * _BaseColor.w * vertexColor.w;
                 return finalColor;
             }
             ENDHLSL

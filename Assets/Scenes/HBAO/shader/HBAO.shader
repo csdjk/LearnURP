@@ -8,16 +8,18 @@ Shader "Hidden/LcLPostProcess/HBAO"
 
     TEXTURE2D(_SourceTex);
     TEXTURE2D(_NoiseTex);
+    TEXTURE2D(_HBAOTexture);
+
 
     float4 _SourceSize;
     SamplerState sampler_LinearClamp;
     SamplerState sampler_PointRepeat;
 
 
-    float4x4 _FrustumCornersRay;
     float4 _Jitter;
     float4 _Params;
     float4 _Params2;
+    float4 _BlurOffset;
 
 
     #define _Radius _Params.x
@@ -30,16 +32,15 @@ Shader "Hidden/LcLPostProcess/HBAO"
     #define _NegInvRadius2 _Params2.z
     #define _AoMultiplier _Params2.w
 
-    #define NORMALS_RECONSTRUCT4
-    #define INTERLEAVED_GRADIENT_NOISE
 
     #define NUM_DIRECTIONS  4
     #define NUM_STEPS  4
 
+    static const half kGeometryCoeff = half(0.8);
 
     struct Attributes
     {
-        float4 positionHCS : POSITION;
+        float4 positionOS : POSITION;
         float2 uv : TEXCOORD0;
         UNITY_VERTEX_INPUT_INSTANCE_ID
     };
@@ -48,48 +49,59 @@ Shader "Hidden/LcLPostProcess/HBAO"
     {
         float4 positionCS : SV_POSITION;
         float2 uv : TEXCOORD0;
-        float3 viewFrustumVectors : TEXCOORD1;
         UNITY_VERTEX_OUTPUT_STEREO
     };
 
-    // #pragma enable_d3d11_debug_symbols
-    Varyings FullscreenVert(Attributes input)
+    Varyings DefaultVertex(Attributes input)
     {
         Varyings output;
         UNITY_SETUP_INSTANCE_ID(input);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-        output.positionCS = TransformObjectToHClip(input.positionHCS.xyz);
+        output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
         output.uv = input.uv;
-
-        //uv: (0,0) (1,0) (0,1) (1,1)
-        //index: 0 1 2 3
-        int index = int(input.uv.x + 0.5) + 2 * int(input.uv.y + 0.5);
-        output.viewFrustumVectors = _FrustumCornersRay[index].xyz;
         return output;
     }
 
-
-    float3 ComputePositionVS(float2 uv, float3 ray)
+    inline half4 PackNormalAO(half3 n, half ao)
     {
-        float depth = SampleSceneDepth(uv);
-
-        depth = LinearEyeDepth(depth, _ZBufferParams);
-        float3 positionVS = ray * depth;
-
-        return positionVS;
+        return half4(n * half(0.5) + half(0.5), ao);
+    }
+    inline half3 GetPackedNormal(half4 p)
+    {
+        return p.rgb * half(2.0) - half(1.0);
+    }
+    inline half GetPackedAO(half4 p)
+    {
+        return p.a;
     }
 
-    float3 FetchViewPos(float2 uv)
+    //https://forum.unity.com/threads/horizon-based-ambient-occlusion-hbao-image-effect.387374/page-21
+    inline float3 FetchViewPos(float2 uv)
     {
-        float depth = SampleSceneDepth(uv);
-        float2 newUV = float2(uv.x, uv.y);
-        newUV = newUV * 2 - 1;
-        float4 viewPos = mul(UNITY_MATRIX_I_P, float4(newUV, depth, 1));
-        viewPos /= viewPos.w;
-        viewPos.z = -viewPos.z;
-        return viewPos.xyz;
-    }
+        float3x3 camProj = (float3x3)unity_CameraProjection;
+        float2 p11_22 = rcp(float2(camProj._11, camProj._22));
+        float2 p13_31 = float2(camProj._13, camProj._23);
 
+        float3 viewPos;
+        float depth = SampleSceneDepth(uv);
+        if (IsPerspectiveProjection())
+        {
+            depth = LinearEyeDepth(depth, _ZBufferParams);
+            viewPos = float3(depth * ((uv.xy * 2.0 - 1.0 - p13_31) * p11_22), depth);
+        }
+        else
+        {
+            #if UNITY_REVERSED_Z
+                depth = 1 - depth;
+            #endif
+            // near + depth * (far - near)
+            depth = _ProjectionParams.y + depth * (_ProjectionParams.z - _ProjectionParams.y);
+            viewPos = float3(((uv.xy * 2.0 - 1.0 - p13_31) * p11_22), depth);
+        }
+
+        viewPos.y *= -1;
+        return viewPos;
+    }
 
     inline float3 MinDiff(float3 P, float3 Pr, float3 Pl)
     {
@@ -120,6 +132,7 @@ Shader "Hidden/LcLPostProcess/HBAO"
         #endif
         return N;
     }
+
 
     inline float2 FetchNoise(float2 screenPos)
     {
@@ -219,19 +232,16 @@ Shader "Hidden/LcLPostProcess/HBAO"
 
         return 1 - ao;
     }
-#pragma enable_d3d11_debug_symbols
-    half4 Frag(Varyings input) : SV_Target
+
+
+
+
+    half4 HBAOFragment(Varyings input) : SV_Target
     {
         float2 uv = input.uv;
-        half3 color = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, uv).xyz;
-
-        // float3 positionWS = ComputePositionVS(uv, input.viewFrustumVectors);
         float3 positionVS = FetchViewPos(uv);
-        // float3 normalVS = FetchViewNormals(uv);
         float3 normalVS = FetchViewNormals(uv, _SourceSize.zw, positionVS);
         float2 jitter = GetJitter(uv);
-
-        // return half4(jitter.xxx, 1);
 
         float ao = ComputeCoarseAO(uv, positionVS, normalVS, jitter);
 
@@ -241,8 +251,73 @@ Shader "Hidden/LcLPostProcess/HBAO"
 
         ao = lerp(ao, 1, distFactor);
 
+        return PackNormalAO(normalVS, ao);
+    }
+
+    // ================================ Blur ================================
+    struct BlurVaryings
+    {
+        float4 positionCS : SV_POSITION;
+        float2 uv : TEXCOORD0;
+        float4 uv01 : TEXCOORD1;
+        float4 uv23 : TEXCOORD2;
+    };
+    BlurVaryings BlurVertex(Attributes input)
+    {
+        BlurVaryings ouput;
+        ouput.positionCS = TransformWorldToHClip(input.positionOS);
+        float2 uv = input.uv;
+        ouput.uv = uv;
+
+        float4 offset = _BlurOffset * _SourceSize.zwzw;
+        ouput.uv01 = uv.xyxy + offset.xyxy * float4(1, 1, -1, -1);
+        ouput.uv23 = uv.xyxy + offset.xyxy * float4(1, 1, -1, -1) * 2.0;
+        return ouput;
+    }
+
+    half CompareNormal(float3 normal1, float3 normal2)
+    {
+        return smoothstep(kGeometryCoeff, 1.0, dot(normal1, normal2));
+    }
+
+    half4 BlurFragment(BlurVaryings i) : SV_Target
+    {
+        float4 color0 = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, i.uv);
+        float4 color1 = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, i.uv01.xy);
+        float4 color2 = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, i.uv01.zw);
+        float4 color3 = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, i.uv23.xy);
+        float4 color4 = SAMPLE_TEXTURE2D(_SourceTex, sampler_LinearClamp, i.uv23.zw);
+
+
+        float3 normal0 = GetPackedNormal(color0);
+        float3 normal1 = GetPackedNormal(color1);
+        float3 normal2 = GetPackedNormal(color2);
+        float3 normal3 = GetPackedNormal(color3);
+        float3 normal4 = GetPackedNormal(color4);
+
+        float w0 = 0.4026;
+        float w1 = CompareNormal(normal0, normal1) * 0.2442;
+        float w2 = CompareNormal(normal0, normal2) * 0.2442;
+        float w3 = CompareNormal(normal0, normal3) * 0.0545;
+        float w4 = CompareNormal(normal0, normal4) * 0.0545;
+
+        half ao = 0;
+        ao += w0 * GetPackedAO(color0);
+        ao += w1 * GetPackedAO(color1);
+        ao += w2 * GetPackedAO(color2);
+        ao += w3 * GetPackedAO(color3);
+        ao += w4 * GetPackedAO(color4);
+
+        ao *= rcp(w0 + w1 + w2 + w3 + w4);
+
+        return PackNormalAO(normal0, ao);
+    }
+
+    // ================================ Combine ================================
+    half4 CombineFragment(Varyings input) : SV_Target
+    {
+        half ao = SAMPLE_TEXTURE2D(_HBAOTexture, sampler_LinearClamp, input.uv).a;
         return ao;
-        return half4(normalVS, 1);
     }
     ENDHLSL
 
@@ -254,11 +329,38 @@ Shader "Hidden/LcLPostProcess/HBAO"
 
         Pass
         {
-            Name "LcLRenderShader"
+            Name "HBAO"
 
             HLSLPROGRAM
-            #pragma vertex FullscreenVert
-            #pragma fragment Frag
+
+            #pragma multi_compile_local __ INTERLEAVED_GRADIENT_NOISE
+            #pragma multi_compile_local __ NORMALS_RECONSTRUCT2 NORMALS_RECONSTRUCT4 NORMALS_CAMERA
+
+            #pragma vertex DefaultVertex
+            #pragma fragment HBAOFragment
+            #pragma target 4.5
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "HBAO Blur"
+
+            HLSLPROGRAM
+            #pragma vertex BlurVertex
+            #pragma fragment BlurFragment
+            #pragma target 4.5
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "HBAO Combine"
+            Blend DstColor Zero
+
+            HLSLPROGRAM
+            #pragma vertex DefaultVertex
+            #pragma fragment CombineFragment
             #pragma target 4.5
             ENDHLSL
         }

@@ -4,23 +4,47 @@ using UnityEngine.Rendering.Universal;
 
 namespace LcLGame
 {
+    public enum BlurType
+    {
+        GaussianBlur,
+        BilateralFilter
+    }
+
+
     public class BlurFeature : RendererFeatureBase
     {
+        public BlurType blurType = BlurType.GaussianBlur;
 
-        public GaussianBlurSettings settings = new GaussianBlurSettings();
-        GaussianBlurRendererPass m_BlurPass;
+        public GaussianBlurSettings gaussianSettings = new GaussianBlurSettings();
+        public BilateralFilterBlurSettings bilateralFilterSettings = new BilateralFilterBlurSettings();
+
+
+        IBlurPass m_BlurPass;
         public override void Create()
         {
-            m_BlurPass = new GaussianBlurRendererPass(settings)
+            switch (blurType)
             {
-                renderPassEvent = RenderPassEvent.AfterRenderingTransparents
-            };
+
+                case BlurType.GaussianBlur:
+                    m_BlurPass = new GaussianBlurRendererPass(gaussianSettings)
+                    {
+                        renderPassEvent = RenderPassEvent.AfterRenderingTransparents
+                    };
+                    break;
+                case BlurType.BilateralFilter:
+                    m_BlurPass = new BilateralFilterRendererPass(bilateralFilterSettings)
+                    {
+                        renderPassEvent = RenderPassEvent.AfterRenderingTransparents
+                    };
+                    break;
+            }
+
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer)
         {
-            m_BlurPass.SetRenderTarget(renderer.cameraColorTarget);
-            renderer.EnqueuePass(m_BlurPass);
+            renderer.EnqueuePass(m_BlurPass as ScriptableRenderPass);
+
         }
 
     }

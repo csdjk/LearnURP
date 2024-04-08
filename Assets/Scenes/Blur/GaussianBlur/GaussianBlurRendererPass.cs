@@ -7,15 +7,15 @@ namespace LcLGame
     [System.Serializable]
     public class GaussianBlurSettings
     {
-        [Range(0.2f, 3.0f)]
+        [Range(0.2f, 10.0f)]
         public float blurRadius = 1.0f;
         [Range(0, 4)]
-        public int downSample = 2;
-        [Range(0, 4)]
+        public int downSample = 0;
+        [Range(1, 4)]
         public int iteration = 1;
     }
 
-    public class GaussianBlurRendererPass : ScriptableRenderPass
+    public class GaussianBlurRendererPass : ScriptableRenderPass, IBlurPass
     {
         ProfilingSampler m_ProfilingSampler = new ProfilingSampler("Gaussian Blur");
         string m_ShaderName = "Hidden/LcLPostProcess/GaussianBlur";

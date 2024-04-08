@@ -6,10 +6,21 @@ using UnityEngine.Serialization;
 
 public class HBAORenderFeature : RendererFeatureBase
 {
+    public enum NoiseType
+    {
+        Dither,
+        InterleavedGradientNoise,
+    }
+    public enum PerPixelNormals
+    {
+        Reconstruct2Samples,
+        Reconstruct4Samples,
+        Camera
+    }
     [System.Serializable]
     public class Settings
     {
-        public Texture2D noiseTexture;
+
         [Range(0, 3)]
         public int downSample = 1;
         [Range(0, 5f)]
@@ -22,25 +33,21 @@ public class HBAORenderFeature : RendererFeatureBase
         public float intensity = 1;
         public float maxDistance = 150f;
         public float distanceFalloff = 50f;
+
+        public NoiseType noiseType = NoiseType.Dither;
+        public Texture2D noiseTexture;
+        public PerPixelNormals perPixelNormals = PerPixelNormals.Reconstruct4Samples;
+        public bool useBlur = true;
+
     }
 
     public Settings settings = new Settings();
+
     HBAOPass m_HBAOPass;
-
-
-    public GaussianBlurSettings gaussianSettings = new GaussianBlurSettings();
-
-    GaussianBlurRendererPass m_BlurPass;
 
     public override void Create()
     {
-
-        m_BlurPass = new GaussianBlurRendererPass(gaussianSettings)
-        {
-            renderPassEvent = RenderPassEvent.AfterRenderingTransparents
-        };
-
-        m_HBAOPass = new HBAOPass(settings, m_BlurPass)
+        m_HBAOPass = new HBAOPass(settings)
         {
             renderPassEvent = RenderPassEvent.AfterRenderingSkybox
         };
@@ -55,10 +62,16 @@ public class HBAORenderFeature : RendererFeatureBase
     class HBAOPass : ScriptableRenderPass
     {
         ProfilingSampler m_ProfilingSampler = new ProfilingSampler("HBAO");
-        static readonly int m_FrustumCornersRayID = Shader.PropertyToID("_FrustumCornersRay");
         static readonly int m_NoiseTextureID = Shader.PropertyToID("_NoiseTex");
         static readonly int m_ParamsID = Shader.PropertyToID("_Params");
         static readonly int m_Params2ID = Shader.PropertyToID("_Params2");
+        static readonly int m_BlurOffsetID = Shader.PropertyToID("_BlurOffset");
+
+        static readonly string m_InterleavedGradientNoiseKeyword = "INTERLEAVED_GRADIENT_NOISE";
+        static readonly string m_NormalsReconstruct4Keyword = "NORMALS_RECONSTRUCT4";
+        static readonly string m_NormalsReconstruct2Keyword = "NORMALS_RECONSTRUCT2";
+        static readonly string m_NormalsCameraKeyword = "NORMALS_CAMERA";
+
 
         Material m_Material;
         Settings m_Settings;
@@ -66,89 +79,39 @@ public class HBAORenderFeature : RendererFeatureBase
         RenderTextureDescriptor m_Descriptor;
 
         RenderTargetHandle m_HBAOTextureHandle;
+        RenderTargetHandle m_TempTextureHandle1;
+        private string[] m_ShaderKeywords;
 
-        GaussianBlurRendererPass m_BlurPass;
-
-        public HBAOPass(Settings settings, GaussianBlurRendererPass blurPass)
+        public HBAOPass(Settings settings)
         {
             m_Settings = settings;
-            m_BlurPass = blurPass;
             m_Material = CoreUtils.CreateEngineMaterial("Hidden/LcLPostProcess/HBAO");
             m_HBAOTextureHandle.Init("_HBAOTexture");
+            m_TempTextureHandle1.Init("_TempTexture");
         }
 
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
-
+            //这个normal没啥用, 内置Shader把normalWS压缩到texture没有映射到[0,1],导致解压出来的normal不对
+            // ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
 
             m_Descriptor = cameraTextureDescriptor;
             m_Descriptor.msaaSamples = 1;
             m_Descriptor.width = m_Descriptor.width >> m_Settings.downSample;
             m_Descriptor.height = m_Descriptor.height >> m_Settings.downSample;
+            m_Descriptor.colorFormat = RenderTextureFormat.ARGB32;
 
-            cmd.GetTemporaryRT(m_HBAOTextureHandle.id, cameraTextureDescriptor);
+            cmd.GetTemporaryRT(m_HBAOTextureHandle.id, m_Descriptor);
+            cmd.GetTemporaryRT(m_TempTextureHandle1.id, m_Descriptor);
 
-            m_BlurPass.Configure(cmd, m_Descriptor);
+            UpdateShaderKeywords();
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            m_BlurPass.OnCameraSetup(cmd, ref renderingData);
         }
 
-        /// <summary>
-        /// 计算相机在远裁剪面处的四个角的方向向量
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <param name="commandBuffer"></param>
-        private Matrix4x4 CalculateFrustumCornersRay(Camera camera, Matrix4x4 projInv)
-        {
-            var aspect = camera.aspect;
-            var far = camera.farClipPlane;
-            var right = camera.transform.right;
-            var up = camera.transform.up;
-            var forward = camera.transform.forward;
-
-            var forwardVec = Vector3.zero;
-            Vector3 rightVec, upVec;
-
-            if (camera.orthographic)
-            {
-                var orthoSize = camera.orthographicSize;
-                rightVec = right * orthoSize * aspect;
-                upVec = up * orthoSize;
-            }
-            else
-            {
-                forwardVec = forward * far;
-                var halfFovTan = Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-                rightVec = right * far * halfFovTan * aspect;
-                upVec = up * far * halfFovTan;
-            }
-
-            //构建四个角的方向向量
-            var topLeft = forwardVec - rightVec + upVec;
-            var topRight = forwardVec + rightVec + upVec;
-            var bottomLeft = forwardVec - rightVec - upVec;
-            var bottomRight = forwardVec + rightVec - upVec;
-
-            topLeft = projInv.MultiplyVector(topLeft);
-            topRight = projInv.MultiplyVector(topRight);
-            bottomLeft = projInv.MultiplyVector(bottomLeft);
-            bottomRight = projInv.MultiplyVector(bottomRight);
-
-
-            var viewPortRay = Matrix4x4.identity;
-
-            //计算近裁剪平面四个角对应向量
-            viewPortRay.SetRow(0, bottomLeft);
-            viewPortRay.SetRow(1, bottomRight);
-            viewPortRay.SetRow(2, topLeft);
-            viewPortRay.SetRow(3, topRight);
-            return viewPortRay;
-        }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -158,12 +121,6 @@ public class HBAORenderFeature : RendererFeatureBase
             ref CameraData cameraData = ref renderingData.cameraData;
             var renderer = cameraData.renderer;
             var camera = cameraData.camera;
-            Matrix4x4 proj = renderingData.cameraData.GetProjectionMatrix();
-            // 计算proj逆矩阵，即从裁剪空间变换到世界空间
-            Matrix4x4 projInv = proj.inverse;
-
-            var sourceWidth = cameraData.cameraTargetDescriptor.width;
-            var sourceHeight = cameraData.cameraTargetDescriptor.height;
 
 
             CommandBuffer cmd = CommandBufferPool.Get();
@@ -174,55 +131,111 @@ public class HBAORenderFeature : RendererFeatureBase
                 cmd.Clear();
                 RenderTargetIdentifier source = renderer.cameraColorTarget;
 
+                RenderAO(cmd, camera, source);
 
-                float tanHalfFovY = Mathf.Tan(0.5f * camera.fieldOfView * Mathf.Deg2Rad);
+                if (m_Settings.useBlur)
+                    Blur(cmd);
 
-                float invFocalLenX = 1.0f / (1.0f / tanHalfFovY * (sourceHeight / (float)sourceWidth));
-                float invFocalLenY = 1.0f / (1.0f / tanHalfFovY);
-                float maxRadInPixels = Mathf.Max(16, m_Settings.maxRadiusPixels * Mathf.Sqrt(sourceWidth * sourceHeight / (1080.0f * 1920.0f)));
-
-                float radius = m_Settings.radius * 0.5f * (sourceHeight / (tanHalfFovY * 2.0f));
-
-                m_Material.SetVector(m_ParamsID, new Vector4(
-                    radius,
-                    m_Settings.angleBias,
-                    m_Settings.intensity,
-                    maxRadInPixels
-                ));
-
-                // _MaxDistance,_DistanceFalloff, _NegInvRadius2,_AoMultiplier
-                m_Material.SetVector(m_Params2ID, new Vector4(
-                    m_Settings.maxDistance,
-                    m_Settings.distanceFalloff,
-                    -1.0f / (m_Settings.radius * m_Settings.radius),
-                    1.0f / (1.0f - m_Settings.angleBias)
-                    ));
-
-                m_Material.SetTexture(m_NoiseTextureID, m_Settings.noiseTexture);
-
-                var viewPortRay = CalculateFrustumCornersRay(camera, projInv);
-                cmd.SetGlobalMatrix(m_FrustumCornersRayID, viewPortRay);
-
-
+                //Composite
                 LcLRenderingUtils.SetSourceTexture(cmd, source);
                 LcLRenderingUtils.SetSourceSize(cmd, m_Descriptor);
-                // LcLRenderingUtils.Blit(cmd, renderingData, m_Material, 0);
-                Blit(cmd, source, m_HBAOTextureHandle.Identifier(), m_Material, 0);
-
-
-
-                m_BlurPass.SetRenderTarget(m_HBAOTextureHandle.Identifier());
-                m_BlurPass.Execute(context, ref renderingData, cmd);
+                cmd.SetGlobalTexture(m_HBAOTextureHandle.id, m_HBAOTextureHandle.Identifier());
+                Blit(cmd, m_HBAOTextureHandle.Identifier(), source, m_Material, 2);
             }
 
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
+        public static string GetPerPixelNormalsKeyword(PerPixelNormals perPixelNormals)
+        {
+            switch (perPixelNormals)
+            {
+                case PerPixelNormals.Reconstruct4Samples:
+                    return m_NormalsReconstruct4Keyword;
+                case PerPixelNormals.Reconstruct2Samples:
+                    return m_NormalsReconstruct2Keyword;
+                case PerPixelNormals.Camera:
+                    return m_NormalsCameraKeyword;
+                default:
+                    return "__";
+            }
+        }
+        public static string GetNoiseKeyword(NoiseType noiseType)
+        {
+            switch (noiseType)
+            {
+                case NoiseType.InterleavedGradientNoise:
+                    return m_InterleavedGradientNoiseKeyword;
+                case NoiseType.Dither:
+                default:
+                    return "__";
+            }
+        }
+        private void UpdateShaderKeywords()
+        {
+            if (m_ShaderKeywords == null) m_ShaderKeywords = new string[2];
+
+            m_ShaderKeywords[0] = GetNoiseKeyword(m_Settings.noiseType);
+            m_ShaderKeywords[1] = GetPerPixelNormalsKeyword(m_Settings.perPixelNormals);
+
+            m_Material.shaderKeywords = m_ShaderKeywords;
+
+        }
+        public void RenderAO(CommandBuffer cmd, Camera camera, RenderTargetIdentifier source)
+        {
+            var sourceWidth = m_Descriptor.width;
+            var sourceHeight = m_Descriptor.height;
+
+            float tanHalfFovY = Mathf.Tan(0.5f * camera.fieldOfView * Mathf.Deg2Rad);
+            float maxRadInPixels = Mathf.Max(16, m_Settings.maxRadiusPixels * Mathf.Sqrt(sourceWidth * sourceHeight / (1080.0f * 1920.0f)));
+
+            float radius = m_Settings.radius * 0.5f * (sourceHeight / (tanHalfFovY * 2.0f));
+
+            cmd.SetGlobalVector(m_ParamsID, new Vector4(
+                radius,
+                m_Settings.angleBias,
+                m_Settings.intensity,
+                maxRadInPixels
+            ));
+
+            // _MaxDistance,_DistanceFalloff, _NegInvRadius2,_AoMultiplier
+            cmd.SetGlobalVector(m_Params2ID, new Vector4(
+                m_Settings.maxDistance,
+                m_Settings.distanceFalloff,
+                -1.0f / (m_Settings.radius * m_Settings.radius),
+                1.0f / (1.0f - m_Settings.angleBias)
+                ));
+
+            if (m_Settings.noiseType == NoiseType.Dither)
+            {
+                cmd.SetGlobalTexture(m_NoiseTextureID, m_Settings.noiseTexture);
+            }
+
+
+            LcLRenderingUtils.SetSourceTexture(cmd, source);
+            LcLRenderingUtils.SetSourceSize(cmd, m_Descriptor);
+            Blit(cmd, source, m_HBAOTextureHandle.Identifier(), m_Material, 0);
+
+        }
+
+        public void Blur(CommandBuffer cmd)
+        {
+            LcLRenderingUtils.SetSourceSize(cmd, m_Descriptor);
+
+            LcLRenderingUtils.SetSourceTexture(cmd, m_HBAOTextureHandle.id);
+            cmd.SetGlobalVector(m_BlurOffsetID, new Vector4(0, 1, 0, 0));
+            Blit(cmd, m_HBAOTextureHandle.id, m_TempTextureHandle1.id, m_Material, 1);
+
+            LcLRenderingUtils.SetSourceTexture(cmd, m_TempTextureHandle1.id);
+            cmd.SetGlobalVector(m_BlurOffsetID, new Vector4(1, 0, 0, 0));
+            Blit(cmd, m_TempTextureHandle1.id, m_HBAOTextureHandle.id, m_Material, 1);
+        }
+
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             cmd.ReleaseTemporaryRT(m_HBAOTextureHandle.id);
-            m_BlurPass.OnCameraCleanup(cmd);
+            cmd.ReleaseTemporaryRT(m_TempTextureHandle1.id);
         }
     }
 }

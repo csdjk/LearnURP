@@ -16,8 +16,10 @@ public enum HeightMapResolution
     [InspectorName("1024")] _1024 = 1024,
 }
 
+#if UNITY_EDITOR
 [ExecuteAlways, DisallowMultipleComponent, RequireComponent(typeof(Camera))]
 [CanEditMultipleObjects]
+#endif
 public class HeightMapRender : MonoBehaviour
 {
     static readonly string m_HeightMapShaderName = "Hidden/SceneHeightMap";

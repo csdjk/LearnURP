@@ -49,6 +49,7 @@ namespace LcLGame
         }
     }
 
+#if UNITY_EDITOR
 
     [CustomEditor(typeof(RendererFeatureBase))]
     public class RendererFeatureBaseEditor : Editor
@@ -66,5 +67,5 @@ namespace LcLGame
 
         }
     }
-
+#endif
 }

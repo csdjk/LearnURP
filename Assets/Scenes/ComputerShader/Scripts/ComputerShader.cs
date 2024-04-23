@@ -106,6 +106,7 @@ public class ComputerShader : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (enabled)
@@ -155,4 +156,5 @@ public class ComputerShader : MonoBehaviour
             }
         }
     }
+#endif
 }

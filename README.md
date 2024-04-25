@@ -53,5 +53,18 @@
 
 ### [ParallaxMapping](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/ParallaxMapping/)
 
-![1709881395783](image/README/1709881395783.png)
-![1709882630528](image/README/1709882630528.png)
+![1709881395783](image/README/1709881395783.png)![1709882630528](image/README/1709882630528.png)
+
+### [OIT](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/OIT/)
+
+#### Depth Peeling
+
+| ![1714032572106](image/README/1714032572106.png) | ![1714032680443](image/README/1714032680443.png) |
+| :--------------------------------------------: | :--------------------------------------------: |
+|                  Alpha Blend                  |              OIT - Depth Peeling              |
+
+### [HBAO](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/HBAO/)
+
+| ![1714034200278](image/README/1714034200278.png) | ![1714034251408](image/README/1714034251408.png) |
+| :--------------------------------------------: | :--------------------------------------------: |
+|                    HBAO On                    |                    HBAO Off                    |

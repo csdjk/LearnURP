@@ -79,15 +79,17 @@ Shader "Hidden/LcLPostProcess/HBAO"
     inline float3 FetchViewPos(float2 uv)
     {
         float3x3 camProj = (float3x3)unity_CameraProjection;
+        //投影矩阵的元素11和22分别对应于相机的水平和垂直视场（FOV），
+        //元素13和23对应于相机的主点偏移（通常为0，除非相机被偏移）
         float2 p11_22 = rcp(float2(camProj._11, camProj._22));
-        float2 p13_31 = float2(camProj._13, camProj._23);
+        float2 p13_23 = float2(camProj._13, camProj._23);
 
         float3 viewPos;
         float depth = SampleSceneDepth(uv);
         if (IsPerspectiveProjection())
         {
             depth = LinearEyeDepth(depth, _ZBufferParams);
-            viewPos = float3(depth * ((uv.xy * 2.0 - 1.0 - p13_31) * p11_22), depth);
+            viewPos = float3(depth * ((uv.xy * 2.0 - 1.0 - p13_23) * p11_22), depth);
         }
         else
         {
@@ -96,7 +98,7 @@ Shader "Hidden/LcLPostProcess/HBAO"
             #endif
             // near + depth * (far - near)
             depth = _ProjectionParams.y + depth * (_ProjectionParams.z - _ProjectionParams.y);
-            viewPos = float3(((uv.xy * 2.0 - 1.0 - p13_31) * p11_22), depth);
+            viewPos = float3(((uv.xy * 2.0 - 1.0 - p13_23) * p11_22), depth);
         }
 
         viewPos.y *= -1;

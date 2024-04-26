@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace LcLGame
 {
-    public class DepthPeelingFeature : ScriptableRendererFeature
+    public class OIT_DepthPeelingFeature : ScriptableRendererFeature
     {
         [System.Serializable]
         public class Settings

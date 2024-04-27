@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -45,6 +46,8 @@ namespace LcLGame
             RenderTargetHandle m_AccumTextureHandle;
             RenderTargetHandle m_RevealageTextureHandle;
 
+            private RenderTargetIdentifier[] m_Buffers = new RenderTargetIdentifier[2];
+
             public WeightedBlendRenderPass(Settings settings)
             {
                 m_Settings = settings;
@@ -52,42 +55,44 @@ namespace LcLGame
                 m_FilteringSettings = new FilteringSettings(RenderQueueRange.transparent);
                 m_AccumTextureHandle.Init("_AccumTexture");
                 m_RevealageTextureHandle.Init("_RevealageTexture");
+
+                m_Buffers[0] = m_AccumTextureHandle.Identifier();
+                m_Buffers[1] = m_RevealageTextureHandle.Identifier();
             }
 
 
             public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
             {
-                var AccumTexDesc = cameraTextureDescriptor;
-                AccumTexDesc.colorFormat = RenderTextureFormat.ARGB32;
-                AccumTexDesc.depthBufferBits = 0;
-                AccumTexDesc.msaaSamples = 1;
-                AccumTexDesc.sRGB = false;
+                var accumTexDesc = cameraTextureDescriptor;
+                // accumTexDesc.colorFormat = RenderTextureFormat.ARGB64;
+                accumTexDesc.graphicsFormat = GraphicsFormat.R16G16B16A16_SFloat;
+                accumTexDesc.depthBufferBits = 0;
+                accumTexDesc.msaaSamples = 1;
+                // accumTexDesc.sRGB = false;
+                cmd.GetTemporaryRT(m_AccumTextureHandle.id, accumTexDesc, FilterMode.Bilinear);
 
                 var revealageTexDesc = cameraTextureDescriptor;
-                revealageTexDesc.colorFormat = RenderTextureFormat.R8;
+                // revealageTexDesc.colorFormat = RenderTextureFormat.R16;
+                revealageTexDesc.graphicsFormat = GraphicsFormat.R16_SFloat;
                 revealageTexDesc.depthBufferBits = 0;
                 revealageTexDesc.msaaSamples = 1;
-                revealageTexDesc.sRGB = false;
+                // revealageTexDesc.sRGB = false;
 
-                cmd.GetTemporaryRT(m_AccumTextureHandle.id, AccumTexDesc, FilterMode.Bilinear);
                 cmd.GetTemporaryRT(m_RevealageTextureHandle.id, revealageTexDesc, FilterMode.Bilinear);
             }
 
             public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
             {
+                cmd.SetRenderTarget(m_AccumTextureHandle.Identifier());
+                cmd.ClearRenderTarget(false, true, Color.clear);
+
+                cmd.SetRenderTarget(m_RevealageTextureHandle.Identifier());
+                cmd.ClearRenderTarget(false, true, Color.white);
+
+                this.ConfigureTarget(m_Buffers, renderingData.cameraData.renderer.cameraDepthTarget);
             }
 
-            // void RenderAccumulate(CommandBuffer cmd, ref RenderingData renderingData)
-            // {
-            //     var drawingSettings = CreateDrawingSettings(weightedBlendID, ref renderingData,
-            //         SortingCriteria.CommonTransparent);
-            //     cmd.SetRenderTarget(new RenderTargetIdentifier[] { colorRTs[i], depthRTs[i] }, depthRTs[i]);
-            //     cmd.ClearRenderTarget(true, true, Color.clear);
-            //     context.ExecuteCommandBuffer(cmd);
-            //     cmd.Clear();
-            //
-            //     context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilteringSettings);
-            // }
+
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
@@ -106,19 +111,18 @@ namespace LcLGame
                     cmd.Clear();
 
                     //Accumulate
-                    cmd.SetRenderTarget(new RenderTargetIdentifier[]
-                        { m_AccumTextureHandle.Identifier(), m_RevealageTextureHandle.Identifier() }, sourceDepth);
-                    cmd.ClearRenderTarget(true, true, Color.clear);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Clear();
+                    // cmd.SetRenderTarget(m_Buffers, sourceDepth);
+                    // cmd.ClearRenderTarget(true, true, Color.clear);
+                    // context.ExecuteCommandBuffer(cmd);
+                    // cmd.Clear();
                     context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilteringSettings);
 
 
                     //Blend
                     cmd.SetGlobalTexture(m_AccumTextureID, m_AccumTextureHandle.Identifier());
                     cmd.SetGlobalTexture(m_RevealageTextureID, m_RevealageTextureHandle.Identifier());
-                    // Blit(cmd,ref renderingData, source, source, m_Material, 0);
-                    Blit(cmd, ref renderingData, m_Material, 0);
+                    Blit(cmd, ref renderingData, m_Material);
+                    // Blit(cmd, m_AccumTextureHandle.id, source, m_Material, 0);
                 }
 
                 context.ExecuteCommandBuffer(cmd);

@@ -2,40 +2,36 @@ Shader "LcL/OIT/DepthPeelingTransparent"
 {
     Properties
     {
-        _MainTex ("MainTex", 2D) = "white" {}
-        _BaseColor ("Colour", Color) = (1, 1, 1, 1)
+        [MainTexture] _BaseMap ("Base Map (RGB) Smoothness / Alpha (A)", 2D) = "white" { }
+        [MainColor] _BaseColor ("Base Color", Color) = (1, 1, 1, 1)
+
+        _Cutoff ("Alpha Clipping", Range(0.0, 1.0)) = 0.5
+
+        _Smoothness ("Smoothness", Range(0.0, 1.0)) = 0.5
+        _SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 0.5)
+        _SpecGlossMap ("Specular Map", 2D) = "white" { }
+        _SmoothnessSource ("Smoothness Source", Float) = 0.0
+        _SpecularHighlights ("Specular Highlights", Float) = 1.0
+
+        [HideInInspector] _BumpScale ("Scale", Float) = 1.0
+        [NoScaleOffset] _BumpMap ("Normal Map", 2D) = "bump" { }
+
+        [HDR] _EmissionColor ("Emission Color", Color) = (0, 0, 0)
+        [NoScaleOffset]_EmissionMap ("Emission Map", 2D) = "white" { }
+
+        [HideInInspector]_MainTex ("MainTex", 2D) = "white" { }
     }
     SubShader
     {
         Tags
         {
-            "RenderType"="Transparent" "RenderPipeline"="UniversalPipeline" "Queue" = "Transparent"
+            "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"
         }
 
         HLSLINCLUDE
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-
-        CBUFFER_START(UnityPerMaterial)
-            float4 _MainTex_ST;
-            float4 _BaseColor;
-        CBUFFER_END
-
-        struct Attributes
-        {
-            float4 positionOS : POSITION;
-            float2 uv : TEXCOORD0;
-            float4 color : COLOR;
-            float3 normalOS : NORMAL;
-        };
-
-        struct Varyings
-        {
-            float4 positionCS : SV_POSITION;
-            float2 uv : TEXCOORD0;
-            float4 color : COLOR;
-            float3 normalWS : TEXCOORD1;
-            float3 viewDirWS : TEXCOORD2;
-        };
+        #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+        #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitForwardPass.hlsl"
 
         struct DepthPeelingOutput
         {
@@ -45,39 +41,33 @@ Shader "LcL/OIT/DepthPeelingTransparent"
 
         TEXTURE2D(_MainTex);
         SAMPLER(sampler_MainTex);
+        float4 _MainTex_ST;
 
         TEXTURE2D(_DepthTexture);
 
         TEXTURE2D(_PrevCameraDepthTexture);
         SAMPLER(sampler_PrevCameraDepthTexture);
-
         SamplerState sampler_PointClamp;
-
-        Varyings DefaultVert(Attributes input)
-        {
-            Varyings output;
-
-            VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
-            output.positionCS = positionInputs.positionCS;
-            output.uv = TRANSFORM_TEX(input.uv, _MainTex);
-            output.color = input.color;
-
-            VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS);
-            output.normalWS = normalInputs.normalWS;
-            output.viewDirWS = GetWorldSpaceViewDir(positionInputs.positionWS);
-            return output;
-        }
 
         inline float4 RenderFragment(Varyings input)
         {
-            half4 baseMap = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _BaseColor;
-            // float3 viewDirWS = normalize(input.viewDirWS);
-            // float3 normalWS = normalize(input.normalWS);
-            // float fresnel = 1 - dot(viewDirWS, normalWS);
-            // fresnel = pow(fresnel, 5);
+            UNITY_SETUP_INSTANCE_ID(input);
+            UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-            // baseMap.a = ( fresnel) * _BaseColor.a;
-            return baseMap;
+            SurfaceData surfaceData;
+            InitializeSimpleLitSurfaceData(input.uv, surfaceData);
+
+            // return float4(surfaceData.albedo, surfaceData.alpha);
+
+            InputData inputData;
+            InitializeInputData(input, surfaceData.normalTS, inputData);
+            SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _BaseMap);
+
+            half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
+            color.rgb = MixFog(color.rgb, inputData.fogCoord);
+            color.a = OutputAlpha(color.a, 1);
+
+            return color;
         }
 
         DepthPeelingOutput DepthPeelingFirstFrag(Varyings input) : SV_Target
@@ -105,7 +95,7 @@ Shader "LcL/OIT/DepthPeelingTransparent"
             return output;
         }
 
-        float4 DepthPeelingBlendFrag(Varyings input, out float deputOut:SV_DEPTH) : SV_Target
+        float4 DepthPeelingBlendFrag(Varyings input, out float deputOut : SV_DEPTH) : SV_Target
         {
             half4 baseMap = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
             deputOut = SAMPLE_DEPTH_TEXTURE(_DepthTexture, sampler_PointClamp, input.uv).r;
@@ -116,14 +106,15 @@ Shader "LcL/OIT/DepthPeelingTransparent"
         Pass
         {
             Name "DepthPeelingTransparentFirstPass"
+            // "LightMode"="UniversalForward"
             Tags
             {
-                "LightMode"="DepthPeelingTransparentFirst"
+                "LightMode" = "DepthPeelingTransparentFirst"
             }
             Cull Off
 
             HLSLPROGRAM
-            #pragma vertex DefaultVert
+            #pragma vertex LitPassVertexSimple
             #pragma fragment DepthPeelingFirstFrag
             ENDHLSL
         }
@@ -133,12 +124,12 @@ Shader "LcL/OIT/DepthPeelingTransparent"
             Name "DepthPeelingTransparentPass"
             Tags
             {
-                "LightMode"="DepthPeelingTransparent"
+                "LightMode" = "DepthPeelingTransparent"
             }
             Cull Off
 
             HLSLPROGRAM
-            #pragma vertex DefaultVert
+            #pragma vertex LitPassVertexSimple
             #pragma fragment DepthPeelingFrag
             ENDHLSL
         }
@@ -148,14 +139,14 @@ Shader "LcL/OIT/DepthPeelingTransparent"
             Name "DepthPeelingBlendPass"
             Tags
             {
-                "LightMode"="DepthPeelingTransparent"
+                "LightMode" = "DepthPeelingTransparent"
             }
             Cull Off
             ZTest Off
             Blend SrcAlpha OneMinusSrcAlpha
 
             HLSLPROGRAM
-            #pragma vertex DefaultVert
+            #pragma vertex LitPassVertexSimple
             #pragma fragment DepthPeelingBlendFrag
             ENDHLSL
         }

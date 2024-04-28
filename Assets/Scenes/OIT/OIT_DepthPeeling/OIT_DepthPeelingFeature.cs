@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace LcLGame
 {
-    public class OIT_DepthPeelingFeature : ScriptableRendererFeature
+    public class OIT_DepthPeelingFeature : RendererFeatureBase
     {
         [System.Serializable]
         public class Settings
@@ -25,7 +25,7 @@ namespace LcLGame
             };
         }
 
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+        public override void AddRenderPasses(ScriptableRenderer renderer)
         {
             renderer.EnqueuePass(m_ScriptablePass);
         }
@@ -33,13 +33,16 @@ namespace LcLGame
         class DepthPeelingRenderPass : ScriptableRenderPass
         {
             ProfilingSampler m_ProfilingSampler = new ProfilingSampler("OIT DepthPeeling");
-            FilteringSettings m_FilteringSettings;
+            FilteringSettings m_FilteringSettingsTransparent;
+            FilteringSettings m_FilteringSettingsOpaque;
 
-            static readonly ShaderTagId depthPeelingFirstID = new ShaderTagId("DepthPeelingTransparentFirst");
-            static readonly ShaderTagId depthPeelingID = new ShaderTagId("DepthPeelingTransparent");
+
+            static readonly ShaderTagId depthPeelingFirstID = new ShaderTagId("DepthPeelingFirst");
+            static readonly ShaderTagId depthPeelingID = new ShaderTagId("DepthPeeling");
 
             Settings m_Settings;
             Material m_Material;
+
             int[] colorRTs;
             int[] depthRTs;
 
@@ -47,8 +50,9 @@ namespace LcLGame
             public DepthPeelingRenderPass(Settings settings)
             {
                 m_Settings = settings;
-                m_Material = CoreUtils.CreateEngineMaterial("LcL/OIT/DepthPeelingTransparent");
-                m_FilteringSettings = new FilteringSettings(RenderQueueRange.transparent);
+                m_Material = CoreUtils.CreateEngineMaterial("LcL/OIT/DepthPeelingBlit");
+                m_FilteringSettingsTransparent = new FilteringSettings(RenderQueueRange.transparent);
+                m_FilteringSettingsOpaque = new FilteringSettings(RenderQueueRange.opaque);
                 colorRTs = new int[m_Settings.DepthPeelingPass];
                 depthRTs = new int[m_Settings.DepthPeelingPass];
             }
@@ -57,7 +61,6 @@ namespace LcLGame
             public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
             {
                 // Create RT
-                // cmd.GetTemporaryRT(m_TempTextureHandle.id, cameraTextureDescriptor);
                 var depthDesc = cameraTextureDescriptor;
                 depthDesc.colorFormat = RenderTextureFormat.RFloat;
                 depthDesc.depthBufferBits = 32;
@@ -85,10 +88,13 @@ namespace LcLGame
                 ref CameraData cameraData = ref renderingData.cameraData;
                 var renderer = cameraData.renderer;
                 var camera = cameraData.camera;
+                if(camera.cameraType == CameraType.Preview)
+                    return;
+
                 var source = renderer.cameraColorTarget;
                 var sourceDepth = renderer.cameraDepthTarget;
-                var drawingSettings =
-                    CreateDrawingSettings(depthPeelingFirstID, ref renderingData, SortingCriteria.CommonTransparent);
+                var drawingSettings = CreateDrawingSettings(depthPeelingFirstID, ref renderingData, SortingCriteria.CommonTransparent);
+
                 var cmd = CommandBufferPool.Get();
 
                 using (new ProfilingScope(cmd, m_ProfilingSampler))
@@ -114,7 +120,11 @@ namespace LcLGame
                         context.ExecuteCommandBuffer(cmd);
                         cmd.Clear();
 
-                        context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilteringSettings);
+                        //Draw Opaque
+                        context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilteringSettingsOpaque);
+
+                        //Draw Transparent
+                        context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilteringSettingsTransparent);
                     }
 
                     // Combine all the color textures
@@ -122,7 +132,7 @@ namespace LcLGame
                     for (var i = m_Settings.DepthPeelingPass - 1; i >= 0; i--)
                     {
                         cmd.SetGlobalTexture("_DepthTexture", i == 0 ? depthRTs[0] : Texture2D.blackTexture);
-                        cmd.Blit(colorRTs[i], source, m_Material, 2);
+                        cmd.Blit(colorRTs[i], source, m_Material, 0);
                     }
                 }
 

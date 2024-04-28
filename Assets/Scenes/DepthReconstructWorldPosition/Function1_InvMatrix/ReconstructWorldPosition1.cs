@@ -6,6 +6,7 @@ public class ReconstructWorldPosition1 : ScriptableRendererFeature
 {
     public RenderPassEvent m_RenderPassEvent = RenderPassEvent.AfterRenderingTransparents;
     ReconstructRenderPass m_RenderPass;
+
     public override void Create()
     {
         m_RenderPass = new ReconstructRenderPass(name);
@@ -28,11 +29,10 @@ public class ReconstructWorldPosition1 : ScriptableRendererFeature
         {
             m_ProfilerTag = tag;
             m_Material = CoreUtils.CreateEngineMaterial(m_ShaderName);
-
         }
+
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-
         }
 
 
@@ -53,9 +53,6 @@ public class ReconstructWorldPosition1 : ScriptableRendererFeature
 
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
-
         }
     }
 }
-
-

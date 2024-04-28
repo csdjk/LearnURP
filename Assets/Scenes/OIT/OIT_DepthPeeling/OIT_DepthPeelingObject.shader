@@ -1,4 +1,4 @@
-Shader "LcL/OIT/DepthPeelingTransparent"
+Shader "LcL/OIT/DepthPeelingObject"
 {
     Properties
     {
@@ -25,7 +25,7 @@ Shader "LcL/OIT/DepthPeelingTransparent"
     {
         Tags
         {
-            "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"
+            "RenderPipeline" = "UniversalPipeline" "Queue" = "Geometry" "RenderType" = "Opaque"
         }
 
         HLSLINCLUDE
@@ -56,8 +56,6 @@ Shader "LcL/OIT/DepthPeelingTransparent"
 
             SurfaceData surfaceData;
             InitializeSimpleLitSurfaceData(input.uv, surfaceData);
-
-            // return float4(surfaceData.albedo, surfaceData.alpha);
 
             InputData inputData;
             InitializeInputData(input, surfaceData.normalTS, inputData);
@@ -95,6 +93,7 @@ Shader "LcL/OIT/DepthPeelingTransparent"
             return output;
         }
 
+        // Blend pass
         float4 DepthPeelingBlendFrag(Varyings input, out float deputOut : SV_DEPTH) : SV_Target
         {
             half4 baseMap = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
@@ -105,11 +104,10 @@ Shader "LcL/OIT/DepthPeelingTransparent"
 
         Pass
         {
-            Name "DepthPeelingTransparentFirstPass"
-            // "LightMode"="UniversalForward"
+            Name "DepthPeelingFirstPass"
             Tags
             {
-                "LightMode" = "DepthPeelingTransparentFirst"
+                "LightMode" = "DepthPeelingFirst"
             }
             Cull Off
 
@@ -121,10 +119,10 @@ Shader "LcL/OIT/DepthPeelingTransparent"
 
         Pass
         {
-            Name "DepthPeelingTransparentPass"
+            Name "DepthPeelingPass"
             Tags
             {
-                "LightMode" = "DepthPeelingTransparent"
+                "LightMode" = "DepthPeeling"
             }
             Cull Off
 
@@ -134,21 +132,21 @@ Shader "LcL/OIT/DepthPeelingTransparent"
             ENDHLSL
         }
 
-        Pass
-        {
-            Name "DepthPeelingBlendPass"
-            Tags
-            {
-                "LightMode" = "DepthPeelingTransparent"
-            }
-            Cull Off
-            ZTest Off
-            Blend SrcAlpha OneMinusSrcAlpha
+        // Pass
+        // {
+        //     Name "DepthPeelingBlendPass"
+        //     Tags
+        //     {
+        //         "LightMode" = "DepthPeeling"
+        //     }
+        //     Cull Off
+        //     ZTest Off
+        //     Blend SrcAlpha OneMinusSrcAlpha
 
-            HLSLPROGRAM
-            #pragma vertex LitPassVertexSimple
-            #pragma fragment DepthPeelingBlendFrag
-            ENDHLSL
-        }
+        //     HLSLPROGRAM
+        //     #pragma vertex LitPassVertexSimple
+        //     #pragma fragment DepthPeelingBlendFrag
+        //     ENDHLSL
+        // }
     }
 }

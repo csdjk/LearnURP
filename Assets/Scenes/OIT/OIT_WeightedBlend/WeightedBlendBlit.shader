@@ -1,4 +1,4 @@
-Shader "Hidden/OIT/WeightedBlend"
+Shader "Hidden/OIT/WeightedBlendBlit"
 {
     Properties
     {
@@ -18,13 +18,11 @@ Shader "Hidden/OIT/WeightedBlend"
         Pass
         {
             Name "Weighted Blend Blit"
-
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
-
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -44,13 +42,9 @@ Shader "Hidden/OIT/WeightedBlend"
                 return output;
             }
 
-
             half4 frag(Varyings input) : SV_Target
             {
-                // float3 sceneColor = SampleSceneColor(input.uv);
                 float4 mainColor = SAMPLE_TEXTURE2D(_MainTex, sampler_LinearClamp, input.uv);
-                // float4 mainColor = half4(sceneColor, 1);
-
                 float4 accum = SAMPLE_TEXTURE2D(_AccumTexture, sampler_LinearClamp, input.uv);
                 float r = SAMPLE_TEXTURE2D_X(_RevealageTexture, sampler_LinearClamp, input.uv).r;
                 //1e-4 = 1*10^-4 = 0.0001

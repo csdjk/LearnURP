@@ -57,11 +57,14 @@
 
 ### [OIT](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/OIT/)
 
-#### Depth Peeling
+| ![1714287835072](image/README/1714287835072.png) | ![1714287995881](image/README/1714287995881.png) | ![1714288026699](image/README/1714288026699.png) |
+| :--------------------------------------------: | :--------------------------------------------: | :--------------------------------------------: |
+|                  Alpha Blend                  |              OIT - Depth Peeling              |                 Weighted Blend                 |
 
-| ![1714032572106](image/README/1714032572106.png) | ![1714032680443](image/README/1714032680443.png) |
-| :--------------------------------------------: | :--------------------------------------------: |
-|                  Alpha Blend                  |              OIT - Depth Peeling              |
+
+| ![1714286971031](image/README/1714286971031.png) | ![1714286955263](image/README/1714286955263.png) | ![1714286925897](image/README/1714286925897.png) |
+| :--------------------------------------------: | :--------------------------------------------: | :--------------------------------------------: |
+|                  Alpha Blend                  |              OIT - Depth Peeling              |                 Weighted Blend                 |
 
 ### [HBAO](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/HBAO/)
 

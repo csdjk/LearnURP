@@ -19,6 +19,7 @@ public class LcLRenderingUtils
     static MaterialPropertyBlock m_PropertyBlock = new MaterialPropertyBlock();
 
     static Mesh m_FullscreenMesh = null;
+
     public static Mesh FullscreenMesh
     {
         get
@@ -31,20 +32,20 @@ public class LcLRenderingUtils
 
             m_FullscreenMesh = new Mesh { name = "Fullscreen Quad" };
             m_FullscreenMesh.SetVertices(new List<Vector3>
-                {
-                    new Vector3(-1.0f, -1.0f, 0.0f),
-                    new Vector3(-1.0f,  1.0f, 0.0f),
-                    new Vector3(1.0f, -1.0f, 0.0f),
-                    new Vector3(1.0f,  1.0f, 0.0f)
-                });
+            {
+                new Vector3(-1.0f, -1.0f, 0.0f),
+                new Vector3(-1.0f, 1.0f, 0.0f),
+                new Vector3(1.0f, -1.0f, 0.0f),
+                new Vector3(1.0f, 1.0f, 0.0f)
+            });
 
             m_FullscreenMesh.SetUVs(0, new List<Vector2>
-                {
-                    new Vector2(0.0f, bottomV),
-                    new Vector2(0.0f, topV),
-                    new Vector2(1.0f, bottomV),
-                    new Vector2(1.0f, topV)
-                });
+            {
+                new Vector2(0.0f, bottomV),
+                new Vector2(0.0f, topV),
+                new Vector2(1.0f, bottomV),
+                new Vector2(1.0f, topV)
+            });
 
             m_FullscreenMesh.SetIndices(new[] { 0, 1, 2, 2, 1, 3 }, MeshTopology.Triangles, 0, false);
             m_FullscreenMesh.UploadMeshData(true);
@@ -53,6 +54,7 @@ public class LcLRenderingUtils
     }
 
     static Mesh m_PlaneMesh = null;
+
     public static Mesh PlaneMesh
     {
         get
@@ -87,6 +89,7 @@ public class LcLRenderingUtils
     }
 
     static Mesh m_QuadMesh;
+
     // getter
     public static Mesh QuadMesh
     {
@@ -106,9 +109,11 @@ public class LcLRenderingUtils
                 // m_QuadMesh.triangles = new int[6] { 0, 1, 2, 0, 2, 3 };
                 m_QuadMesh.SetTriangles(new int[6] { 0, 1, 2, 0, 2, 3 }, 0);
             }
+
             return m_QuadMesh;
         }
     }
+
     static Vector3[] GetQuadVertexPosition(float z /*= UNITY_NEAR_CLIP_VALUE*/)
     {
         var r = new Vector3[4];
@@ -120,8 +125,10 @@ public class LcLRenderingUtils
             float y = 1 - (topBit + botBit) & 1; // produces 1 for indices 0,3 and 0 for 1,2
             r[i] = new Vector3(x, y, z);
         }
+
         return r;
     }
+
     // Should match Common.hlsl
     static Vector2[] GetQuadTexCoord()
     {
@@ -137,6 +144,7 @@ public class LcLRenderingUtils
 
             r[i] = new Vector2(u, v);
         }
+
         return r;
     }
 
@@ -157,6 +165,7 @@ public class LcLRenderingUtils
             width *= ScalableBufferManager.widthScaleFactor;
             height *= ScalableBufferManager.heightScaleFactor;
         }
+
         cmd.SetGlobalVector(ShaderConstants.sourceSize, new Vector4(width, height, 1.0f / width, 1.0f / height));
     }
 
@@ -193,6 +202,11 @@ public class LcLRenderingUtils
         renderer.SwapColorBuffer(cmd);
     }
 
+    public static void Blit(CommandBuffer cmd, RenderTargetIdentifier source, RenderTargetIdentifier destination, Material material, int passIndex = 0)
+    {
+        destination = BlitDstDiscardContent(cmd, destination);
+        cmd.Blit(source, destination, material, passIndex);
+    }
 
     static internal void DrawQuad(CommandBuffer cmd, Material material, int shaderPass)
     {
@@ -200,5 +214,54 @@ public class LcLRenderingUtils
             cmd.DrawMesh(QuadMesh, Matrix4x4.identity, material, 0, shaderPass, m_PropertyBlock);
         else
             cmd.DrawProcedural(Matrix4x4.identity, material, shaderPass, MeshTopology.Quads, 4, 1, m_PropertyBlock);
+    }
+
+
+    public static readonly int FrustumCornersRayID = Shader.PropertyToID("_FrustumCornersRay");
+
+    /// <summary>
+    /// 计算相机在远裁剪面处的四个角的方向向量
+    /// </summary>
+    /// <param name="camera"></param>
+    /// <param name="commandBuffer"></param>
+    public static Matrix4x4 CalculateFrustumCornersRay(Camera camera)
+    {
+        var aspect = camera.aspect;
+        var far = camera.farClipPlane;
+        var right = camera.transform.right;
+        var up = camera.transform.up;
+        var forward = camera.transform.forward;
+
+        var forwardVec = Vector3.zero;
+        Vector3 rightVec, upVec;
+
+        if (camera.orthographic)
+        {
+            var orthoSize = camera.orthographicSize;
+            rightVec = right * orthoSize * aspect;
+            upVec = up * orthoSize;
+        }
+        else
+        {
+            forwardVec = forward * far;
+            var halfFovTan = Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            rightVec = right * far * halfFovTan * aspect;
+            upVec = up * far * halfFovTan;
+        }
+
+        //构建四个角的方向向量
+        var topLeft = forwardVec - rightVec + upVec;
+        var topRight = forwardVec + rightVec + upVec;
+        var bottomLeft = forwardVec - rightVec - upVec;
+        var bottomRight = forwardVec + rightVec - upVec;
+
+        var viewPortRay = Matrix4x4.identity;
+
+        //计算近裁剪平面四个角对应向量
+        viewPortRay.SetRow(0, bottomLeft);
+        viewPortRay.SetRow(1, bottomRight);
+        viewPortRay.SetRow(2, topLeft);
+        viewPortRay.SetRow(3, topRight);
+        return viewPortRay;
     }
 }

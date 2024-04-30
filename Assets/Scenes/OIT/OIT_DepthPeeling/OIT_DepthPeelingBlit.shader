@@ -16,7 +16,6 @@ Shader "LcL/OIT/DepthPeelingBlit"
         SAMPLER(sampler_MainTex);
         float4 _MainTex_ST;
         TEXTURE2D(_DepthTexture);
-
         // Blend
         float4 DepthPeelingFrag(Varyings input, out float deputOut : SV_DEPTH) : SV_Target
         {

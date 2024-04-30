@@ -9,16 +9,17 @@
     }
     SubShader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags
+        {
+            "RenderType" = "Opaque"
+        }
         LOD 100
 
         Pass
         {
-            CGPROGRAM
-
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
             #include "Assets\Shaders\Libraries\Noise.hlsl"
             #include "Assets\Shaders\Libraries\Node.hlsl"
 
@@ -38,10 +39,11 @@
             float _Speed;
             float _RingWidth;
             float _RingSmoothness;
+
             v2f vert(appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = TransformObjectToHClip(v.vertex);
                 o.uv = v.uv;
                 return o;
             }
@@ -66,7 +68,7 @@
                 col.rgb = DrawRing(gridUV, center, _RingWidth, size, _RingSmoothness) * fadeOut * fadeOut;
                 return col;
             }
-            ENDCG
+            ENDHLSL
 
         }
     }

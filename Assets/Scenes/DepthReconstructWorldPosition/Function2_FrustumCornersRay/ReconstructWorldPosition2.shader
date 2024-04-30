@@ -8,7 +8,7 @@ Shader "LcL/Depth/ReconstructWorldPosition2"
         {
             Name "ReconstructWorldPosition_RayDir"
             Tags { "LightMode" = "UniversalForward" }
-            
+
             HLSLPROGRAM
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -17,41 +17,40 @@ Shader "LcL/Depth/ReconstructWorldPosition2"
             #pragma fragment frag
 
             #pragma multi_compile _ _USE_VERTEX_ID
-            
+
             struct Attributes
             {
                 float4 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
                 uint vid : SV_VertexID;
             };
-            
+
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 viewRay : TEXCOORD1;
             };
-            
+
             float4x4 _FrustumCornersRay;
 
-            
+
             Varyings vert(Attributes input)
             {
                 Varyings output;
-                
+
                 VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
                 output.positionCS = positionInputs.positionCS;
                 output.uv = input.uv;
 
                 //根据UV区分四个角
-
                 //uv: (0,0) (1,0) (0,1) (1,1)
                 //index: 0 1 2 3
                 int index = int(input.uv.x + 0.5) + 2 * int(input.uv.y + 0.5);
                 output.viewRay = _FrustumCornersRay[index].xyz;
                 return output;
             }
-            
+
 
             float3 ComputePositionWS(float2 uv, float3 ray)
             {
@@ -71,7 +70,7 @@ Shader "LcL/Depth/ReconstructWorldPosition2"
                         depth = 1 - depth;
                     #endif
                     float farClipPlane = _ProjectionParams.z;
-                    
+
                     // float3 forward = UNITY_MATRIX_V[2].xyz;
                     float3 forward = unity_WorldToCamera[2].xyz;
                     float3 cameraForward = normalize(forward) * farClipPlane;

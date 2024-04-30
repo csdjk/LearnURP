@@ -1,5 +1,6 @@
 #ifndef NOISE_INCLUDED
 #define NOISE_INCLUDED
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
 float random(float2 p)
 {
@@ -71,6 +72,7 @@ float VoronoiNoise(float2 UV, float AngleOffset, float CellDensity, out float Ce
     float2 f = frac(UV * CellDensity);
     float t = 8.0;
     float3 res = float3(8.0, 0.0, 0.0);
+
     UNITY_UNROLL
     for (int y = -1; y <= 1; y++)
     {

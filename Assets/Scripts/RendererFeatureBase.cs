@@ -43,7 +43,6 @@ namespace LcLGame
             CameraType cameraType = camera.cameraType;
             if (!RenderPreview() && cameraType == CameraType.Preview)
                 return;
-
             ScriptableRenderer renderer = camera.GetUniversalAdditionalCameraData().scriptableRenderer;
             AddRenderPasses(renderer);
         }

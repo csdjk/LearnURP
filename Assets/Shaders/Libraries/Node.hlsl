@@ -5,6 +5,7 @@
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
 #include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/BSDF.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
 float sum(float3 v)
 {
@@ -28,7 +29,7 @@ half4 FlowMapNode(sampler2D mainTex, sampler2D flowMap, float2 mainUV, float til
     half speed2 = frac(speed + 0.5);
 
     half4 flow = tex2D(flowMap, mainUV);
-    half2 flow_uv = - (flow.xy * 2 - 1);
+    half2 flow_uv = -(flow.xy * 2 - 1);
 
     half2 flow_uv1 = flow_uv * speed1 * strength;
     half2 flow_uv2 = flow_uv * speed2 * strength;
@@ -76,6 +77,7 @@ float3 BlendNormalsLiner(float3 N1, float3 N2)
 {
     return normalize(N1 + N2);
 }
+
 // 来自ShaderGraph的 BlendNormal节点
 float3 BlendNormalWhiteout(float3 N1, float3 N2)
 {
@@ -94,6 +96,7 @@ float3 BlendNormalRNM2(float3 n1, float3 n2)
     float3 r = (t / t.z) * dot(t, u) - u;
     return r;
 }
+
 // ================================= 序列帧 =================================
 half4 SquenceImage(sampler2D tex, float2 uv, float2 amount, float speed)
 {
@@ -109,7 +112,7 @@ half4 SquenceImage(sampler2D tex, float2 uv, float2 amount, float speed)
 
 // ================================= 平滑值 =================================
 // 平滑值(可以用于色阶分层)
-inline half SmoothValue(half threshold, half smoothness,half value)
+inline half SmoothValue(half threshold, half smoothness, half value)
 {
     half minValue = saturate(threshold - smoothness);
     half maxValue = saturate(threshold + smoothness);
@@ -145,6 +148,7 @@ inline float3 ApplyHue(float3 aColor, float aHue)
 
     return aColor * cosAngle + cross(k, aColor) * sinAngle + k * dot(k, aColor) * (1 - cosAngle);
 }
+
 // hsbc = half4(_Hue, _Saturation, _Brightness, _Contrast);
 inline float4 ApplyHSBCEffect(float4 startColor, half4 hsbc)
 {
@@ -229,6 +233,7 @@ half4 DissolveByRadius(
 
     return finalColor;
 }
+
 // ================================ 横向或纵向溶解 ================================
 half4 DissolveLinear(
     half4 color, sampler2D NoiseTex, float2 uv,
@@ -238,7 +243,7 @@ half4 DissolveLinear(
     #if defined(_HORIZONTAL)
         float dist = uv.x;
     #else
-        float dist = uv.y;
+    float dist = uv.y;
     #endif
 
     #if defined(_INVERT)
@@ -281,40 +286,47 @@ inline float ObjectPosRand01()
 {
     return frac(UNITY_MATRIX_M[0][3] + UNITY_MATRIX_M[1][3] + UNITY_MATRIX_M[2][3]);
 }
+
 // ================================ 获取轴心点，也就是模型中心坐标================================
 inline float3 GetModelPivotPos()
 {
     return float3(UNITY_MATRIX_M[0][3], UNITY_MATRIX_M[1][3] + 0.25, UNITY_MATRIX_M[2][3]);
 }
+
 // ================================ 获取模型 Right 方向 ================================
 inline float3 GetModelRightDir()
 {
     return float3(UNITY_MATRIX_M[0].x, UNITY_MATRIX_M[1].x, UNITY_MATRIX_M[2].x);
 }
+
 // ================================ 获取模型 Up 方向 ================================
 inline float3 GetModelUpDir()
 {
     return float3(UNITY_MATRIX_M[0].y, UNITY_MATRIX_M[1].y, UNITY_MATRIX_M[2].y);
 }
+
 // ================================ 获取模型 Forward 方向 ================================
 inline float3 GetModelForwardDir()
 {
     return float3(UNITY_MATRIX_M[0].z, UNITY_MATRIX_M[1].z, UNITY_MATRIX_M[2].z);
 }
+
 // ================================ 获取模型缩放 =================================
 inline float3 GetModelScale()
 {
     return float3(
         length(float3(UNITY_MATRIX_M[0].x, UNITY_MATRIX_M[1].x, UNITY_MATRIX_M[2].x)), // scale x axis
         length(float3(UNITY_MATRIX_M[0].y, UNITY_MATRIX_M[1].y, UNITY_MATRIX_M[2].y)), // scale y axis
-        length(float3(UNITY_MATRIX_M[0].z, UNITY_MATRIX_M[1].z, UNITY_MATRIX_M[2].z))  // scale z axis
+        length(float3(UNITY_MATRIX_M[0].z, UNITY_MATRIX_M[1].z, UNITY_MATRIX_M[2].z)) // scale z axis
     );
 }
+
 // ================================ 获取Camera Forward 方向 ================================
 float3 GetCameraForwardDir()
 {
     return normalize(UNITY_MATRIX_V[2].xyz);
 }
+
 // ================================= 根据世界坐标计算法线 =================================
 // ddx ddy计算法线
 float3 CalculateNormal(float3 positionWS)
@@ -323,6 +335,7 @@ float3 CalculateNormal(float3 positionWS)
     float3 dpy = ddy(positionWS) * _ProjectionParams.x;
     return normalize(cross(dpx, dpy));
 }
+
 // ================================= 根据深度重建世界坐标 =================================
 float3 CalculateWorldPosition(float2 screen_uv, float eyeDepth)
 {
@@ -333,6 +346,7 @@ float3 CalculateWorldPosition(float2 screen_uv, float eyeDepth)
     clipPos = float4(((clipPos.xyz / clipPos.w) * float3(1, 1, -1)), 1.0);
     return mul(unity_CameraToWorld, clipPos);
 }
+
 // float3 NormalFromTexture(TEXTURE2D_PARAM(bumpMap, sampler_bumpMap), float2 UV, float offset, float Strength)
 // {
 //     offset = pow(offset, 3) * 0.1;
@@ -351,6 +365,7 @@ float FresnelEffect(float3 Normal, float3 ViewDir, float Power)
 {
     return pow((1.0 - saturate(dot(normalize(Normal), normalize(ViewDir)))), Power);
 }
+
 float FresnelEffect(float3 Normal, float3 ViewDir, float Power, float Scale)
 {
     return Scale + (1 - Scale) * FresnelEffect(Normal, ViewDir, Power);
@@ -377,12 +392,14 @@ half3 ACESToneMapping(half3 color, float adapted_lum)
     color *= adapted_lum;
     return saturate((color * (A * color + B)) / (color * (C * color + D) + E));
 }
+
 // 移动端版本的色调映射(曲线非常接近ACES)
 // todo:垃圾
 half3 MobileACESToneMapping(half3 color)
 {
     return color / (color + 0.155) * 1.019;
 }
+
 // ================================= 压暗对比色 =================================
 // todo 测试...
 float ToneMaping(float3 color)
@@ -399,21 +416,24 @@ half UniversalMask2D(float2 uv, float2 center, float intensity, float roundness,
     float vfactor = pow(saturate(1 - dist * dist), smoothness);
     return vfactor;
 }
+
 half MaskTriangle(half2 uv, half smoothness)
 {
     // half t1 = uv.x * - 0.5 + 1;
-    half t1 = uv.x * - 0.3 + 0.8;
+    half t1 = uv.x * -0.3 + 0.8;
     half value = smoothstep(t1 + smoothness, t1, uv.y);
     // half t2 = uv.x * 0.5;
     half t2 = uv.x * 0.3 + 0.2;
     half value2 = smoothstep(t2, t2 - smoothness, uv.y);
     return value - value2;
 }
+
 // ================================= 3D Box 遮罩 =================================
 half BoxMask(float3 positionWS, float3 center, float3 size, float falloff)
 {
     return distance(max(abs(positionWS - center) - (size * 0.5), 0), 0) / falloff;
 }
+
 // ================================= 3D Sphere 遮罩=================================
 half SphereMask(float3 positionWS, float3 center, float3 radius, float hardness)
 {
@@ -438,6 +458,7 @@ half4 TriplanarMapping(sampler2D textures, float3 positionWS, half3 N, float til
     half4 col = half4(xDiff * blendWeights.x + yDiff * blendWeights.y + zDiff * blendWeights.z, 1.0);
     return col;
 }
+
 // ================================ 没有重复感的四方连续纹理 ================================
 // https://iquilezles.org/articles/texturerepetition/
 float4 TexNoTileTech(sampler2D baseTex, sampler2D noiseTex, float2 uv)
@@ -486,6 +507,7 @@ float3 InteriorCubemap(float2 uv, float2 tilling, float3 viewTS)
 
     return minview.zxy;
 }
+
 // ================================= InteriorMapping 2D =================================
 //bgolus's original source code: https://forum.unity.com/threads/interior-mapping.424676/#post-2751518
 float2 ConvertOriginalRawUVToInteriorUV(float2 originalRawUV, float3 viewDirTangentSpace, float roomMaxDepth01Define)
@@ -501,7 +523,7 @@ float2 ConvertOriginalRawUVToInteriorUV(float2 originalRawUV, float3 viewDirTang
 
     //now prepare ray box intersection test's input data in normalized box space
     float3 viewRayStartPosBoxSpace = float3(originalRawUV * 2 - 1, -1); //normalized box space's ray start pos is on trinagle surface, where z = -1
-    float3 viewRayDirBoxSpace = viewDirTangentSpace * float3(1, 1, -depthScale);//transform input ray dir from tangent space to normalized box space
+    float3 viewRayDirBoxSpace = viewDirTangentSpace * float3(1, 1, -depthScale); //transform input ray dir from tangent space to normalized box space
 
     //do ray & axis aligned box intersection test in normalized box space (all input transformed to normalized box space)
     //intersection test function used = https://www.iquilezles.org/www/articles/intersectors/intersectors.htm
@@ -536,7 +558,6 @@ float2 ConvertOriginalRawUVToInteriorUV(float2 originalRawUV, float3 viewDirTang
 }
 
 
-
 // ================================= 各向异性 Kajiya-Kay =================================
 // half3 ShiftTangent(half3 T, half3 N, half shift)
 // {
@@ -554,7 +575,7 @@ half AnisotropyKajiyaKay(half3 T, half3 V, half3 L, half specPower)
 
 // ================================= 头发高光(双层各向异性) =================================
 half3 HairStrandSpecular(half3 N, half3 T, half3 V, half3 L, float anisoShiftNoise,
-half4 specColor1, half3 specData1, half4 specColor2, half3 specData2)
+                         half4 specColor1, half3 specData1, half4 specColor2, half3 specData2)
 {
     half power1 = specData1.r;
     half shift1 = specData1.g;
@@ -578,7 +599,6 @@ half4 specColor1, half3 specData1, half4 specColor2, half3 specData2)
 
     return specular * anisoAtten;
 }
-
 
 
 // // =================================  =================================
@@ -619,35 +639,48 @@ half4 specColor1, half3 specData1, half4 specColor2, half3 specData2)
 // }
 
 
-// ================================= 粗糙度转换Mipmap Level =================================
-// inline half PerceptualRoughnessToMipmapLevel(half perceptualRoughness, int maxMipLevel)
-// {
-//     perceptualRoughness = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness);
-//     return perceptualRoughness * maxMipLevel;
-// }
-// inline half PerceptualRoughnessToMipmapLevel(half perceptualRoughness)
-// {
-//     return PerceptualRoughnessToMipmapLevel(perceptualRoughness, 6);
-// }
-
-
-
-
-
-
-
-
 // ================================= 【Transform Coordinates 】 =================================
 
-// ================================= 局部转切线(向量) =================================
-float3 ObjectToTangentDir(float3 inputDirOS, float3 normalOS, float4 tangentOS)
+// ================================= 重建世界坐标 =================================
+//计算view ray - Vertex Shader
+float3 CalculateViewRay(half2 uv, float4x4 frustumCornersRay)
 {
-    float tangentSign = tangentOS.w * unity_WorldTransformParams.w;
-    float3 bitangentOS = cross(normalOS, tangentOS.xyz) * tangentSign;
-    return float3(
-        dot(inputDirOS, tangentOS.xyz),
-        dot(inputDirOS, bitangentOS),
-        dot(inputDirOS, normalOS)
-    );
+    //根据UV区分四个角
+    //uv: (0,0) (1,0) (0,1) (1,1)
+    //index: 0 1 2 3
+    //bottomLeft, bottomRight, topLeft, topRight
+    int index = int(uv.x + 0.5) + 2 * int(uv.y + 0.5);
+    return frustumCornersRay[index].xyz;
 }
+//重建世界坐标 - Fragment Shader
+float3 ReconstructPositionWS(float2 uv, float3 ray,float depth)
+{
+    float3 positionWS = 0;
+    if (IsPerspectiveProjection())
+    {
+        // 透视相机下，_CameraDepthTexture存储的是ndc.z值，且：不是线性的。
+        depth = Linear01Depth(depth, _ZBufferParams);
+        positionWS = GetCurrentViewPosition() + depth * ray;
+    }
+    else
+    {
+        // 正交相机下，_CameraDepthTexture存储的是线性值，
+        // 并且距离镜头远的物体，深度值小，距离镜头近的物体，深度值大
+        #if defined(UNITY_REVERSED_Z)
+        depth = 1 - depth;
+        #endif
+        float farClipPlane = _ProjectionParams.z;
+
+        float3 forward = unity_WorldToCamera[2].xyz;
+        float3 cameraForward = normalize(forward) * farClipPlane;
+        positionWS = GetCurrentViewPosition() + depth * cameraForward + ray.xyz;
+    }
+    return positionWS;
+}
+float3 ReconstructPositionWS(float2 uv, float3 ray)
+{
+    float depth = SampleSceneDepth(uv);
+    return ReconstructPositionWS(uv, ray, depth);
+}
+
 #endif

@@ -1,4 +1,4 @@
-Shader "LcL/ScreenSpacePlanarReflectionLit"
+Shader "LcL/PlanerReflectionLit"
 {
     Properties
     {
@@ -17,7 +17,6 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
         [FoldoutEnd][Emission]_EmissionColor ("Emission Color", Color) = (0, 0, 0, 0)
 
         _SSRIntensity ("SSRIntensity", Range(0.0, 1.0)) = 1
-        _NoiseIntensity ("NoiseIntensity", Range(0.0, 0.1)) = 1
     }
     SubShader
     {
@@ -30,7 +29,7 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
         {
             Tags
             {
-                "LightMode" = "SSPR"
+                "LightMode" = "UniversalForward"
             }
 
             HLSLPROGRAM
@@ -73,8 +72,6 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
-            #include "Assets/Shaders/Libraries/Node.hlsl"
-            #include "Assets/Shaders/Libraries/Hash.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;
@@ -86,13 +83,12 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
                 float _OcclusionPower;
                 float _Cutoff;
                 float _SSRIntensity;
-                float _NoiseIntensity;
             CBUFFER_END
 
             TEXTURE2D(_MetallicSmoothnessMap);
             SAMPLER(sampler_MetallicSmoothnessMap);
 
-            TEXTURE2D(_ScreenSpaceReflectionTexture);
+            TEXTURE2D(_PlanarReflectionTexture);
             sampler LinearClampSampler;
 
             struct Attributes
@@ -157,7 +153,7 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
                 output.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
 
                 OUTPUT_LIGHTMAP_UV(input.lightmapUV, unity_LightmapST, output.lightmapUV);
-                OUTPUT_SH(output.normalWS.xyz, output.vertexSH);
+                    OUTPUT_SH(output.normalWS.xyz, output.vertexSH);
 
                 #ifdef REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
                     output.shadowCoord = GetShadowCoord(positionInputs);
@@ -232,15 +228,16 @@ Shader "LcL/ScreenSpacePlanarReflectionLit"
                 // ================================ SSR ================================
                 float2 screen_uv = input.positionCS.xy / _ScreenParams.xy;
 
-                half2 noise = (hash22(screen_uv * 100) - 0.5) * _NoiseIntensity;
-                screen_uv += noise;
-
-                float3 reflectColor = SAMPLE_TEXTURE2D(_ScreenSpaceReflectionTexture, LinearClampSampler, screen_uv);
-
-                reflectColor = lerp(surfaceData.albedo, surfaceData.albedo + reflectColor, _SSRIntensity);
 
 
-                surfaceData.albedo = reflectColor;
+
+                float3 reflectColor = SAMPLE_TEXTURE2D(_PlanarReflectionTexture, LinearClampSampler, screen_uv);
+                surfaceData.albedo = lerp(surfaceData.albedo, surfaceData.albedo + reflectColor, _SSRIntensity);
+
+                half3 reflectVector = reflect(-inputData.viewDirectionWS, inputData.normalWS);
+                half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, inputData.normalWS, 1-surfaceData.smoothness, surfaceData.occlusion);
+
+
                 // ================================================================
                 half4 color = UniversalFragmentPBR(inputData, surfaceData);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);

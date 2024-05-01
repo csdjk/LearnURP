@@ -193,13 +193,14 @@ public class LcLRenderingUtils
         return desc;
     }
 
-    public static void Blit(CommandBuffer cmd, RenderingData data, Material material, int passIndex = 0)
+    public static RenderTargetIdentifier Blit(CommandBuffer cmd, RenderingData data, Material material, int passIndex = 0)
     {
         var renderer = data.cameraData.renderer;
         var destination = renderer.GetCameraColorFrontBuffer(cmd);
         destination = BlitDstDiscardContent(cmd, destination);
         cmd.Blit(renderer.cameraColorTarget, destination, material, passIndex);
         renderer.SwapColorBuffer(cmd);
+        return destination;
     }
 
     public static void Blit(CommandBuffer cmd, RenderTargetIdentifier source, RenderTargetIdentifier destination, Material material, int passIndex = 0)

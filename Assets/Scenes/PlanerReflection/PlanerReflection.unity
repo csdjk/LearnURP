@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.745, g: 0.602705, b: 0.7364474, a: 1}
+  m_FogColor: {r: 0.74509805, g: 0.6039216, b: 0.7372549, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
@@ -170,7 +170,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792217149
 GameObject:
@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 810184503}
   - component: {fileID: 810184504}
   m_Layer: 0
-  m_Name: SSPR
+  m_Name: PlanerReflection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -317,7 +317,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &810184504
 MonoBehaviour:
@@ -328,22 +328,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 810184501}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b2a62da5cfff1941a37da0a976f7f47, type: 3}
+  m_Script: {fileID: 11500000, guid: a1701d53d2c2f9b43aae278f949d934a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computeShader: {fileID: 7200000, guid: 6ddd7501b595407abbe8fb1f120a25b5, type: 3}
+  rendererIndex: 0
   settings:
-    textureResolution: 1080
-    horizontalReflectionPlaneHeightWS: 0.1
-    fadeOutScreenBorderHorizontal: 0.072
-    fadeOutScreenBorderVerticle: 0.132
-    screenLRStretchThreshold: 1
-    screenLRStretchIntensity: 5.65
-    applyFillHoleFix: 1
-    applyBlur: 0
-    iterations: 2
-    blurRadius: 1
-    downSample: 1
+    resolutionMultiplier: 0
+    clipPlaneOffset: 0.01
+    reflectLayers:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    cameraTag: MainCamera
+    shadows: 0
+    clearFlags: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  targetPlane: {fileID: 1778625132}
+  planeOffset: 0
+  m_ReflectionCamera: {fileID: 0}
 --- !u!1 &1128564894
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,11 +557,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1716872832}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72715540126feb24393a3e49cf4c2672, type: 3}
+  m_Script: {fileID: 11500000, guid: da1d5aeaa971aa447a7cf6bb5883f408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 100
+  speed: 50
 --- !u!1 &1778625132
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,7 +615,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7a82295513607374f81a345ce31955ea, type: 2}
+  - {fileID: 2100000, guid: 899df92706e62ea45a6791d5a474762c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -657,5 +658,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

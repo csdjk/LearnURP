@@ -9,12 +9,13 @@ namespace LcLGame
     public class TaaSettings
     {
         [Range(0, 0.999f)] public float blend = 0.8f;
-        public bool useMotionVector = true;
+        public bool anitGhosting = true;
+        public bool useMotionVector = false;
         public bool useFindClosest = true;
-        public bool useNudge = true;
         public bool useClipAABB = true;
-        public bool useYCOCG = true;
-        public bool useTonemap = true;
+        public bool useYCOCG = false;
+        public bool useTonemap = false;
+        // public bool useNudge = true;
     }
 
     public class TemporalAAFeature : ScriptableRendererFeature
@@ -26,6 +27,7 @@ namespace LcLGame
 
         public override void Create()
         {
+            m_TaaRenderPass?.Dispose();
             m_TaaRenderPass = new TemporalAARenderPass(settings)
             {
                 renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing
@@ -38,10 +40,21 @@ namespace LcLGame
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var matrix = CalculateJitter(ref renderingData.cameraData);
+            if (renderingData.cameraData.isSceneViewCamera || renderingData.cameraData.isPreviewCamera)
+                return;
+
+            var (matrix, prevViewProj, offset) = CalculateJitter(ref renderingData.cameraData);
             m_TaaCameraPass.Setup(matrix);
+            m_TaaRenderPass.Setup(prevViewProj, offset);
             renderer.EnqueuePass(m_TaaCameraPass);
             renderer.EnqueuePass(m_TaaRenderPass);
+        }
+
+        //Dispose
+        protected override void Dispose(bool disposing)
+        {
+            m_TaaRenderPass.Dispose();
+            m_HaltonSequences.Clear();
         }
 
         public HaltonSequence GetHaltonSequence(int hash, Matrix4x4 viewProj)
@@ -64,7 +77,7 @@ namespace LcLGame
             return haltonSequence;
         }
 
-        public Matrix4x4 CalculateJitter(ref CameraData cameraData)
+        public (Matrix4x4,Matrix4x4,Vector2) CalculateJitter(ref CameraData cameraData)
         {
             var camera = cameraData.camera;
             var hash = camera.GetHashCode();
@@ -90,13 +103,13 @@ namespace LcLGame
 
             var offset = new Vector2((offsetX - 0.5f) / descriptor.width, (offsetY - 0.5f) / descriptor.height);
 
+            var prevViewProj = haltonSequence.prevViewProj;
 
-            m_TaaRenderPass.Setup(haltonSequence.prevViewProj, offset);
-
+            // haltonSequence.prevViewProj = matrix * view;
             haltonSequence.prevViewProj = viewProj;
             haltonSequence.frameCount = Time.frameCount;
             m_HaltonSequences[hash] = haltonSequence;
-            return matrix;
+            return (matrix, prevViewProj, offset);
         }
     }
 }

@@ -227,15 +227,16 @@ Shader "LcL/ScreenSpaceReflectionLit"
 
                 // ================================ SSR ================================
                 float2 screen_uv = input.positionCS.xy / _ScreenParams.xy;
+
+
+
+
                 float3 reflectColor = SAMPLE_TEXTURE2D(_ScreenSpaceReflectionTexture, LinearClampSampler, screen_uv);
                 surfaceData.albedo = lerp(surfaceData.albedo, surfaceData.albedo + reflectColor, _SSRIntensity);
 
-
                 half3 reflectVector = reflect(-inputData.viewDirectionWS, inputData.normalWS);
-
                 half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, inputData.normalWS, 1-surfaceData.smoothness, surfaceData.occlusion);
 
-                // surfaceData.albedo = indirectSpecular;
 
                 // ================================================================
                 half4 color = UniversalFragmentPBR(inputData, surfaceData);

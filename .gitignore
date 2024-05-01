@@ -39,6 +39,7 @@ backup/
 
 # 忽略文件目录
 Assets/VacuumShaders
+Assets/Samples
 # Assets/Samples
 # Assets/Plugins
 AmplifyShaderEditor

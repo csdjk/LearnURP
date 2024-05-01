@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6739960464257522171
+--- !u!114 &-3522642294959102197
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12,35 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d62e7cf8ddc454d862034fb9c71079, type: 3}
   m_Name: TemporalAAFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    blend: 0.975
-    useMotionVector: 1
-    useFindClosest: 1
-    useNudge: 1
-    useClipAABB: 0
-    useYCOCG: 0
-    useTonemap: 0
---- !u!114 &-4801660697356828792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09d572d36a83daa4bb576ae814b31f16, type: 3}
-  m_Name: TAA
-  m_EditorClassIdentifier: 
   m_Active: 0
-  PreviewInSceneView: 1
-  UseMotionVector: 1
-  RenderingMode: 0
-  WorkOnPrepass: 0
-  IgonreTransparentObject: 0
-  Use32Bit: 0
-  Shader: {fileID: 4800000, guid: 8c0d9373e5d33404ba27de953fd7a309, type: 3}
+  settings:
+    blend: 0.999
+    anitGhosting: 1
+    useMotionVector: 0
+    useFindClosest: 1
+    useClipAABB: 1
+    useYCOCG: 1
+    useTonemap: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,9 +37,8 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -4801660697356828792}
-  - {fileID: -6739960464257522171}
-  m_RendererFeatureMap: 887f173a09135dbd05e6c0e7aad976a2
+  - {fileID: -3522642294959102197}
+  m_RendererFeatureMap: 0b27321a7f0f1dcf
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}

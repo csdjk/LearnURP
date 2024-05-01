@@ -10,10 +10,10 @@ Shader "Hidden/LcL/TemporalAA"
     #pragma multi_compile_local_fragment _ _TAA_MotionVector
     #pragma multi_compile_local_fragment _ _TAA_ClipAABB
     #pragma multi_compile_local_fragment _ _TAA_YCOCG
-    #pragma multi_compile_local_fragment _ _TAA_Nudge
-    #pragma multi_compile_local_fragment _ _TAA_Sharpness
+    // #pragma multi_compile_local_fragment _ _TAA_Nudge
     #pragma multi_compile_local_fragment _ _TAA_FindClosest
     #pragma multi_compile_local_fragment _ _TAA_Tonemap
+    #pragma multi_compile_local_fragment _ _TAA_Anti_Ghosting
 
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
     #include "Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/Common.hlsl"
@@ -52,7 +52,7 @@ Shader "Hidden/LcL/TemporalAA"
         output.uv = input.uv;
 
         #if !defined(_TAA_MotionVector)
-            output.ray = CalculateViewRay(input.uv, _FrustumCornersRay);
+        output.ray = CalculateViewRay(input.uv, _FrustumCornersRay);
         #endif
         return output;
     }
@@ -100,7 +100,7 @@ Shader "Hidden/LcL/TemporalAA"
     float2 GetClosestFragment(float2 uv, float depth)
     {
         #if !defined(_TAA_FindClosest)
-            return uv;
+        return uv;
         #endif
 
         const float2 k = _CameraDepthTexture_TexelSize.xy;
@@ -112,7 +112,7 @@ Shader "Hidden/LcL/TemporalAA"
         float3 dmc = float3(0, 0, depth);
 
         #if UNITY_REVERSED_Z
-            #define ZCMP_GT(a, b) (a < b)
+        #define ZCMP_GT(a, b) (a < b)
         #else
             #define ZCMP_GT(a, b) (a > b)
         #endif
@@ -130,7 +130,7 @@ Shader "Hidden/LcL/TemporalAA"
     float2 GetClosestFragmentHigh(float depth, float2 uv)
     {
         #if UNITY_REVERSED_Z
-            #define ZCMP_GT(a, b) (a < b)
+        #define ZCMP_GT(a, b) (a < b)
         #else
             #define ZCMP_GT(a, b) (a > b)
         #endif
@@ -166,12 +166,51 @@ Shader "Hidden/LcL/TemporalAA"
         return uv + dd.xy * dmin.xy;
     }
 
-    void GetMinMaxColor(float4 color, float2 uv, float motionLength, out float4 minimum, out float4 maximum)
+
+    // void GetMinMaxColor(float4 color, float2 uv, out float4 minimum, out float4 maximum)
+    // {
+    //     const float2 k = _MainTex_TexelSize.xy;
+    //     float4 c00 = SAMPLE_DEPTH_TEXTURE(_MainTex, sampler_PointClamp, uv - k);
+    //     float4 c10 = SAMPLE_DEPTH_TEXTURE(_MainTex, sampler_PointClamp, uv + float2(k.x, -k.y));
+    //     float4 c01 = SAMPLE_DEPTH_TEXTURE(_MainTex, sampler_PointClamp, uv + float2(-k.x, k.y));
+    //     float4 c11 = SAMPLE_DEPTH_TEXTURE(_MainTex, sampler_PointClamp, uv + k);
+    //     minimum = min(color, min(c00, min(c10, min(c01, c11))));
+    //     maximum = max(color, max(c00, max(c10, max(c01, c11))));
+    // }
+
+    void GetMinMaxColorHigh(float depth, float2 uv, float motionLength, out float3 minimum, out float3 maximum)
     {
         const float2 k = _MainTex_TexelSize.xy;
 
-        // float4 topLeft = SAMPLE_TEXTURE2D(_MainTex, sampler_LinearClamp, (uv - k * 0.5));
-        // float4 bottomRight = SAMPLE_TEXTURE2D(_MainTex, sampler_LinearClamp, (uv + k * 0.5));
+        const float _SubpixelThreshold = 0.5;
+        const float _GatherBase = 0.5;
+        const float _GatherSubpixelMotion = 0.1666;
+
+        float2 texel_vel = motionLength / k;
+        float texel_vel_mag = length(texel_vel) * depth;
+        float k_subpixel_motion = saturate(_SubpixelThreshold / (FLT_EPS + texel_vel_mag));
+        float k_min_max_support = _GatherBase + _GatherSubpixelMotion * k_subpixel_motion;
+
+        float2 ss_offset01 = k_min_max_support * float2(-k.x, k.y);
+        float2 ss_offset11 = k_min_max_support * float2(k.x, k.y);
+        float3 c00 = SAMPLE_TEXTURE2D_X(_MainTex, sampler_LinearClamp, uv - ss_offset11);
+        float3 c10 = SAMPLE_TEXTURE2D_X(_MainTex, sampler_LinearClamp, uv - ss_offset01);
+        float3 c01 = SAMPLE_TEXTURE2D_X(_MainTex, sampler_LinearClamp, uv + ss_offset01);
+        float3 c11 = SAMPLE_TEXTURE2D_X(_MainTex, sampler_LinearClamp, uv + ss_offset11);
+        #ifdef _TAA_YCOCG
+            c00 = RGBToYCoCg(c00);
+            c10 = RGBToYCoCg(c10);
+            c01 = RGBToYCoCg(c01);
+            c11 = RGBToYCoCg(c11);
+        #endif
+
+        minimum = min(c00, min(c10, min(c01, c11)));
+        maximum = max(c00, max(c10, max(c01, c11)));
+    }
+
+    void GetMinMaxColor(float4 color, float2 uv, float motionLength, out float4 minimum, out float4 maximum)
+    {
+        const float2 k = _MainTex_TexelSize.xy;
 
         float4 topLeft = SAMPLE_TEXTURE2D(_MainTex, sampler_PointClamp, (uv - k * 0.5));
         float4 bottomRight = SAMPLE_TEXTURE2D(_MainTex, sampler_PointClamp, (uv + k * 0.5));
@@ -193,8 +232,8 @@ Shader "Hidden/LcL/TemporalAA"
             minimum = min(bottomRight, topLeft) - nudge;
             maximum = max(topLeft, bottomRight) + nudge;
         #else
-            minimum = min(bottomRight, topLeft);
-            maximum = max(topLeft, bottomRight);
+        minimum = min(bottomRight, topLeft);
+        maximum = max(topLeft, bottomRight);
         #endif
     }
 
@@ -223,7 +262,7 @@ Shader "Hidden/LcL/TemporalAA"
         // This is actually `distance`, however the keyword is reserved
         float3 offset = color - center;
 
-        float3 ts = abs(extents / (offset +0.0001));
+        float3 ts = abs(extents / (offset + 0.0001));
         float t = saturate(Min3(ts.x, ts.y, ts.z));
         color = center + offset * t;
         return color;
@@ -235,9 +274,10 @@ Shader "Hidden/LcL/TemporalAA"
         #ifdef _ClipAABB
             return ClipToAABB(color, minimum, maximum);
         #else
-            return clamp(color, minimum, maximum);
+        return clamp(color, minimum, maximum);
         #endif
     }
+
     // #pragma enable_d3d11_debug_symbols
     //获取当前像素的运动向量和上一帧的uv
     inline void GetPrevUV(DefaultVaryings input, float depth, out float2 motion, out float2 prev_uv)
@@ -249,8 +289,8 @@ Shader "Hidden/LcL/TemporalAA"
             prev_uv = uv - motion - _Offset;
             motion = uv - prev_uv;
         #else
-            prev_uv = Reprojection(input.uv, input.ray, depth);
-            motion = uv - prev_uv;
+        prev_uv = Reprojection(input.uv, input.ray, depth);
+        motion = uv - prev_uv;
         #endif
     }
 
@@ -267,45 +307,45 @@ Shader "Hidden/LcL/TemporalAA"
     half4 Fragment(DefaultVaryings input) : SV_Target
     {
         float2 uv = input.uv;
+        float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_LinearClamp, uv);
         float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_PointClamp, uv).r;
 
         float2 motion, prev_uv;
         GetPrevUV(input, depth, motion, prev_uv);
 
-        half4 historyColor = SAMPLE_TEXTURE2D(_HistoryTexture, sampler_LinearClamp, prev_uv);
+        if (prev_uv.x > 1.0 || prev_uv.y > 1.0 || prev_uv.x < 0.0 || prev_uv.y < 0.0)
+        {
+            return float4(max(float3(0.0, 0.0, 0.0), color), 1.0);
+        }
+
+        float4 historyColor = SAMPLE_TEXTURE2D(_HistoryTexture, sampler_LinearClamp, prev_uv);
         float motionLength = length(motion);
 
-        half4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_PointClamp, uv);
 
-        #if defined(_TAA_Tonemap)
-            color.rgb = ReinhardToneMap(color.rgb);
-            historyColor.rgb = ReinhardToneMap(historyColor.rgb);
-        #endif
+        // #if defined(_TAA_Tonemap)
+        //     color.rgb = ReinhardToneMap(color.rgb);
+        //     historyColor.rgb = ReinhardToneMap(historyColor.rgb);
+        // #endif
         #ifdef _TAA_YCOCG
             color.rgb = RGBToYCoCg(color.rgb);
             historyColor.rgb = RGBToYCoCg(historyColor.rgb);
         #endif
-        // 锐化
-        // if (_Sharpness > 0)
-        // {
-        // Sharpen output
-        // color += (color - (corners * 0.166667)) * 2.718282 * 0.5;
-        // color = clamp(color, 0.0, HALF_MAX);
-        // }
 
-        float4 minimum, maximum;
-        GetMinMaxColor(color, uv, motionLength, minimum, maximum);
-        // Clip history samples
-        historyColor.rgb = ClipColor(historyColor.rgb, minimum.xyz, maximum.xyz);
+        #ifdef _TAA_Anti_Ghosting
+            float3 minimum, maximum;
+            // GetMinMaxColor(color, uv, minimum, maximum);
+            GetMinMaxColorHigh(depth, uv, motionLength, minimum, maximum);
+            // Clip history color to the AABB of the current color
+            historyColor.rgb = ClipColor(historyColor.rgb, minimum, maximum);
+        #endif
 
         //根据运动距离调整混合系数,距离越大,就越接近当前帧
         float blend = lerp(_Blend, 0.2, saturate(motionLength * 20.0));
         color = lerp(color, historyColor, blend);
-        //
 
-        #if defined(_TAA_Tonemap)
-            color.rgb = InverseReinhardToneMap(color.rgb);
-        #endif
+        // #if defined(_TAA_Tonemap)
+        //     color.rgb = InverseReinhardToneMap(color.rgb);
+        // #endif
 
         #ifdef _TAA_YCOCG
             color.rgb = YCoCgToRGB(color.rgb);
@@ -317,7 +357,10 @@ Shader "Hidden/LcL/TemporalAA"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags
+        {
+            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"
+        }
         LOD 100
         ZTest Always ZWrite Off Cull Off
 

@@ -19,7 +19,7 @@
 
 ### [Ice](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Ice/)
 
-![1709541340252](image/README/1709541340252.png)
+![1714563522922](image/README/1714563522922.png)
 
 ### [Ice2](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Ice/)
 

@@ -4,15 +4,6 @@
 
 记录一下在URP中实现的一些效果Demo。
 
-注意需要修改一下URP的源码，暴露部分接口，把 `private`或者 `internal` 改为 `public`。
-
-|            Class            |            Function or Property            |
-| :--------------------------: | :----------------------------------------: |
-|                              |         GetCameraColorFrontBuffer         |
-|                              |              SwapColorBuffer              |
-| UniversalRenderPipelineAsset | rendererDisplayList<br />rendererIndexList |
-|                              |                                            |
-
 ### [Grass(GPU Instance)](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/GpuInstance/Grass)
 
 ![Grass.gif](https://s2.loli.net/2023/04/09/v7dtlaN1UqS9VuB.gif)
@@ -61,7 +52,6 @@
 | :--------------------------------------------: | :--------------------------------------------: | :--------------------------------------------: |
 |                  Alpha Blend                  |              OIT - Depth Peeling              |                 Weighted Blend                 |
 
-
 | ![1714286971031](image/README/1714286971031.png) | ![1714286955263](image/README/1714286955263.png) | ![1714286925897](image/README/1714286925897.png) |
 | :--------------------------------------------: | :--------------------------------------------: | :--------------------------------------------: |
 |                  Alpha Blend                  |              OIT - Depth Peeling              |                 Weighted Blend                 |
@@ -76,5 +66,4 @@
 
 | ![1714554607134](image/README/1714554607134.png) | ![1714554660266](image/README/1714554660266.png) |
 | :--------------------------------------------: | :--------------------------------------------: |
-|                    TAA On                    |                    TAA Off                    |
-
+|                     TAA On                     |                    TAA Off                    |

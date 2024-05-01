@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.74509805, g: 0.6039216, b: 0.7372549, a: 1}
+  m_FogColor: {r: 0.72300005, g: 0.61527306, b: 0.71774507, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.03
+  m_FogDensity: 0.05
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -156,7 +156,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 66c80c320e250704980ffafd7b66a8e0, type: 2}
+  sharedProfile: {fileID: 11400000, guid: f296250fc7835ff428c0b8e436b138ad, type: 2}
 --- !u!4 &696820513
 Transform:
   m_ObjectHideFlags: 0
@@ -285,7 +285,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &810184501
 GameObject:
@@ -357,6 +357,7 @@ GameObject:
   - component: {fileID: 1128564898}
   - component: {fileID: 1128564897}
   - component: {fileID: 1128564896}
+  - component: {fileID: 1128564900}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -461,8 +462,21 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.4, y: 180, z: 0}
+--- !u!114 &1128564900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128564894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fd56028b1341c4ebb83c96a6cf8d9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pipelineAsset: {fileID: 11400000, guid: fab2b292d311b614f92f3d38cd1be8ba, type: 2}
 --- !u!1001 &1716872831
 PrefabInstance:
   m_ObjectHideFlags: 0

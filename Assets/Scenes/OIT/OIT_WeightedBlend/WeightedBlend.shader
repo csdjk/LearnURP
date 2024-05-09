@@ -47,10 +47,7 @@ Shader "Hidden/OIT/WeightedBlend"
 
             half4 frag(Varyings input) : SV_Target
             {
-                // float3 sceneColor = SampleSceneColor(input.uv);
                 float4 mainColor = SAMPLE_TEXTURE2D(_MainTex, sampler_LinearClamp, input.uv);
-                // float4 mainColor = half4(sceneColor, 1);
-
                 float4 accum = SAMPLE_TEXTURE2D(_AccumTexture, sampler_LinearClamp, input.uv);
                 float r = SAMPLE_TEXTURE2D_X(_RevealageTexture, sampler_LinearClamp, input.uv).r;
                 //1e-4 = 1*10^-4 = 0.0001

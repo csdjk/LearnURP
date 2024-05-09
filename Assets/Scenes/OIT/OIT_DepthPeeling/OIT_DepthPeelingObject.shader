@@ -92,14 +92,6 @@ Shader "LcL/OIT/DepthPeelingObject"
             output.depth = input.positionCS.z;
             return output;
         }
-
-        // Blend pass
-        float4 DepthPeelingBlendFrag(Varyings input, out float deputOut : SV_DEPTH) : SV_Target
-        {
-            half4 baseMap = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
-            deputOut = SAMPLE_DEPTH_TEXTURE(_DepthTexture, sampler_PointClamp, input.uv).r;
-            return baseMap;
-        }
         ENDHLSL
 
         Pass
@@ -131,22 +123,5 @@ Shader "LcL/OIT/DepthPeelingObject"
             #pragma fragment DepthPeelingFrag
             ENDHLSL
         }
-
-        // Pass
-        // {
-        //     Name "DepthPeelingBlendPass"
-        //     Tags
-        //     {
-        //         "LightMode" = "DepthPeeling"
-        //     }
-        //     Cull Off
-        //     ZTest Off
-        //     Blend SrcAlpha OneMinusSrcAlpha
-
-        //     HLSLPROGRAM
-        //     #pragma vertex LitPassVertexSimple
-        //     #pragma fragment DepthPeelingBlendFrag
-        //     ENDHLSL
-        // }
     }
 }

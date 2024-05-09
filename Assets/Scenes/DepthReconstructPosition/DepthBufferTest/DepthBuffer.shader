@@ -1,4 +1,4 @@
-Shader "Custom/LambertShaderExample"
+Shader "lcl/Depth/DepthBuffer"
 {
     Properties
     {

@@ -2,7 +2,7 @@
 
 > Unity Version: **Unity2021.3.11f1**
 
-记录一下在URP中实现的一些效果Demo。
+Record some demos of the effects implemented in URP.
 
 ### [Grass(GPU Instance)](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/GpuInstance/Grass)
 
@@ -67,3 +67,10 @@
 | ![1714554607134](image/README/1714554607134.png) | ![1714554660266](image/README/1714554660266.png) |
 | :--------------------------------------------: | :--------------------------------------------: |
 |                     TAA On                     |                    TAA Off                    |
+
+
+### [Screen Space Decal](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Decal/)
+
+![1715242151829](image/README/1715242151829.png)
+
+

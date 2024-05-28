@@ -88,11 +88,11 @@ VertexOutput LitPassVertex(Attributes input, uint instanceID : SV_InstanceID)
     // Shadow
     float4 shadowCoord = float4(0.0, 0.0, 0.0, 0.0);
     #if defined(_SHADOW_ON)
-    #if defined(_ACTOR_SHADOW)
+        #if defined(_ACTOR_SHADOW)
             shadowCoord = GetActorShadowCoord(vertexInput.positionWS);
-    #else
+        #else
             shadowCoord = GetShadowCoord(vertexInput);
-    #endif
+        #endif
     #endif
     output.shadowCoord = shadowCoord;
 
@@ -139,9 +139,9 @@ half4 LitPassFragment(VertexOutput input) : SV_Target
     float4 shadowCoord = float4(0, 0, 0, 0);
     #if defined(_SHADOW_ON)
         shadowCoord = input.shadowCoord;
-    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS) && !defined(_ACTOR_SHADOW)
+        #if defined(MAIN_LIGHT_CALCULATE_SHADOWS) && !defined(_ACTOR_SHADOW)
             shadowCoord = TransformWorldToShadowCoord(positionWS);
-    #endif
+        #endif
     #endif
     Light mainLight = GetMainLight(shadowCoord, positionWS, 1);
     float atten = mainLight.shadowAttenuation;
@@ -156,7 +156,7 @@ half4 LitPassFragment(VertexOutput input) : SV_Target
     #if defined(_SOFT)
         noise = smoothstep(_FurOffset, 1, noise) + _AlphaBase;
     #else
-    noise = step(lerp(_CutoffStart, _CutoffEnd, _FurOffset), noise);
+        noise = step(lerp(_CutoffStart, _CutoffEnd, _FurOffset), noise);
     #endif
 
     half alpha = 1 - _FurOffset * _FurOffset;
@@ -182,18 +182,18 @@ float4 GetShadowPositionHClip(Attributes input)
     #if _CASTING_PUNCTUAL_LIGHT_SHADOW
         float3 lightDirectionWS = normalize(_LightPosition - positionWS);
     #else
-    float3 lightDirectionWS = _LightDirection;
+        float3 lightDirectionWS = _LightDirection;
     #endif
 
     #if defined(_ACTOR_SHADOW)
         float4 positionCS = TransformWorldToHClip(ApplyActorShadowBias(positionWS, normalWS, lightDirectionWS));
     #else
-    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+        float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
     #endif
 
 
     #if UNITY_REVERSED_Z
-    positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+        positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
     #else
         positionCS.z = max(positionCS.z, UNITY_NEAR_CLIP_VALUE);
     #endif

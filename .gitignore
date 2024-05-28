@@ -35,6 +35,7 @@ sysinfo.txt
 .vs/
 .history/
 .idea/
+.venv/
 backup/
 
 # 忽略文件目录

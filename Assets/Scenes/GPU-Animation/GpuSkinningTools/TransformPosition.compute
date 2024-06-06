@@ -1,0 +1,89 @@
+#pragma kernel KernelVAT
+#pragma kernel KernelBone
+
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/Packing.hlsl"
+
+struct BoneWeight
+{
+    int boneIndex0;
+    int boneIndex1;
+    int boneIndex2;
+    int boneIndex3;
+    float weight0;
+    float weight1;
+    float weight2;
+    float weight3;
+};
+RWStructuredBuffer<float3> vertices;
+RWStructuredBuffer<float3> normals;
+RWStructuredBuffer<float4> tangents;
+
+StructuredBuffer<float4x4> bones;
+StructuredBuffer<BoneWeight> boneWeights;
+RWTexture2D<float4> vertexTexture;
+RWTexture2D<float4> normalTexture;
+
+int frame;
+
+[numthreads(1024, 1, 1)]
+void KernelVAT(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= vertices.Length)
+        return;
+
+    BoneWeight boneWeight = boneWeights[id.x];
+
+    float4x4 bone0 = bones[boneWeight.boneIndex0];
+    float4x4 bone1 = bones[boneWeight.boneIndex1];
+    float4x4 bone2 = bones[boneWeight.boneIndex2];
+    float4x4 bone3 = bones[boneWeight.boneIndex3];
+
+    float4x4 vertexMatrix = bone0 * boneWeight.weight0 +
+    bone1 * boneWeight.weight1 +
+    bone2 * boneWeight.weight2 +
+    bone3 * boneWeight.weight3;
+
+    float3 positionOS = mul(vertexMatrix, float4(vertices[id.x], 1)).xyz;
+
+    float3 normalOS = normalize(mul(vertexMatrix, float4(normals[id.x], 0)).xyz);
+    float2 normalPack = PackNormalOctQuadEncode(normalOS);
+
+    float4 tangentOS = normalize(mul(vertexMatrix, tangents[id.x]));
+    float2 tangentPack = PackNormalOctQuadEncode(tangentOS.xyz);
+
+    uint2 index = uint2(id.x, frame);
+    vertexTexture[index] = float4(positionOS, tangentOS.w);
+    normalTexture[index] = float4(normalPack, tangentPack);
+}
+
+RWTexture2D<float4> boneTexture;
+
+[numthreads(1024, 1, 1)]
+void KernelBone(uint3 id : SV_DispatchThreadID)
+{
+    // bone matrix最后一行是float4(0, 0, 0, 1)
+    // 只需要存储前三行
+    int boneIndex = id.x / 3;
+    int matrixIndex = id.x % 3;
+
+    float4x4 bone = bones[boneIndex];
+    float4 boneValue = bone[matrixIndex];
+    boneTexture[uint2(id.x, frame)] = boneValue;
+
+    // boneTexture[uint2(id.x + 0, frame)] = EncodeFloatRGBA(bone[0][0]);
+    // boneTexture[uint2(id.x + 1, frame)] = EncodeFloatRGBA(bone[0][1]);
+    // boneTexture[uint2(id.x + 2, frame)] = EncodeFloatRGBA(bone[0][2]);
+    // boneTexture[uint2(id.x + 3, frame)] = EncodeFloatRGBA(bone[0][3]);
+
+    // boneTexture[uint2(id.x + 4, frame)] = EncodeFloatRGBA(bone[1][0]);
+    // boneTexture[uint2(id.x + 5, frame)] = EncodeFloatRGBA(bone[1][1]);
+    // boneTexture[uint2(id.x + 6, frame)] = EncodeFloatRGBA(bone[1][2]);
+    // boneTexture[uint2(id.x + 7, frame)] = EncodeFloatRGBA(bone[1][3]);
+
+    // boneTexture[uint2(id.x + 8, frame)] = EncodeFloatRGBA(bone[2][0]);
+    // boneTexture[uint2(id.x + 9, frame)] = EncodeFloatRGBA(bone[2][1]);
+    // boneTexture[uint2(id.x + 10, frame)] = EncodeFloatRGBA(bone[2][2]);
+    // boneTexture[uint2(id.x + 11, frame)] = EncodeFloatRGBA(bone[2][3]);
+
+}

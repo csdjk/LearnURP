@@ -1,4 +1,4 @@
-﻿Shader "lcl/GPUInstance/Tree"
+﻿Shader "LcL/GPUInstance/Tree"
 {
     Properties
     {
@@ -44,7 +44,7 @@
     {
         Tags { "RenderType" = "Opaque" "Queue" = "AlphaTest" "RenderPipeline" = "UniversalPipeline" "IgnoreProjector" = "True"
             "NatureRendererInstancing" = "True" }
-        
+
         LOD 600
         Pass
         {
@@ -61,7 +61,7 @@
             #pragma prefer_hlslcc gles
             #pragma exclude_renderers d3d11_9x
             #pragma target 2.0
-            
+
             // -------------------------------------
             // Enable feature
             #define _ALPHATEST_ON
@@ -82,7 +82,7 @@
             #undef _OCCLUSIONMAP
             #undef _METALLICSPECGLOSSMAP
             #define _SPECULARHIGHLIGHTS_OFF
-            
+
             // -------------------------------------
             // Universal Pipeline keywords
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -164,7 +164,7 @@
 
 
         //     #include "Assets/Scenes/GpuInstance/PlantShadowPass.hlsl"
-           
+
         //     ENDHLSL
 
         // }

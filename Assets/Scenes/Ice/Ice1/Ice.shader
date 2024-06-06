@@ -1,4 +1,4 @@
-﻿Shader "lcl/Ice"
+﻿Shader "LcL/Ice"
 {
 	Properties
 	{
@@ -38,7 +38,7 @@
 	SubShader
 	{
 		Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" }
-		
+
 		HLSLINCLUDE
 		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		CBUFFER_START(UnityPerMaterial)
@@ -77,7 +77,7 @@
 			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
-			
+
 			// Material Keywords
 			// #pragma shader_feature _NORMALMAP
 			#pragma shader_feature _ALPHATEST_ON
@@ -130,7 +130,7 @@
 				float4 color : COLOR;
 				float4 uv : TEXCOORD0;
 				DECLARE_LIGHTMAP_OR_SH(lightmapUV, vertexSH, 1);
-				
+
 				float3 positionWS : TEXCOORD2;
 				float3 normalWS : TEXCOORD3;
 				float4 tangentWS : TEXCOORD4;
@@ -151,7 +151,7 @@
 
 			TEXTURE2D(_IceNormalMap);
 			SAMPLER(sampler_IceNormalMap);
-			
+
 			#if SHADER_LIBRARY_VERSION_MAJOR < 9
 				float3 GetWorldSpaceViewDir(float3 positionWS)
 				{
@@ -216,18 +216,18 @@
 				}
 				return OUT;
 			}
-			
+
 			InputData InitializeInputData(Varyings IN, half3 normalTS)
 			{
 				InputData inputData = (InputData)0;
 
 				inputData.positionWS = IN.positionWS;
-				
+
 				half3 viewDirWS = SafeNormalize(IN.viewDirWS);
 				float sgn = IN.tangentWS.w;
 				float3 bitangent = sgn * cross(IN.normalWS.xyz, IN.tangentWS.xyz);
 				inputData.normalWS = TransformTangentToWorld(normalTS, half3x3(IN.tangentWS.xyz, bitangent.xyz, IN.normalWS.xyz));
-				
+
 
 				inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
 				inputData.viewDirectionWS = viewDirWS;
@@ -257,11 +257,11 @@
 				float3 vb = float3(0, 1, (vSample - normalSample) * Strength);
 				return normalize(cross(va, vb));
 			}
-			
+
 			SurfaceData InitializeSurfaceData(Varyings IN)
 			{
 				SurfaceData surfaceData = (SurfaceData)0;
-				
+
 				half4 albedoAlpha = SampleAlbedoAlpha(IN.uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
 				surfaceData.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
 				surfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb * IN.color.rgb;
@@ -285,7 +285,7 @@
 				half3 iceFinalColor = (iceColor + screenColor) * _IceColor + sss;
 				// half3 iceFinalColor = (iceColor + screenColor) * _IceColor + fresnel;
 				iceFinalColor = lerp(surfaceData.albedo, iceFinalColor, _IceStrength);
-				
+
 
 				half2 range = _MinMaxHeight.xy;
 				float maxHeight = lerp(range.x, range.y, _IceDistribution) + 0.001;
@@ -320,7 +320,7 @@
 				half4 color = UniversalFragmentPBR(inputData, surfaceData.albedo, surfaceData.metallic,
 				surfaceData.specular, surfaceData.smoothness, surfaceData.occlusion,
 				surfaceData.emission, surfaceData.alpha);
-				
+
 				color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
 				color.a = saturate(color.a);
@@ -357,20 +357,20 @@
 			// GPU Instancing
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
-			
+
 			#pragma vertex ShadowPassVertex
 			#pragma fragment ShadowPassFragment
-			
+
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
 
-			
+
 			ENDHLSL
 
 		}
 
-		
+
 		Pass
 		{
 			Name "DepthOnly"
@@ -393,11 +393,11 @@
 			// GPU Instancing
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
-			
+
 			#pragma vertex DepthOnlyVertex
 			#pragma fragment DepthOnlyFragment
-			
-			
+
+
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"

@@ -1,4 +1,4 @@
-﻿Shader "lcl/FloorWater"
+﻿Shader "LcL/FloorWater"
 {
     Properties
     {

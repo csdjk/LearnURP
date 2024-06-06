@@ -1,4 +1,4 @@
-Shader "lcl/Depth/DepthBuffer"
+Shader "LcL/Depth/DepthBuffer"
 {
     Properties
     {

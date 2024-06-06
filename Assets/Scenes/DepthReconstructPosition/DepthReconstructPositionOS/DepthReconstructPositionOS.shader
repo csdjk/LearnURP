@@ -1,4 +1,4 @@
-Shader "lcl/DepthReconstructPositionOS"
+Shader "LcL/DepthReconstructPositionOS"
 {
     Properties
     {

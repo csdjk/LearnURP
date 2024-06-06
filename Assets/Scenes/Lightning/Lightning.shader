@@ -1,4 +1,4 @@
-﻿Shader "lcl/Lightning"
+﻿Shader "LcL/Lightning"
 {
     Properties
     {

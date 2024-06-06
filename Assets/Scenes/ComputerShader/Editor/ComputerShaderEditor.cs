@@ -3,7 +3,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[CustomEditor(typeof(ComputerShader))]
+[CustomEditor(typeof(ComputerShaderVisualizer))]
 public class ComputerShaderEditor : Editor
 {
     private SerializedProperty computeShaderProp;
@@ -25,7 +25,7 @@ public class ComputerShaderEditor : Editor
     public override VisualElement CreateInspectorGUI()
     {
         var root = new VisualElement();
-        var cs = (ComputerShader)target;
+        var cs = (ComputerShaderVisualizer)target;
         var computeShaderField = new PropertyField(computeShaderProp);
         var threadGroupSizeField = new PropertyField(threadGroupSizeProp);
         threadGroupSizeField.RegisterValueChangeCallback((evt) =>

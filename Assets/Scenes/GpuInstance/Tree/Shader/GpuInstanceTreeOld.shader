@@ -1,4 +1,4 @@
-﻿Shader "lcl/GPUInstance/TreeOld"
+﻿Shader "LcL/GPUInstance/TreeOld"
 {
     Properties
     {
@@ -13,13 +13,13 @@
         _OcclusionStrength ("AO Strength", Range(0.0, 1.0)) = 1.0
         // _OcclusionMap ("Occlusion", 2D) = "white" { }
 
-    
+
         _ShadowColor ("Shadow Color", Color) = (0.7, 0.7, 0.7)
         _ShadowIntensity ("Shadow Intensity", Range(0, 1)) = 0
-        
+
 
         [NoScaleOffset]_MaskTex ("Mask Texture(R-AO,G-Thickness)", 2D) = "white" { }
-        
+
         [Header(Scatter)]
         [HDR]_ScatterColor ("Scatter Color（散射基础色）", Color) = (1, 1, 1, 1)
         _FrontScatterIntensity ("Front Scatter Intensity（正面散射强度）", Range(0, 1)) = 0
@@ -75,7 +75,7 @@
             // #pragma shader_feature _ENVIRONMENTREFLECTIONS_OFF
             // #pragma shader_feature _SPECULAR_SETUP
             // #pragma shader_feature _RECEIVE_SHADOWS_OFF
-            
+
             struct appdata
             {
                 float4 positionOS : POSITION;
@@ -111,7 +111,7 @@
 
             TEXTURE2D(_NoiseTex);
             SAMPLER(sampler_NoiseTex);
-            
+
             // TEXTURE2D(_BumpMap);
             // SAMPLER(sampler_BumpMap);
 
@@ -170,13 +170,13 @@
                 float2 windSize = positionOS.xz / _WindSize;
                 float2 noiseUV = (positionOS.xz - _Time.y) / 30;
                 half noiseValue = SAMPLE_TEXTURE2D_LOD(_NoiseTex, sampler_NoiseTex, noiseUV, 0).r;
-                
+
                 positionOS.xz += sin(_Time.zz * _TreeSwaySpeed + windSize) * (positionOS.y / 10) * _WindDir.xz * noiseValue * _TreeSwayDisp;
 
                 positionOS.y += cos(_Time.w * _TreeSwaySpeed + _WindDir.x + windSize.y) * vertexColor.r * noiseValue * _TreeLeavesDisp;
                 return positionOS;
             }
-            
+
             v2f vert(appdata input, uint instanceID : SV_InstanceID)
             {
                 v2f output;
@@ -239,12 +239,12 @@
                 float I = pow(saturate(dot(V, -H)), power) * scale;
                 return I;
             }
-         
+
             half4 frag(v2f input) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-              
+
                 half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
                 clip(color.a - _Cutoff);
 
@@ -281,8 +281,8 @@
                 // _SpecColor.rgb = color.rgb * _Metallic;
                 // color.rgb *= oneMinusReflectivity;
                 // half3 specular = mainLight.color * pow(max(0, dot(normalWS, halfDir)), _Smoothness * 100) * _SpecColor;
-                
-                
+
+
                 // 色阶
                 // float ramp = CalculateRamp(_ShadowThreshold, halfLambert, _ShadowSmoothness);
                 // float3 diffuse = lerp(_ShadowColor, _BaseColor.xyz, ramp) * _BaseColor.xyz * color.rgb * mainLight.color * ao;
@@ -306,7 +306,7 @@
                 resColor.rgb += sss;
 
                 // resColor.rgb += specular;
-                
+
                 // resColor.rgb *= shadow;
 
                 return resColor;
@@ -329,13 +329,13 @@
                 float4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-            
+
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-            
+
             TEXTURE2D(_NoiseTex);
             SAMPLER(sampler_NoiseTex);
 
@@ -364,7 +364,7 @@
                 float2 windSize = positionOS.xz / _WindSize;
                 float2 noiseUV = (positionOS.xz - _Time.y) / 30;
                 half noiseValue = SAMPLE_TEXTURE2D_LOD(_NoiseTex, sampler_NoiseTex, noiseUV, 0).r;
-                
+
                 positionOS.xz += sin(_Time.zz * _TreeSwaySpeed + windSize) * (positionOS.y / 10) * _WindDir.xz * noiseValue * _TreeSwayDisp;
 
                 positionOS.y += cos(_Time.w * _TreeSwaySpeed + _WindDir.x + windSize.y) * vertexColor.r * noiseValue * _TreeLeavesDisp;

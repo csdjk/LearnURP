@@ -1,4 +1,4 @@
-Shader "lcl/ScreenSpaceDecal"
+Shader "LcL/ScreenSpaceDecal"
 {
     Properties
     {
@@ -6,7 +6,7 @@ Shader "lcl/ScreenSpaceDecal"
         [Toggle(_ProjectionAngleDiscardEnable)] _ProjectionAngleDiscardEnable ("_ProjectionAngleDiscardEnable (default = off)", float) = 0
         _ProjectionAngleDiscardThreshold ("_ProjectionAngleDiscardThreshold (default = 0)", range(-1.1, 1.1)) = 0
     }
-    
+
     SubShader
     {
         Tags { "RenderType" = "Overlay" "Queue" = "Transparent-499" "DisableBatching" = "True" }

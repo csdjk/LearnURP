@@ -1,4 +1,4 @@
-﻿Shader "lcl/CommandBuffer/BakeTexture"
+﻿Shader "LcL/CommandBuffer/BakeTexture"
 {
     Properties
     {

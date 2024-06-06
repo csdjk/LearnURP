@@ -1,4 +1,4 @@
-﻿Shader "lcl/GPUInstance/Grass"
+﻿Shader "LcL/GPUInstance/Grass"
 {
     Properties
     {
@@ -44,7 +44,7 @@
     SubShader
     {
         Tags { "RenderType" = "Opaque" "Queue" = "AlphaTest" "RenderPipeline" = "UniversalPipeline" "IgnoreProjector" = "True" "NatureRendererInstancing" = "True" }
-        
+
         LOD 600
         Pass
         {
@@ -81,7 +81,7 @@
             #undef _OCCLUSIONMAP
             #undef _METALLICSPECGLOSSMAP
             #define _SPECULARHIGHLIGHTS_OFF
-            
+
             // -------------------------------------
             // Universal Pipeline keywords
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -103,7 +103,7 @@
             #pragma multi_compile_instancing
 
             #include "Assets/Scenes/GpuInstance/StylizedGrass.hlsl"
-            
+
             #include "Assets/Shaders/Libraries/VS_InstancedIndirect.cginc"
             #pragma instancing_options assumeuniformscaling renderinglayer procedural:setup
             // #pragma instancing_options procedural:setup
@@ -111,7 +111,7 @@
 
             #pragma vertex LitPassVertex
             #pragma fragment ForwardPassFragment
-            
+
             ENDHLSL
         }
 

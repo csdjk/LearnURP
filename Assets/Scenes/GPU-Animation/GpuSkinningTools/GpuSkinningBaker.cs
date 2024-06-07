@@ -342,8 +342,8 @@ namespace LcLTools
 
             SaveTexture(folderPath, "Merge");
             CreateMesh(folderPath);
+            CreateAnimationData(folderPath);
             CreateMaterialAndPrefab(folderPath);
-            CreateAimationData(folderPath);
             EditorUtility.ClearProgressBar();
 
             AssetDatabase.Refresh();
@@ -377,7 +377,6 @@ namespace LcLTools
                     float time = frame / frameRate;
                     // 采样动画的当前帧
                     clip.SampleAnimation(fbx, time);
-
                     if (AnimationType == AnimationType.Vertices)
                     {
                         DispatchVAT(frame);
@@ -394,13 +393,13 @@ namespace LcLTools
             }
 
             CreateMesh(folderPath);
+            CreateAnimationData(folderPath);
             CreateMaterialAndPrefab(folderPath);
             EditorUtility.ClearProgressBar();
-
             AssetDatabase.Refresh();
         }
 
-        public void CreateAimationData(string folderPath)
+        public void CreateAnimationData(string folderPath)
         {
             var path = Path.Combine(folderPath, $"{m_TargetTransform.name}_AnimData.asset");
 
@@ -463,7 +462,7 @@ namespace LcLTools
             renderer.sharedMaterials = materials.ToArray();
             var anim = prefab.AddComponent<GpuAnimation>();
             anim.animationData = m_AnimationData;
-            
+
             if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
             {
                 AssetDatabase.DeleteAsset(prefabPath);

@@ -30,13 +30,5 @@ namespace LcLTools
         public AnimationType animationType = AnimationType.Skeleton;
 
         public GpuAnimationClip[] clips;
-
-        private void OnEnable()
-        {
-        }
-
-        private void OnDisable()
-        {
-        }
     }
 }

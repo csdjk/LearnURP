@@ -30,10 +30,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BLEND: 0
+    - _Blend: 0
     - _BlendFrameIndex: 0
-    - _BlendProgress: 0
-    - _FrameIndex: 0
+    - _BlendProgress: 1.247082
+    - _FrameIndex: 55
     - _INVERSE: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

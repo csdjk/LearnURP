@@ -6,8 +6,8 @@ Shader "LcL/GPU-Animation/GPU-AnimationVertex"
         _BaseColor ("Color", Color) = (1, 1, 1, 1)
         _AnimationTex ("Animation Texture", 2D) = "white" { }
         _AnimationNormalTex ("Animation Normal Texture", 2D) = "white" { }
-        _FrameIndex ("Frame Index", Range(0.0, 200)) = 0.0
-        _BlendFrameIndex ("Blend Frame Index", Range(0.0, 200)) = 0.0
+        _FrameIndex ("Frame Index", Int) = 0
+        _BlendFrameIndex ("Blend Frame Index", Int) = 0
         _BlendProgress ("Blend Progress", Range(0.0, 1.0)) = 0.0
     }
     SubShader

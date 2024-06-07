@@ -70,20 +70,4 @@ void KernelBone(uint3 id : SV_DispatchThreadID)
     float4x4 bone = bones[boneIndex];
     float4 boneValue = bone[matrixIndex];
     boneTexture[uint2(id.x, frame)] = boneValue;
-
-    // boneTexture[uint2(id.x + 0, frame)] = EncodeFloatRGBA(bone[0][0]);
-    // boneTexture[uint2(id.x + 1, frame)] = EncodeFloatRGBA(bone[0][1]);
-    // boneTexture[uint2(id.x + 2, frame)] = EncodeFloatRGBA(bone[0][2]);
-    // boneTexture[uint2(id.x + 3, frame)] = EncodeFloatRGBA(bone[0][3]);
-
-    // boneTexture[uint2(id.x + 4, frame)] = EncodeFloatRGBA(bone[1][0]);
-    // boneTexture[uint2(id.x + 5, frame)] = EncodeFloatRGBA(bone[1][1]);
-    // boneTexture[uint2(id.x + 6, frame)] = EncodeFloatRGBA(bone[1][2]);
-    // boneTexture[uint2(id.x + 7, frame)] = EncodeFloatRGBA(bone[1][3]);
-
-    // boneTexture[uint2(id.x + 8, frame)] = EncodeFloatRGBA(bone[2][0]);
-    // boneTexture[uint2(id.x + 9, frame)] = EncodeFloatRGBA(bone[2][1]);
-    // boneTexture[uint2(id.x + 10, frame)] = EncodeFloatRGBA(bone[2][2]);
-    // boneTexture[uint2(id.x + 11, frame)] = EncodeFloatRGBA(bone[2][3]);
-
 }

@@ -79,7 +79,6 @@ namespace LcLTools
 
         Matrix4x4[] BonesMatrices =>
             Bones.Select((bone, index) => bone.localToWorldMatrix * BindPoses[index]).ToArray();
-        // Matrix4x4[] BonesMatrices => Bones.Select((bone, index) => m_TargetTransform.localToWorldMatrix * bone.localToWorldMatrix * BindPoses[index]).ToArray();
 
         BoneWeightData[] m_BoneWeightsData;
         ComputeBuffer m_VertexBuffer;
@@ -250,14 +249,8 @@ namespace LcLTools
 
         public void DispatchBone(int currentFrame)
         {
-            m_VertexBuffer.SetData(Vertices);
-            m_NormalBuffer.SetData(Normals);
-            m_TangentBuffer.SetData(Tangents);
             m_BoneBuffer.SetData(BonesMatrices);
-            m_BoneWeightBuffer.SetData(m_BoneWeightsData);
-
             m_ComputeShader.SetBuffer(m_KernelBone, "bones", m_BoneBuffer);
-            m_ComputeShader.SetBuffer(m_KernelBone, "boneWeights", m_BoneWeightBuffer);
             m_ComputeShader.SetTexture(m_KernelBone, "boneTexture", BoneTexture);
             m_ComputeShader.SetInt("frame", currentFrame);
             m_ComputeShader.Dispatch(m_KernelBone, Mathf.CeilToInt(BoneTexture.width / 1024.0f), BoneTexture.height, 1);

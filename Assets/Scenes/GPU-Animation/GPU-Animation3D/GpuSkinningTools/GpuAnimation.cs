@@ -23,16 +23,18 @@ namespace LcLTools
         public float speed = 1;
         public float blendSpeed = 1;
         public GpuAnimationData animationData;
+
+
         Material[] m_Materials;
 
-        private GpuAnimationClip m_CurrentClip;
-        private float m_CurrentFrame;
-        private bool m_IsLooping;
-        private bool m_IsBlending;
-        private GpuAnimationClip m_NextClip;
-        private float m_BlendProgress;
+        GpuAnimationClip m_CurrentClip;
+        GpuAnimationClip m_NextClip;
+        float m_CurrentFrame;
+        bool m_IsLooping;
+        bool m_IsBlending;
+        float m_BlendProgress;
 
-        private void OnEnable()
+        void OnEnable()
         {
             m_Materials = GetComponent<Renderer>().sharedMaterials;
             Play(animationData.clips[0], speed, true);
@@ -69,7 +71,7 @@ namespace LcLTools
             return this;
         }
 
-        private void Update()
+        void Update()
         {
             if (animationData == null || animationData.clips.Length == 0)
                 return;

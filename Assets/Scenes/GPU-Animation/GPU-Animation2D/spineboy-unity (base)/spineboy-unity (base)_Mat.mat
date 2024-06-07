@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SKM_Quinn_Simple_Mat
+  m_Name: spineboy-unity (base)_Mat
   m_Shader: {fileID: 4800000, guid: 09bd6d3e3f2247a45aa0267fcd830dff, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -21,11 +21,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AnimationTex:
-        m_Texture: {fileID: 2800000, guid: 90330d9d951e76645934be7fc4d329d7, type: 2}
+        m_Texture: {fileID: 2800000, guid: e0234f906e07975479476d8b21d176bb, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6e11c1a764558d342bda4b8de572b5f6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -33,7 +33,7 @@ Material:
     - _Blend: 0
     - _BlendFrameIndex: 0
     - _BlendProgress: 3.3333335
-    - _FrameIndex: 64
+    - _FrameIndex: 65
     - _INVERSE: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

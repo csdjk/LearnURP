@@ -7,12 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SKM_Quinn_Simple_Mat
-  m_Shader: {fileID: 4800000, guid: 09bd6d3e3f2247a45aa0267fcd830dff, type: 3}
+  m_Name: GPU-AnimationVertex
+  m_Shader: {fileID: 4800000, guid: 7093db67832cfe947a6deb1f54b46209, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -20,21 +20,24 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AnimationNormalTex:
+        m_Texture: {fileID: 2800000, guid: a5022227b7381c241bc8c8dfcc4a81b8, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AnimationTex:
-        m_Texture: {fileID: 2800000, guid: 90330d9d951e76645934be7fc4d329d7, type: 2}
+        m_Texture: {fileID: 2800000, guid: 044344be7a8b4fb4896fecda6385f0e6, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ca8f1c142f05a4d4ca27883c9173445b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Blend: 0
     - _BlendFrameIndex: 0
-    - _BlendProgress: 3.3333335
-    - _FrameIndex: 64
-    - _INVERSE: 0
+    - _BlendProgress: 0
+    - _BoneNum: 0
+    - _FrameIndex: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

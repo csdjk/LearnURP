@@ -1,0 +1,54 @@
+#pragma kernel KernelVAT
+#pragma kernel KernelBone
+
+// #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+// #include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/Packing.hlsl"
+
+struct BoneWeight
+{
+    int boneIndex0;
+    int boneIndex1;
+    int boneIndex2;
+    int boneIndex3;
+    float weight0;
+    float weight1;
+    float weight2;
+    float weight3;
+};
+RWStructuredBuffer<float3> vertices;
+
+StructuredBuffer<float4x4> bones;
+StructuredBuffer<BoneWeight> boneWeights;
+RWTexture2D<float4> vertexTexture;
+RWTexture2D<float4> normalTexture;
+
+int frame;
+
+[numthreads(1024, 1, 1)]
+void KernelVAT(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= vertices.Length)
+        return;
+
+    float4x4 vertexMatrix = bones[id.x];
+
+    float3 positionOS = mul(vertexMatrix, float4(vertices[id.x], 1)).xyz;
+ 
+    uint2 index = uint2(id.x, frame);
+    vertexTexture[index] = float4(positionOS, 1);
+}
+
+RWTexture2D<float4> boneTexture;
+
+[numthreads(1024, 1, 1)]
+void KernelBone(uint3 id : SV_DispatchThreadID)
+{
+    // bone matrix最后一行是float4(0, 0, 0, 1)
+    // 只需要存储前三行
+    int boneIndex = id.x / 3;
+    int matrixIndex = id.x % 3;
+
+    float4x4 bone = bones[boneIndex];
+    float4 boneValue = bone[matrixIndex];
+    boneTexture[uint2(id.x, frame)] = boneValue;
+}

@@ -25,11 +25,11 @@ namespace LcLTools
         Label m_TipsLabel;
         PopupField<MeshFilter> m_SkinnedMeshField;
 
-        [MenuItem("LcLTools/GPU动画转换工具")]
+        [MenuItem("LcLTools/GPU动画转换工具-Spine")]
         private static void ShowWindow()
         {
             var window = GetWindow<GpuSpineBakeWindow>();
-            window.titleContent = new GUIContent("GPU Skinning Bake");
+            window.titleContent = new GUIContent("GPU Spine Bake");
             window.Show();
             window.Focus();
         }

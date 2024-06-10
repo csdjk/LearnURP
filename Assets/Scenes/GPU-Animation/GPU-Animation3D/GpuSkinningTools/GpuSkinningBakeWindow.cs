@@ -12,7 +12,6 @@ namespace LcLTools
     public class GpuSkinningBakeWindow : EditorWindow
     {
         static GameObject m_FbxObject = null;
-        List<string> m_SkinnedMeshList = new List<string>();
         List<SkinnedMeshRenderer> m_SkinnedMeshRenderers = new List<SkinnedMeshRenderer>();
 
         List<AnimationClip> m_AnimationClips = new List<AnimationClip>();
@@ -215,11 +214,9 @@ namespace LcLTools
         {
             if (m_FbxObject == null)
                 return;
-            m_SkinnedMeshList.Clear();
             m_SkinnedMeshRenderers.Clear();
 
             m_FbxObject.GetComponentsInChildren(m_SkinnedMeshRenderers);
-            m_SkinnedMeshList = m_SkinnedMeshRenderers.Select(renderer => renderer.sharedMesh.name).ToList();
         }
 
         void ResetAnimationClips()

@@ -19,6 +19,8 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/Packing.hlsl"
         #include "Assets/Shaders/Libraries/Math.hlsl"
+        #include "Assets/Shaders/Libraries/VS_InstancedIndirect.hlsl"
+
         #pragma shader_feature _ _INVERSE
 
         CBUFFER_START(UnityPerMaterial)
@@ -111,6 +113,8 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone"
             #pragma fragment frag
 
             #pragma multi_compile_instancing
+            #pragma instancing_options assumeuniformscaling renderinglayer procedural:setup
+
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
@@ -177,7 +181,7 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone"
 
                 float4 shadowCoord = TransformWorldToShadowCoord(input.positionWS.xyz);
                 Light light = GetMainLight(shadowCoord);
-                half3 shading = LightingLambert(light.color, light.direction, input.normalWS) * 0.5 + 0.5;
+                half3 shading = LightingLambert(light.color, light.direction, input.normalWS) * 0.8 + 0.2;
                 return half4(color.rgb * shading * light.shadowAttenuation, color.a);
             }
             ENDHLSL
@@ -203,6 +207,7 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone"
             #pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
             // GPU Instancing
             #pragma multi_compile_instancing
+            #pragma instancing_options assumeuniformscaling renderinglayer procedural:setup
 
             struct AttributesShadow
             {

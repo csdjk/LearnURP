@@ -38,31 +38,14 @@ namespace LcLTools
         int m_KernelVAT = -1;
         int m_KernelBone = -1;
         Transform m_TargetTransform;
-        string m_MeshPath;
-        SkinnedMeshRenderer m_SelectSkinnedMeshRenderer;
+        Mesh m_MeshInstance;
+        private Material m_MaterialInstance;
+        public SkinnedMeshRenderer SelectSkinnedMeshRenderer { get; set; }
 
-        public SkinnedMeshRenderer SelectSkinnedMeshRenderer
-        {
-            get { return m_SelectSkinnedMeshRenderer; }
-            set { m_SelectSkinnedMeshRenderer = value; }
-        }
-
-        AnimationType m_AnimationType = AnimationType.Skeleton;
-
-        public AnimationType AnimationType
-        {
-            get { return m_AnimationType; }
-            set { m_AnimationType = value; }
-        }
+        public AnimationType AnimationType { get; set; } = AnimationType.Skeleton;
 
 
-        ComputeShader m_ComputeShader = null;
-
-        public ComputeShader ComputeShader
-        {
-            get { return m_ComputeShader; }
-            set { m_ComputeShader = value; }
-        }
+        public ComputeShader ComputeShader { get; set; } = null;
 
         Vector3[] Vertices => SelectSkinnedMeshRenderer.sharedMesh.vertices;
         Vector3[] Normals => SelectSkinnedMeshRenderer.sharedMesh.normals;
@@ -90,11 +73,7 @@ namespace LcLTools
 
         int m_TotalFrame = 0;
 
-        public int TotalFrame
-        {
-            get { return m_TotalFrame; }
-            set { m_TotalFrame = value; }
-        }
+        public int TotalFrame { get; set; } = 0;
 
 
         GpuAnimationData m_AnimationData;
@@ -113,7 +92,7 @@ namespace LcLTools
 
                 return m_VertexTexture;
             }
-            set { m_VertexTexture = value; }
+            set => m_VertexTexture = value;
         }
 
         string m_NormalTexturePath;
@@ -130,7 +109,7 @@ namespace LcLTools
 
                 return m_NormalTexture;
             }
-            set { m_NormalTexture = value; }
+            set => m_NormalTexture = value;
         }
 
 
@@ -153,7 +132,7 @@ namespace LcLTools
 
                 return m_BoneTexture;
             }
-            set { m_BoneTexture = value; }
+            set => m_BoneTexture = value;
         }
 
 
@@ -194,17 +173,17 @@ namespace LcLTools
             m_BoneTexture = null;
         }
 
-        public void Init(GameObject go)
+        private void Init(GameObject go)
         {
             Dispose();
-            if (m_ComputeShader == null)
+            if (ComputeShader == null)
             {
                 return;
             }
 
             m_TargetTransform = go.transform;
-            m_KernelVAT = m_ComputeShader.FindKernel("KernelVAT");
-            m_KernelBone = m_ComputeShader.FindKernel("KernelBone");
+            m_KernelVAT = ComputeShader.FindKernel("KernelVAT");
+            m_KernelBone = ComputeShader.FindKernel("KernelBone");
 
             m_BoneBuffer = new ComputeBuffer(Bones.Length, sizeof(float) * 16);
             m_BoneWeightBuffer = new ComputeBuffer(BoneWeights.Length, sizeof(int) * 4 + sizeof(float) * 4);
@@ -225,7 +204,7 @@ namespace LcLTools
             }).ToArray();
         }
 
-        public void DispatchVAT(int currentFrame)
+        private void DispatchVAT(int currentFrame)
         {
             m_VertexBuffer.SetData(Vertices);
             m_NormalBuffer.SetData(Normals);
@@ -233,31 +212,31 @@ namespace LcLTools
             m_BoneBuffer.SetData(BonesMatrices);
             m_BoneWeightBuffer.SetData(m_BoneWeightsData);
 
-            m_ComputeShader.SetBuffer(m_KernelVAT, "vertices", m_VertexBuffer);
-            m_ComputeShader.SetBuffer(m_KernelVAT, "normals", m_NormalBuffer);
-            m_ComputeShader.SetBuffer(m_KernelVAT, "tangents", m_TangentBuffer);
-            m_ComputeShader.SetBuffer(m_KernelVAT, "bones", m_BoneBuffer);
-            m_ComputeShader.SetBuffer(m_KernelVAT, "boneWeights", m_BoneWeightBuffer);
-            m_ComputeShader.SetTexture(m_KernelVAT, "vertexTexture", VertexTexture);
-            m_ComputeShader.SetTexture(m_KernelVAT, "normalTexture", NormalTexture);
-            m_ComputeShader.SetInt("frame", currentFrame);
-            m_ComputeShader.Dispatch(m_KernelVAT, Mathf.CeilToInt(VertexTexture.width / 1024.0f), VertexTexture.height,
+            ComputeShader.SetBuffer(m_KernelVAT, "vertices", m_VertexBuffer);
+            ComputeShader.SetBuffer(m_KernelVAT, "normals", m_NormalBuffer);
+            ComputeShader.SetBuffer(m_KernelVAT, "tangents", m_TangentBuffer);
+            ComputeShader.SetBuffer(m_KernelVAT, "bones", m_BoneBuffer);
+            ComputeShader.SetBuffer(m_KernelVAT, "boneWeights", m_BoneWeightBuffer);
+            ComputeShader.SetTexture(m_KernelVAT, "vertexTexture", VertexTexture);
+            ComputeShader.SetTexture(m_KernelVAT, "normalTexture", NormalTexture);
+            ComputeShader.SetInt("frame", currentFrame);
+            ComputeShader.Dispatch(m_KernelVAT, Mathf.CeilToInt(VertexTexture.width / 1024.0f), VertexTexture.height,
                 1);
         }
 
         // Stopwatch stopwatch = new Stopwatch();
 
-        public void DispatchBone(int currentFrame)
+        private void DispatchBone(int currentFrame)
         {
             m_BoneBuffer.SetData(BonesMatrices);
-            m_ComputeShader.SetBuffer(m_KernelBone, "bones", m_BoneBuffer);
-            m_ComputeShader.SetTexture(m_KernelBone, "boneTexture", BoneTexture);
-            m_ComputeShader.SetInt("frame", currentFrame);
-            m_ComputeShader.Dispatch(m_KernelBone, Mathf.CeilToInt(BoneTexture.width / 1024.0f), BoneTexture.height, 1);
+            ComputeShader.SetBuffer(m_KernelBone, "bones", m_BoneBuffer);
+            ComputeShader.SetTexture(m_KernelBone, "boneTexture", BoneTexture);
+            ComputeShader.SetInt("frame", currentFrame);
+            ComputeShader.Dispatch(m_KernelBone, Mathf.CeilToInt(BoneTexture.width / 1024.0f), BoneTexture.height, 1);
         }
 
 
-        public int InitAnimationData(List<AnimationClip> animationClips)
+        private int InitAnimationData(List<AnimationClip> animationClips)
         {
             m_AnimationData = ScriptableObject.CreateInstance<GpuAnimationData>();
             var clips = new GpuAnimationClip[animationClips.Count];
@@ -275,6 +254,7 @@ namespace LcLTools
 
                 clips[i] = new GpuAnimationClip(clip.name, totalFrame - clipTotalFrame, totalFrame - 1, frameRate);
             }
+
             m_AnimationData.clips = clips;
 
             return totalFrame;
@@ -293,7 +273,7 @@ namespace LcLTools
             }
         }
 
-        public void BakeAnimationTextureMerge(GameObject fbx, List<AnimationClip> animationClips, string folderPath)
+        private void BakeAnimationTextureMerge(GameObject fbx, List<AnimationClip> animationClips, string folderPath)
         {
             Init(fbx);
 
@@ -336,7 +316,9 @@ namespace LcLTools
             SaveTexture(folderPath, "Merge");
             CreateMesh(folderPath);
             CreateAnimationData(folderPath);
-            CreateMaterialAndPrefab(folderPath);
+            CreateMaterial(folderPath);
+            CreatePrefab(folderPath);
+            CreatePrefab(folderPath, true);
             EditorUtility.ClearProgressBar();
 
             AssetDatabase.Refresh();
@@ -387,7 +369,9 @@ namespace LcLTools
 
             CreateMesh(folderPath);
             CreateAnimationData(folderPath);
-            CreateMaterialAndPrefab(folderPath);
+            CreateMaterial(folderPath);
+            CreatePrefab(folderPath);
+            CreatePrefab(folderPath, true);
             EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
         }
@@ -407,26 +391,25 @@ namespace LcLTools
         }
 
 
-        public void CreateMaterialAndPrefab(string folderPath)
+        public void CreateMaterial(string folderPath)
         {
             Shader shader;
-            Material material;
             if (AnimationType == AnimationType.Vertices)
             {
                 shader = Shader.Find("LcL/GPU-Animation/GPU-AnimationVertex");
-                material = new Material(shader);
+                m_MaterialInstance = new Material(shader);
 
                 var vertexTex = AssetDatabase.LoadAssetAtPath<Texture2D>(m_VertexTexturePath);
                 var normalTex = AssetDatabase.LoadAssetAtPath<Texture2D>(m_NormalTexturePath);
-                material.SetTexture("_AnimationTex", vertexTex);
-                material.SetTexture("_AnimationNormalTex", normalTex);
+                m_MaterialInstance.SetTexture("_AnimationTex", vertexTex);
+                m_MaterialInstance.SetTexture("_AnimationNormalTex", normalTex);
             }
             else
             {
                 shader = Shader.Find("LcL/GPU-Animation/GPU-AnimationBone");
-                material = new Material(shader);
+                m_MaterialInstance = new Material(shader);
                 var vertexTex = AssetDatabase.LoadAssetAtPath<Texture2D>(m_BoneTexturePath);
-                material.SetTexture("_AnimationTex", vertexTex);
+                m_MaterialInstance.SetTexture("_AnimationTex", vertexTex);
             }
 
             var matPath = Path.Combine(folderPath, $"{m_TargetTransform.name}_Mat.mat");
@@ -436,25 +419,36 @@ namespace LcLTools
                 AssetDatabase.DeleteAsset(matPath);
             }
 
-            AssetDatabase.CreateAsset(material, matPath);
+            AssetDatabase.CreateAsset(m_MaterialInstance, matPath);
             AssetDatabase.SaveAssets();
-            EditorUtility.SetDirty(material);
+            EditorUtility.SetDirty(m_MaterialInstance);
+        }
 
 
+        public void CreatePrefab(string folderPath, bool instance = false)
+        {
             var materials = new List<Material>();
-            SelectSkinnedMeshRenderer.sharedMaterials.ToList().ForEach(m => materials.Add(material));
+            SelectSkinnedMeshRenderer.sharedMaterials.ToList().ForEach(m => materials.Add(m_MaterialInstance));
+            var instanceTag = instance?"_Instance":"";
+            var prefabPath = Path.Combine(folderPath, $"{m_TargetTransform.name}{instanceTag}.prefab");
+            var prefab = new GameObject(m_TargetTransform.name);
 
-            //create prefab
-            var prefabPath = Path.Combine(folderPath, $"{m_TargetTransform.name}.prefab");
-            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(m_MeshPath);
-
-            GameObject prefab = new GameObject(m_TargetTransform.name);
-            var meshFilter = prefab.AddComponent<MeshFilter>();
-            meshFilter.sharedMesh = mesh;
-            var renderer = prefab.AddComponent<MeshRenderer>();
-            renderer.sharedMaterials = materials.ToArray();
-            var anim = prefab.AddComponent<GpuAnimation>();
-            anim.animationData = m_AnimationData;
+            if (instance)
+            {
+                var anim = prefab.AddComponent<GpuAnimationInstance>();
+                anim.animationData = m_AnimationData;
+                anim.instanceMaterials = materials.ToArray();
+                anim.instanceMesh = m_MeshInstance;
+            }
+            else
+            {
+                var meshFilter = prefab.AddComponent<MeshFilter>();
+                var renderer = prefab.AddComponent<MeshRenderer>();
+                var anim = prefab.AddComponent<GpuAnimation>();
+                meshFilter.sharedMesh = m_MeshInstance;
+                renderer.sharedMaterials = materials.ToArray();
+                anim.animationData = m_AnimationData;
+            }
 
             if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
             {
@@ -470,10 +464,10 @@ namespace LcLTools
         /// <summary>
         /// 创建Mesh，并且把bone Index和Weight保存到UV1 和 UV2
         /// </summary>
-        public string CreateMesh(string folderPath)
+        public void CreateMesh(string folderPath)
         {
             // 创建新的Mesh
-            var mesh = UnityEngine.Object.Instantiate(SelectSkinnedMeshRenderer.sharedMesh);
+            m_MeshInstance = UnityEngine.Object.Instantiate(SelectSkinnedMeshRenderer.sharedMesh);
 
             // 将骨骼索引和权重保存到UV1和UV2
             var boneIndexs = BoneWeights
@@ -481,8 +475,8 @@ namespace LcLTools
             var boneWeights = BoneWeights.Select(bw => new Vector4(bw.weight0, bw.weight1, bw.weight2, bw.weight3))
                 .ToArray();
 
-            mesh.SetUVs(1, boneIndexs);
-            mesh.SetUVs(2, boneWeights);
+            m_MeshInstance.SetUVs(1, boneIndexs);
+            m_MeshInstance.SetUVs(2, boneWeights);
 
             var path = Path.Combine(folderPath, $"{m_TargetTransform.name}_Mesh.asset");
 
@@ -491,12 +485,9 @@ namespace LcLTools
                 AssetDatabase.DeleteAsset(path);
             }
 
-            AssetDatabase.CreateAsset(mesh, path);
+            AssetDatabase.CreateAsset(m_MeshInstance, path);
             AssetDatabase.SaveAssets();
-            EditorUtility.SetDirty(mesh);
-
-            m_MeshPath = path;
-            return path;
+            EditorUtility.SetDirty(m_MeshInstance);
         }
 
 
@@ -504,14 +495,14 @@ namespace LcLTools
         {
             if (AnimationType == AnimationType.Vertices)
             {
-                var vertexTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_V.asset");
-                var normalTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_N.asset");
+                var vertexTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_TextureV.asset");
+                var normalTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_TextureN.asset");
                 m_VertexTexturePath = SaveRenderTexture(VertexTexture, vertexTexPath);
                 m_NormalTexturePath = SaveRenderTexture(NormalTexture, normalTexPath);
             }
             else if (AnimationType == AnimationType.Skeleton)
             {
-                var boneTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_Bone.asset");
+                var boneTexPath = Path.Combine(path, $"{m_TargetTransform.name}_{clipName}_TextureBone.asset");
                 m_BoneTexturePath = SaveRenderTexture(BoneTexture, boneTexPath);
             }
         }

@@ -22,6 +22,7 @@ namespace LcLTools
         public AnimationType animationType = AnimationType.Skeleton;
         public float speed = 1;
         public float blendSpeed = 1;
+        public int instanceCount = 1000;
         public GpuAnimationData animationData;
 
 

@@ -53,7 +53,7 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone2D"
         void TransformBoneAnimation(float4 boneIndexs, float4 boneWeights, inout float4 positionOS)
         {
             //提取当前帧骨骼矩阵
-            float4x4 boneMatrix =  GetBoneMatrix(boneIndexs.x, _FrameIndex);
+            float4x4 boneMatrix = GetBoneMatrix(boneIndexs.x, _FrameIndex);
 
             //混合下一个动画
             if (_Blend)
@@ -145,61 +145,6 @@ Shader "LcL/GPU-Animation/GPU-AnimationBone2D"
                 half3 shading = LightingLambert(light.color, light.direction, input.normalWS) * 0.5 + 0.5;
                 return half4(color.rgb * shading * light.shadowAttenuation, color.a);
             }
-            ENDHLSL
-        }
-
-        Pass
-        {
-            Name "ShadowCaster"
-            Tags { "LightMode" = "ShadowCaster" }
-
-            ZWrite On
-            ZTest LEqual
-
-            HLSLPROGRAM
-            #pragma prefer_hlslcc gles
-            #pragma only_renderers gles gles3 glcore d3d11
-
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
-            // Material Keywords
-            #pragma shader_feature _ALPHATEST_ON
-            #pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            // GPU Instancing
-            #pragma multi_compile_instancing
-
-            struct AttributesShadow
-            {
-                float4 positionOS : POSITION;
-                float4 color : COLOR;
-                float3 normalOS : NORMAL;
-                float4 tangentOS : TANGENT;
-                float2 uv : TEXCOORD0;
-                float4 boneIndex : TEXCOORD1;
-                float4 boneWeight : TEXCOORD2;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
-            };
-
-            Varyings ShadowPassVertexBone(AttributesShadow input)
-            {
-                Varyings output;
-                UNITY_SETUP_INSTANCE_ID(input);
-                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
-
-                TransformBoneAnimation(input.boneIndex, input.boneWeight, input.positionOS);
-
-                Attributes input2;
-                input2.positionOS = input.positionOS;
-                input2.normalOS = input.normalOS;
-                input2.texcoord = input.uv;
-
-                output.positionCS = GetShadowPositionHClip(input2);
-                return output;
-            }
-
-            #pragma vertex ShadowPassVertexBone
-            #pragma fragment ShadowPassFragment
             ENDHLSL
         }
     }

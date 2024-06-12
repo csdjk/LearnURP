@@ -39,7 +39,7 @@ namespace LcLTools
         int m_KernelBone = -1;
         Transform m_TargetTransform;
         Mesh m_MeshInstance;
-        private Material m_MaterialInstance;
+        Material m_MaterialInstance;
         public SkinnedMeshRenderer SelectSkinnedMeshRenderer { get; set; }
 
         public AnimationType AnimationType { get; set; } = AnimationType.Skeleton;
@@ -429,7 +429,7 @@ namespace LcLTools
         {
             var materials = new List<Material>();
             SelectSkinnedMeshRenderer.sharedMaterials.ToList().ForEach(m => materials.Add(m_MaterialInstance));
-            var instanceTag = instance?"_Instance":"";
+            var instanceTag = instance ? "_Instance" : "";
             var prefabPath = Path.Combine(folderPath, $"{m_TargetTransform.name}{instanceTag}.prefab");
             var prefab = new GameObject(m_TargetTransform.name);
 

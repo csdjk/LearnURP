@@ -34,7 +34,7 @@
 //     private List<int> triangles = new List<int>();
 //     private List<Vector2> uvs = new List<Vector2>();
 //     private readonly List<Color32> colors = new List<Color32>();
-    
+
 //     public LightningBolt()
 //     {
 
@@ -489,8 +489,3 @@
 //         }
 //     }
 // }
-
-public class MyClass
-{
-    
-}

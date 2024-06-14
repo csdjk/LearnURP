@@ -11,8 +11,7 @@ namespace LcLTools
 {
     public class GpuSpineBakeWindow : EditorWindow
     {
-        static GameObject m_FbxObject = null;
-        List<string> m_SkinnedMeshList = new List<string>();
+         GameObject m_FbxObject = null;
         List<MeshFilter> m_MeshRenderers = new List<MeshFilter>();
 
         List<AnimationClip> m_AnimationClips = new List<AnimationClip>();
@@ -25,7 +24,7 @@ namespace LcLTools
         Label m_TipsLabel;
         PopupField<MeshFilter> m_SkinnedMeshField;
 
-        [MenuItem("LcLTools/GPU动画转换工具-Spine")]
+        [MenuItem("LcLTools/GPU动画转换工具")]
         private static void ShowWindow()
         {
             var window = GetWindow<GpuSpineBakeWindow>();
@@ -43,14 +42,10 @@ namespace LcLTools
             root.style.paddingLeft = 5;
             root.style.paddingRight = 5;
 
-            m_SkinnedMeshField = new PopupField<MeshFilter>("Skinned Mesh", m_MeshRenderers, 0)
+            m_SkinnedMeshField = new PopupField<MeshFilter>("Mesh", m_MeshRenderers, 0)
             {
                 style = { marginTop = margin },
             };
-            m_SkinnedMeshField.RegisterValueChangedCallback(evt =>
-            {
-                m_GpuSpineBaker.SelectMeshRenderer = evt.newValue;
-            });
 
             m_ComputeShaderField = new ObjectField("Compute Shader")
             {
@@ -87,7 +82,6 @@ namespace LcLTools
                 style = { marginTop = margin }
             };
             root.Add(m_OutputFolderField);
-
             root.Add(m_SkinnedMeshField);
 
 
@@ -132,7 +126,6 @@ namespace LcLTools
                 style = { marginTop = margin }
             };
             root.Add(m_MergeAnimationClipsToggle);
-
 
             Func<VisualElement> makeItem = () =>
             {
@@ -204,7 +197,6 @@ namespace LcLTools
                 return;
             }
             var folderPath = Path.Combine(m_OutputFolderField.value, m_FbxObject.name);
-            m_GpuSpineBaker.SelectMeshRenderer = m_SkinnedMeshField.value;
             m_GpuSpineBaker.ComputeShader = m_ComputeShaderField.value as ComputeShader;
             m_GpuSpineBaker.AnimationType = (AnimationType)m_AnimationTypeField.value;
             m_GpuSpineBaker.BakeAnimationTexture(m_FbxObject, m_AnimationClips, folderPath, m_MergeAnimationClipsToggle.value);
@@ -215,11 +207,8 @@ namespace LcLTools
         {
             if (m_FbxObject == null)
                 return;
-            m_SkinnedMeshList.Clear();
             m_MeshRenderers.Clear();
-
             m_FbxObject.GetComponentsInChildren(m_MeshRenderers);
-            m_SkinnedMeshList = m_MeshRenderers.Select(renderer => renderer.sharedMesh.name).ToList();
         }
 
         void ResetAnimationClips()

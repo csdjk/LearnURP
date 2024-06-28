@@ -1,7 +1,8 @@
 fileFormatVersion: 2
-guid: 5ace8738594b9424b864b2aea7ebd9cc
-TextScriptImporter:
+guid: 88be02a3f7e19bb459973ce47c89a253
+ComputeShaderImporter:
   externalObjects: {}
+  preprocessorOverride: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

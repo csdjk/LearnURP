@@ -67,6 +67,7 @@ public class ComputerShaderVisualizer : MonoBehaviour
     {
         if (computeBuffer == null) return;
         computeShader.SetBuffer(m_Kernel, "Result", computeBuffer);
+        //threadGroupSize: 线程组数量
         computeShader.Dispatch(m_Kernel, threadGroupSize.x, threadGroupSize.y, threadGroupSize.z);
     }
     private void OnDisable()

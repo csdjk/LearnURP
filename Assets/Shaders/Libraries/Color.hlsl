@@ -60,13 +60,44 @@ inline float4 applyHSBCEffect(float4 startColor, half4 hsbc)
     float saturation = hsbc.g * 2;
     float brightness = hsbc.b * 2 - 1;
     float contrast = hsbc.a * 2;
-    
+
     float4 outputColor = startColor;
     outputColor.rgb = applyHue(outputColor.rgb, hue);
     outputColor.rgb = (outputColor.rgb - 0.5f) * contrast + 0.5f;
     outputColor.rgb = outputColor.rgb + brightness;
     float3 intensity = dot(outputColor.rgb, float3(0.39, 0.59, 0.11));
     outputColor.rgb = lerp(intensity, outputColor.rgb, saturation);
-    
+
     return outputColor;
+}
+
+
+// 此公式来源于：https://zhuanlan.zhihu.com/p/487204843
+// HSV -> RGB
+half3 HueToRGB(half h)
+{
+    half3 color;
+    color.r = abs(h*6-3) - 1;
+    color.g = 2 - abs(h*6-2);
+    color.b = 2 - abs(h*6-4);
+    color = saturate(color);
+    return color;
+}
+
+// HSV -> RGB
+half3 HSVToRGB(half3 hsv)
+{
+    half3 rgb = HueToRGB(hsv.x);
+    half3 color = ((rgb-1)*hsv.y + 1) * hsv.z;
+    return color;
+}
+
+// 计算镭射颜色
+half3 CalcLaserColor(half fresnel, half4 param)
+{
+    half hueValue = fresnel * param.x + param.y;
+    half3 hsvValue = half3(hueValue, param.z, param.w);
+    half3 color = HSVToRGB(hsvValue);
+    color = color * color;
+    return color;
 }

@@ -2,6 +2,7 @@
 // #pragma enable_d3d11_debug_symbols
 
 RWStructuredBuffer<float4> Result;
+// numthreads:每个线程组中的线程数量
 [numthreads(2, 2, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID, uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThreadID,  uint index : SV_GroupIndex)
 {

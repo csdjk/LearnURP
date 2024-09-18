@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/HBAO/HBAO.unity
-    guid: 63196961dad9e694f855ee7003ae6361
+    path: Assets/Scenes/Test/Test.unity
+    guid: daf4b0111363a2b4a85396f9e7ebe6c8
   m_configObjects: {}

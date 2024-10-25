@@ -988,6 +988,16 @@ namespace UnityEngine.Rendering.Universal
             set { m_NumIterationsEnclosingSphere = value; }
         }
 
+        /// <summary>
+        /// Get RendererData List
+        /// author:LoongLee
+        /// </summary>
+        /// <value></value>
+        public ScriptableRendererData[] rendererDataList
+        {
+            get { return m_RendererDataList; }
+        }
+
         public override Material defaultMaterial
         {
             get { return GetMaterial(DefaultMaterialType.Standard); }

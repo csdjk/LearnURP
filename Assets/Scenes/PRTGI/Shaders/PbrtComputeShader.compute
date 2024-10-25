@@ -1,0 +1,161 @@
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#include "SH.hlsl"
+// #pragma enable_d3d11_debug_symbols
+
+#pragma kernel SampleSurfel
+
+#define SampleCount 64
+struct Surfel
+{
+    float3 position;
+    float3 normal;
+    float3 albedo;
+    float skyMask;
+};
+
+RWStructuredBuffer<Surfel> _Surfels;
+TextureCube _WorldPosCubemap;
+TextureCube _NormalCubemap;
+TextureCube _AlbedoCubemap;
+
+SamplerState sampler_point_clamp;
+// float _RandSeed;
+float4 _ProbePos;
+
+// ref: https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
+float rand(float2 uv)
+{
+    return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+// ref: Unreal Engine 4, MonteCarlo.ush
+// float3 UniformSphereSample(float u, float v)
+// {
+//     const float C_PI = 3.14159265359f;
+//     float phi = degrees(2.0 * C_PI * u);
+//     float cosine_theta = 1.0 - 2.0 * v;
+//     float sine_theta = sqrt(1.0 - cosine_theta * cosine_theta);
+//
+//     float x = sine_theta * cos(phi);
+//     float y = sine_theta * sin(phi);
+//     float z = cosine_theta;
+//
+//     return float3(x, y, z);
+// }
+
+//用于生成均匀分布采样点的低差异序列
+float3 Hammersley(uint i, uint N)
+{
+    float E = 0.5;
+    float p = 0.5;
+    float u = 0.0;
+    for (uint j = i; j > 0; j >>= 1)
+    {
+        if (j & 1)
+        {
+            u += E;
+        }
+        E *= p;
+    }
+    return float3(u, float(i) / float(N), 0.0);
+}
+
+//
+float3 UniformSphereSample(uint i, uint N)
+{
+    float3 h = Hammersley(i, N);
+    float phi = 2.0 * 3.14159265359 * h.x;
+    float cosTheta = 1.0 - 2.0 * h.y;
+    float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
+
+    return float3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
+}
+
+
+[numthreads(SampleCount, 1, 1)]
+void SampleSurfel(uint3 id : SV_DispatchThreadID)
+{
+    float3 dir = UniformSphereSample(id.x, SampleCount);
+
+    Surfel result;
+
+    // opaque geometry
+    result.position = _WorldPosCubemap.SampleLevel(sampler_point_clamp, dir, 0).rgb;
+    result.albedo = _AlbedoCubemap.SampleLevel(sampler_point_clamp, dir, 0).rgb;
+
+    float4 normal_and_mask = _NormalCubemap.SampleLevel(sampler_point_clamp, dir, 0);
+    result.normal = normal_and_mask.xyz;
+    result.skyMask = saturate(1.0 - normal_and_mask.w);
+
+    // sample sky
+    result.position += (_ProbePos.xyz + dir) * result.skyMask;
+
+    _Surfels[id.x] = result;
+}
+
+
+//============================================================================
+#pragma kernel Relight
+
+float _GIIntensity;
+float _SkyLightIntensity;
+int _IndexInProbeVolume;
+
+groupshared float3 _SH_Coefficient[SampleCount * 9];
+RWStructuredBuffer<float3> _CoefficientVoxel;
+RWStructuredBuffer<float3> _SurfelRadianceDebug;
+
+[numthreads(SampleCount, 1, 1)]
+void Relight(uint3 id : SV_DispatchThreadID, uint3 groupThreadId : SV_GroupThreadID, uint3 groupId : SV_GroupID)
+{
+    uint surfelIndex = groupThreadId.x;
+    uint coefficientIndex = groupId.x;
+    Surfel surfel = _Surfels[surfelIndex];
+
+    Light mainLight = GetMainLight();
+    float NdotL = saturate(dot(surfel.normal, mainLight.direction));
+
+    float4 shadowCoord = TransformWorldToShadowCoord(surfel.position);
+    float atten = SampleShadowmap(
+        TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture),
+        shadowCoord,
+        GetMainLightShadowSamplingData(),
+        GetMainLightShadowParams(),
+        false
+    );
+    float3 radiance = surfel.albedo * mainLight.color * NdotL * atten * (1.0 - surfel.skyMask);
+
+    float3 dir = normalize(surfel.position - _ProbePos.xyz);
+
+    // 计算SkyLight
+    float4 skyColor = SAMPLE_TEXTURECUBE_LOD(_GlossyEnvironmentCubeMap, sampler_GlossyEnvironmentCubeMap, dir, 0);
+    #if !defined(UNITY_USE_NATIVE_HDR)
+        skyColor.rgb = DecodeHDREnvironment(skyColor, _GlossyEnvironmentCubeMap_HDR);
+    #endif
+
+    radiance += skyColor.rgb * surfel.skyMask * _SkyLightIntensity;
+    // radiance += _GIIntensity;
+
+    _SurfelRadianceDebug[surfelIndex] = radiance;
+    //--------------------------------------------------
+    // 将计算的 SH 系数存入共享内存
+    float3 sh = SH(coefficientIndex, dir) * radiance * 4.0 * PI / SampleCount;
+    _SH_Coefficient[surfelIndex * 9 + coefficientIndex] = sh;
+
+    //同步所有线程(同一个线程组)
+    GroupMemoryBarrierWithGroupSync();
+    // 累加
+    if (surfelIndex == 0)
+    {
+        float3 sumSH = float3(0, 0, 0);
+        for (int i = 0; i < SampleCount; i++)
+        {
+            float3 shv = _SH_Coefficient[i * 9 + coefficientIndex];
+            sumSH += shv;
+        }
+        uint voxelIndex = _IndexInProbeVolume * 9 + coefficientIndex;
+        _CoefficientVoxel[voxelIndex] = sumSH;
+    }
+}

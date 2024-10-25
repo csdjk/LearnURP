@@ -46,6 +46,7 @@ dotnet_naming_rule.private_field_rule.style                               = priv
 dotnet_naming_rule.private_field_rule.severity                            = warning
 dotnet_naming_symbols.private_field_symbol.applicable_kinds               = field
 dotnet_naming_symbols.private_field_symbol.applicable_accessibilities     = private
+# private_field_style 样式要求的前缀，这里是 "m_"
 dotnet_naming_style.private_field_style.required_prefix                   = m_
 dotnet_naming_style.private_field_style.capitalization                    = pascal_case
 
@@ -55,14 +56,28 @@ dotnet_naming_rule.non_private_field_rule.style                           = non_
 dotnet_naming_rule.non_private_field_rule.severity                        = warning
 dotnet_naming_symbols.non_private_field_symbol.applicable_kinds           = field
 dotnet_naming_symbols.non_private_field_symbol.applicable_accessibilities = public,internal,protected,protected_internal
+# non_private_field_style 样式的命名约定，这里是 camelCase。
 dotnet_naming_style.non_private_field_style.capitalization                = camel_case
+
+
+# 静态字段示例: VariableName
+dotnet_naming_rule.static_field_rule.symbols = static_field_symbol
+dotnet_naming_rule.static_field_rule.style = static_field_style
+dotnet_naming_rule.static_field_rule.severity = warning
+dotnet_naming_symbols.static_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.static_field_symbol.required_modifiers = static
+# dotnet_naming_style.static_field_style.required_prefix = s_
+dotnet_naming_style.static_field_style.capitalization = pascal_case
+
 
 ## 参数示例: myVariableName
 dotnet_naming_rule.parameter_rule.symbols                                 = parameter_symbol
 dotnet_naming_rule.parameter_rule.style                                   = parameter_style
 dotnet_naming_rule.parameter_rule.severity                                = warning
 dotnet_naming_symbols.parameter_symbol.applicable_kinds                   = parameter
+# parameter_style 样式的命名约定，这里是 camelCase。
 dotnet_naming_style.parameter_style.capitalization                        = camel_case
+
 
 ## 常量示例: MY_VARIABLE_NAME
 dotnet_naming_rule.const_rule.symbols                                     = const_symbol
@@ -70,5 +85,48 @@ dotnet_naming_rule.const_rule.style                                       = cons
 dotnet_naming_rule.const_rule.severity                                    = warning
 dotnet_naming_symbols.const_symbol.required_modifiers                     = const
 dotnet_naming_symbols.const_symbol.applicable_kinds                       = field
+# const_style 样式的命名约定，这里是 ALL_UPPER。
 dotnet_naming_style.const_style.capitalization                            = all_upper
+# const_style 样式的单词分隔符，这里是 "_"
 dotnet_naming_style.const_style.word_separator                            = _
+
+# # 常量示例: k_VARIABLE_NAME
+# dotnet_naming_rule.const_rule.symbols = const_symbol
+# dotnet_naming_rule.const_rule.style = const_style
+# dotnet_naming_rule.const_rule.severity = warning
+# dotnet_naming_symbols.const_symbol.required_modifiers = const
+# dotnet_naming_symbols.const_symbol.applicable_kinds = field
+# dotnet_naming_style.const_style.required_prefix = k_
+# dotnet_naming_style.const_style.capitalization = all_upper
+# dotnet_naming_style.const_style.word_separator = _
+
+
+# 格式化规则
+# 在所有情况下，在打开大括号之前换行
+csharp_new_line_before_open_brace = all
+# 在 else 之前换行
+csharp_new_line_before_else = true
+# 在 catch 之前换行
+csharp_new_line_before_catch = true
+# 在 finally 之前换行
+csharp_new_line_before_finally = true
+# 在对象初始化器中的成员之前换行
+csharp_new_line_before_members_in_object_initializers = true
+# 在匿名类型中的成员之前换行
+csharp_new_line_before_members_in_anonymous_types = true
+# 在查询表达式子句之间换行
+csharp_new_line_between_query_expression_clauses = true
+
+# 使用规则
+# 不需要字段的限定符
+dotnet_style_qualification_for_field = false:suggestion
+# 不需要属性的限定符
+dotnet_style_qualification_for_property = false:suggestion
+# 不需要方法的限定符
+dotnet_style_qualification_for_method = false:suggestion
+# 不需要事件的限定符
+dotnet_style_qualification_for_event = false:suggestion
+
+# 其他规则
+# 将 System 指令放在 using 指令的顶部
+dotnet_sort_system_directives_first = true

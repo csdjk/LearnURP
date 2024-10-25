@@ -736,7 +736,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
     Android: FBX_EXPORTER;AMPLIFY_SHADER_EDITOR
-    Standalone: FBX_EXPORTER
+    Standalone: FBX_EXPORTER;AMPLIFY_SHADER_EDITOR
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

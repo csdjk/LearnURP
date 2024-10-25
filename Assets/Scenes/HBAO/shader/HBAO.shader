@@ -216,7 +216,7 @@ Shader "Hidden/LcLPostProcess/HBAO"
             for (float step = 0; step < NUM_STEPS; ++step)
             {
                 #if AO_DEINTERLEAVED
-                    float2 snappedUV = round(rayPixels * Direction) * control.InvQuarterResolution + uv;
+                    float2 snappedUV = round(rayPixels * direction) * control.InvQuarterResolution + uv;
                     float3 S = FetchQuarterResViewPos(snappedUV);
                 #else
                     float2 snappedUV = round(rayPixels * direction) * _SourceSize.zw + uv;

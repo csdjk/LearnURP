@@ -77,7 +77,7 @@ namespace LcLGame
             return haltonSequence;
         }
 
-        public (Matrix4x4,Matrix4x4,Vector2) CalculateJitter(ref CameraData cameraData)
+        public (Matrix4x4, Matrix4x4, Vector2) CalculateJitter(ref CameraData cameraData)
         {
             var camera = cameraData.camera;
             var hash = camera.GetHashCode();
@@ -87,16 +87,45 @@ namespace LcLGame
 
             var haltonSequence = GetHaltonSequence(hash, viewProj);
             (var offsetX, var offsetY) = haltonSequence.Get();
+            var descriptor = cameraData.cameraTargetDescriptor;
 
             var matrix = camera.projectionMatrix;
-            var descriptor = cameraData.cameraTargetDescriptor;
+
             if (camera.orthographic)
             {
+                /**
+                正交投影矩阵：
+                    | 2/(r-l)    0         0       -(r+l)/(r-l) |
+                    | 0       2/(t-b)      0       -(t+b)/(t-b) |
+                    | 0          0      -2/(f-n)   -(f+n)/(f-n) |
+                    | 0          0         0           1        |
+                    l 和 r 分别是左边和右边的裁剪面。
+                    b 和 t 分别是底部和顶部的裁剪面。
+                    n 是近裁剪面（near plane）的距离。
+                    f 是远裁剪面（far plane）的距离。
+
+                    matrix[0, 3] 对应 -(r+l)/(r-l)，控制视锥体的水平偏移。
+                    matrix[1, 3] 对应 -(t+b)/(t-b)，控制视锥体的垂直偏移。
+                **/
                 matrix[0, 3] -= (offsetX * 2 - 1) / descriptor.width;
                 matrix[1, 3] -= (offsetY * 2 - 1) / descriptor.height;
             }
             else
             {
+                /**
+                透视投影矩阵：
+                    | 2n/(r-l)   0       (r+l)/(r-l)     0       |
+                    | 0       2n/(t-b)   (t+b)/(t-b)     0       |
+                    | 0          0       -(f+n)/(f-n)  -2fn/(f-n)|
+                    | 0          0          -1           0       |
+                    n 是近裁剪面（near plane）的距离。
+                    f 是远裁剪面（far plane）的距离。
+                    l 和 r 分别是左边和右边的裁剪面。
+                    b 和 t 分别是底部和顶部的裁剪面。
+
+                    matrix[0, 2] 对应 (r+l)/(r-l)，控制视锥体的水平偏移。
+                    matrix[1, 2] 对应 (t+b)/(t-b)，控制视锥体的垂直偏移。
+                **/
                 matrix[0, 2] += (offsetX * 2 - 1) / descriptor.width;
                 matrix[1, 2] += (offsetY * 2 - 1) / descriptor.height;
             }

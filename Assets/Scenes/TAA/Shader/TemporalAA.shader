@@ -289,8 +289,11 @@ Shader "Hidden/LcL/TemporalAA"
             prev_uv = uv - motion - _Offset;
             motion = uv - prev_uv;
         #else
+        // https://zhuanlan.zhihu.com/p/138866533
+        //todo:应该要消除jitter? 但是这里没有,后面有时间改
         prev_uv = Reprojection(input.uv, input.ray, depth);
         motion = uv - prev_uv;
+
         #endif
     }
 

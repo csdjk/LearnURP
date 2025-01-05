@@ -4,7 +4,7 @@
 // 封装的一些功能节点
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
-#include "Packages/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/BSDF.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/BSDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
 float sum(float3 v)
@@ -12,8 +12,36 @@ float sum(float3 v)
     return v.x + v.y + v.z;
 }
 
-float2 Flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert)
+// 调整输入值的对比度。
+// 参数:
+// - value: 输入值，通常在0到1之间。
+// - contrast: 对比度调整值，正值增加对比度，负值减少对比度。
+// 返回值:
+// - 调整后的对比度值，范围在0到1之间。
+float CheapContrast(float value, float contrast)
 {
+    return saturate(lerp(0-contrast, 1+contrast, value));
+}
+
+//由于FlipBook的uv在边缘出会剧烈跳变，不能uv直接计算ddx ddy
+float4 GetFlipbookDDXY(float2 uv, float2 size)
+{
+    uv = uv/size;
+    return float4(ddx(uv),ddy(uv));
+}
+
+//向中心收缩UV
+//为了修复Flipbook的UV边缘黑边问题(由于采样时的Filter Biliner插值导致的)
+float2 FlipbookShrinkUV(float2 uv,float2 size, float2 scale)
+{
+    float2 center =  0.5 / size;
+    return  center + (uv - center) * scale;
+}
+//计算翻页动画的UV坐标。
+float2 Flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert,float2 scale = 1)
+{
+    UV = FlipbookShrinkUV(UV,float2(Width, Height),scale);
+
     Tile = fmod(Tile, Width * Height);
     float2 tileCount = float2(1.0, 1.0) / float2(Width, Height);
     float tileY = abs(Invert.y * Height - (floor(Tile * tileCount.x) + Invert.y * 1));

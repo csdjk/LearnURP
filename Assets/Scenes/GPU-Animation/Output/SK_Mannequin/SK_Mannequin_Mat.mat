@@ -31,9 +31,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _Blend: 0
-    - _BlendFrameIndex: 0
-    - _BlendProgress: 3.3333335
-    - _FrameIndex: 9
+    - _BlendFrameIndex: 2
+    - _BlendProgress: 0
+    - _FrameIndex: 53
     - _INVERSE: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

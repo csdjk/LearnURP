@@ -318,7 +318,7 @@ inline float ObjectPosRand01()
 // ================================ 获取轴心点，也就是模型中心坐标================================
 inline float3 GetModelPivotPos()
 {
-    return float3(UNITY_MATRIX_M[0][3], UNITY_MATRIX_M[1][3] + 0.25, UNITY_MATRIX_M[2][3]);
+    return float3(UNITY_MATRIX_M[0][3], UNITY_MATRIX_M[1][3], UNITY_MATRIX_M[2][3]);
 }
 
 // ================================ 获取模型 Right 方向 ================================

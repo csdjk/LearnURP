@@ -593,7 +593,8 @@ float2 ConvertOriginalRawUVToInteriorUV(float2 originalRawUV, float3 viewDirTang
 // }
 half AnisotropyKajiyaKay(half3 T, half3 V, half3 L, half specPower)
 {
-    half3 H = normalize(V + L);
+    // half3 H = normalize(V + L);
+    half3 H = SafeNormalize(V + L);
     half HdotT = dot(T, H);
     half sinTH = sqrt(1 - HdotT * HdotT);
     half dirAtten = smoothstep(-1, 0, HdotT);

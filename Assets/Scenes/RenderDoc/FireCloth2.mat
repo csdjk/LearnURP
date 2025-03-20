@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FireCloth2
+  m_Shader: {fileID: 4800000, guid: 658b298ba875afa46bec5c323670b7f5, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _RECEIVESHADOWS_OFF
+  - _RECEIVE_SHADOWS_OFF
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DissolveRangeTex:
+        m_Texture: {fileID: 2800000, guid: 43ae70dceddcb5244b325ab6e3799366, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveTex:
+        m_Texture: {fileID: 2800000, guid: 47cdda17bb08a47b0a50675cbb83cfa2, type: 3}
+        m_Scale: {x: 2, y: 3}
+        m_Offset: {x: 0, y: 0}
+    - _DistortTex:
+        m_Texture: {fileID: 2800000, guid: 0df7a0b61c9dfa6408ae01459c10ffec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 7d940b5aa222cb84ca0ad555cf3c860e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FurTexture:
+        m_Texture: {fileID: 2800000, guid: fcce010477032b24e8212d77b557d38f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: fcce010477032b24e8212d77b557d38f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _dissolveRange:
+        m_Texture: {fileID: 2800000, guid: 43ae70dceddcb5244b325ab6e3799366, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _dissolveRange1:
+        m_Texture: {fileID: 2800000, guid: 43ae70dceddcb5244b325ab6e3799366, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _jw3_chibang_M:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaCutoff: 0.5
+    - _Disoolve: -0.192
+    - _Disoolve1: -0.56
+    - _Disoolve2: 0.239
+    - _DissolveDistortIntensity: 0.1
+    - _EdgeRange: 0.217
+    - _Float0: 0.002
+    - _Flow: 0
+    - _FlowDistortIntensity: 0.1
+    - _FlowIntensity: 5
+    - _FlowPow: 2.31
+    - _InvertDir: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 0
+    - _dissolveS: 0.5
+    - _dissolveT: 0.27
+    - _int: 2.689714
+    - _power: 2.689714
+    - _s: 0.813
+    - _s2: 0.3285529
+    - _t: 0.5
+    - _t2: 0.34
+    - edgeRange: 0.708
+    m_Colors:
+    - _Color0: {r: 1, g: 0, b: 0, a: 0}
+    - _DissolveSpeed: {r: 0, g: 0.3, b: 0, a: 0}
+    - _DissolveSpeed1: {r: 0, g: 0.2, b: 0, a: 0}
+    - _EdgeColor1: {r: 4.5412054, g: 0.7608303, b: 0.3328632, a: 0}
+    - _EdgeColor2: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlowColor: {r: 1, g: 0.40800104, b: 0.2028302, a: 0}
+    - _FlowSpeed: {r: 0, g: 0.3, b: 0, a: 0}
+    - _FlowSpeed1: {r: 0, g: 0.3, b: 0, a: 0}
+  m_BuildTextureStacks: []

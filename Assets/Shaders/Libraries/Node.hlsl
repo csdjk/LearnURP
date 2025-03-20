@@ -149,10 +149,17 @@ inline half SmoothValue(half threshold, half smoothness, half value)
 
 // ================================= Fast SSS =================================
 // SSS  近似模拟次表面散射
-inline float SubsurfaceScattering(float3 V, float3 L, float3 N, float distortion, float power, float scale)
+/************************************************************
+    // ASE Translucency Node
+    half3 mainLightDir = mainLight.direction + inputData.normalWS * normal;
+    half mainVdotL = pow( saturate( dot( inputData.viewDirectionWS, -mainLightDir ) ), scattering );
+    half3 mainTranslucency = mainAtten * ( mainVdotL * direct + inputData.bakedGI * ambient ) * Translucency;
+    color.rgb += BaseColor * mainTranslucency * strength;
+************************************************************/
+inline float SubsurfaceScattering(float3 V, float3 L, float3 N, float distortion, float scattering, float scale)
 {
     float3 H = (L + N * distortion);
-    float I = pow(saturate(dot(V, -H)), power) * scale;
+    float I = pow(saturate(dot(V, -H)), scattering) * scale;
     return I;
 }
 

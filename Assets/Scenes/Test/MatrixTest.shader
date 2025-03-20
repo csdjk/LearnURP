@@ -54,7 +54,7 @@ Shader "LcL/UnlitShaderExample"
                 output.color = input.color;
                 return output;
             }
-            #pragma enable_d3d11_debug_symbols
+            // #pragma enable_d3d11_debug_symbols
             half4 frag(Varyings input) : SV_Target
             {
                 half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);

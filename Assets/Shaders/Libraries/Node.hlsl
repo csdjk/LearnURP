@@ -163,6 +163,16 @@ inline float SubsurfaceScattering(float3 V, float3 L, float3 N, float distortion
     return I;
 }
 
+inline float3 Translucency(
+    float3 V, float3 L, float3 N, float normalDist, float scattering,
+    float3 baseColor,float3 direct, float3 ambient, float mainAtten, float translucency)
+{
+    half3 halfDir = L + N * normalDist;
+    half mainVdotL = pow( saturate( dot( V, -halfDir ) ), scattering );
+    half3 mainTranslucency = mainAtten * ( mainVdotL * direct + ambient );
+    return baseColor * mainTranslucency * translucency;
+}
+
 
 // ================================= ColorRamp =================================
 // 对应Blender color ramp 节点

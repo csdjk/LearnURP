@@ -10,7 +10,8 @@ Material:
   m_Name: BackSkyMid
   m_Shader: {fileID: 4800000, guid: 209f6a06dd4977e40a854078a92754e7, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _USEDITHER_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -37,6 +38,7 @@ Material:
     - _AlphaCutoff: 0.5
     - _BoundY: 61
     - _EnvironmentReflections: 1
+    - _Float2: 105.58
     - _MaskRadius: 14
     - _MaskSoftness: 0.54
     - _Metallic: 0
@@ -51,6 +53,7 @@ Material:
     - _TessMin: 10
     - _TessPhongStrength: 0.5
     - _TessValue: 16
+    - _UseDither: 1
     - _VerticleDistance: 105
     - _VerticleGradient: 0.26
     - _VerticleSoftness: 0.82

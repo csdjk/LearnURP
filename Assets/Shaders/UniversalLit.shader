@@ -28,6 +28,7 @@ Shader "LcL/UniversalLit"
             HLSLPROGRAM
             #pragma prefer_hlslcc gles
             #pragma only_renderers gles gles3 glcore d3d11
+            #pragma enable_d3d11_debug_symbols
 
             #pragma vertex vert
             #pragma fragment frag

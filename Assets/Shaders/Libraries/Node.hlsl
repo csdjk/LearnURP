@@ -7,6 +7,8 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/BSDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
+
+
 float sum(float3 v)
 {
     return v.x + v.y + v.z;
@@ -486,16 +488,56 @@ half SphereMask(float3 positionWS, float3 center, float3 radius, float hardness)
     return pow(saturate(dot(halfv, halfv)), hardness);
 }
 
+
+// ================================= 三维贴图映射 =================================
+/**
+ *  @brief 三维贴图映射节点
+ * @param textureMap 纹理
+ * @param sampler_textureMap 采样器
+ * @param view 视图方向（通常是从表面指向摄像机的向量）
+ * @param tilling 纹理的平铺缩放因子
+ * @param Offset 纹理的偏移量
+ * @param axisFadeContrast 对比度参数，用于调整权重的过渡
+ * @return 混合后的颜色值
+ */
+float4 TriplanarCameraVector(TEXTURE2D_PARAM(textureMap, sampler_textureMap),
+                             float3 view,
+                             float3 tilling,
+                             float3 Offset,
+                             float axisFadeContrast)
+{
+    // 获取视图方向的绝对值作为权重
+    float3 blendWeights = abs(view);
+
+    // 使用对比度参数调整权重的过渡
+    blendWeights = pow(blendWeights, axisFadeContrast);
+
+    // 标准化权重，确保它们的和为1
+    blendWeights /= (blendWeights.x + blendWeights.y + blendWeights.z);
+
+    // 在三个主轴上采样纹理
+    float2 uvX = (view.yz * tilling.x) + Offset.xy;
+    float2 uvY = (view.xz * tilling.y) + Offset.yz;
+    float2 uvZ = (view.xy * tilling.z) + Offset.xz;
+
+    float4 colX = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, uvX);
+    float4 colY = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, uvY);
+    float4 colZ = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, uvZ);
+
+    // 根据权重混合三个采样结果
+    return colX * blendWeights.x + colY * blendWeights.y + colZ * blendWeights.z;
+}
+
 // ================================= 三维映射 =================================
-half4 TriplanarMapping(sampler2D textures, float3 positionWS, half3 N, float tiling, float blendSmoothness)
+half4 TriplanarMapping(TEXTURE2D_PARAM(textureMap, sampler_textureMap), float3 positionWS, half3 N, float tiling, float blendSmoothness)
 {
     half2 yUV = positionWS.xz * tiling;
     half2 xUV = positionWS.zy * tiling;
     half2 zUV = positionWS.xy * tiling;
 
-    half3 yDiff = tex2D(textures, yUV);
-    half3 xDiff = tex2D(textures, xUV);
-    half3 zDiff = tex2D(textures, zUV);
+    half3 yDiff = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, yUV);
+    half3 xDiff = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, xUV);
+    half3 zDiff = SAMPLE_TEXTURE2D(textureMap, sampler_textureMap, zUV);
 
     half3 blendWeights = pow(abs(N), blendSmoothness);
     blendWeights = blendWeights / (blendWeights.x + blendWeights.y + blendWeights.z);

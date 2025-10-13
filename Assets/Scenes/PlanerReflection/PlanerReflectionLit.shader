@@ -6,7 +6,7 @@ Shader "LcL/PlanerReflectionLit"
         _BaseColor ("Example Colour", Color) = (1, 1, 1, 1)
 
         [Normal]_BumpMap ("Normal Texture", 2D) = "bump" { }
-        _BumpScale ("Normal Scale", Float) = 1
+        _BumpScale ("Normal Scale", Range(0,10)) = 1
 
         [NoScaleOffset]_MetallicSmoothnessMap ("R-Metallic,G-Smoothness,B-AO,A-Emission", 2D) = "white" { }
         _Smoothness ("Smoothness", Range(0, 1)) = 0.5

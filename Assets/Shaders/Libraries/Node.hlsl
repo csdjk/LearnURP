@@ -7,11 +7,48 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/BSDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
+// t在min和max之间的插值位置，返回0到1之间的值
+float inverseLerp(float min, float max, float t)
+{
+    return saturate((t - min) / (max - min));
+}
 
 
 float sum(float3 v)
 {
     return v.x + v.y + v.z;
+}
+
+
+float RampStep(float NdotL, float rampStep, float rampSmooth)
+{
+    float interval = 1 / rampStep;
+    float level = round(NdotL * rampStep) * interval;
+    float ramp = interval * smoothstep(level - rampSmooth * interval, level + rampSmooth * interval, NdotL) + level - interval;
+    ramp = max(0, ramp);
+    return ramp;
+}
+
+
+// ================================= Dither抖动 =================================
+inline float Dither4x4Bayer(float2 screenPos)
+{
+    const float dither[16] = {
+        1, 9, 3, 11,
+        13, 5, 15, 7,
+        4, 12, 2, 10,
+        16, 8, 14, 6
+    };
+
+    screenPos = abs(screenPos.xy) * _ScreenParams.xy;
+    int2 screenPos2 = fmod(screenPos, 4);
+    int r = screenPos2.y * 4 + screenPos2.x;
+    return dither[r] / 16;
+}
+
+inline float2 ComputeScreenPosUV(float4 positionCS)
+{
+    return positionCS.xy / _ScaledScreenParams.xy;
 }
 
 // 调整输入值的对比度。
@@ -22,27 +59,28 @@ float sum(float3 v)
 // - 调整后的对比度值，范围在0到1之间。
 float CheapContrast(float value, float contrast)
 {
-    return saturate(lerp(0-contrast, 1+contrast, value));
+    return saturate(lerp(0 - contrast, 1 + contrast, value));
 }
 
 //由于FlipBook的uv在边缘出会剧烈跳变，不能uv直接计算ddx ddy
 float4 GetFlipbookDDXY(float2 uv, float2 size)
 {
-    uv = uv/size;
-    return float4(ddx(uv),ddy(uv));
+    uv = uv / size;
+    return float4(ddx(uv), ddy(uv));
 }
 
 //向中心收缩UV
 //为了修复Flipbook的UV边缘黑边问题(由于采样时的Filter Biliner插值导致的)
-float2 FlipbookShrinkUV(float2 uv,float2 size, float2 scale)
+float2 FlipbookShrinkUV(float2 uv, float2 size, float2 scale)
 {
-    float2 center =  0.5 / size;
-    return  center + (uv - center) * scale;
+    float2 center = 0.5 / size;
+    return center + (uv - center) * scale;
 }
+
 //计算翻页动画的UV坐标。
-float2 Flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert,float2 scale = 1)
+float2 Flipbook(float2 UV, float Width, float Height, float Tile, float2 Invert, float2 scale = 1)
 {
-    UV = FlipbookShrinkUV(UV,float2(Width, Height),scale);
+    UV = FlipbookShrinkUV(UV, float2(Width, Height), scale);
 
     Tile = fmod(Tile, Width * Height);
     float2 tileCount = float2(1.0, 1.0) / float2(Width, Height);
@@ -167,11 +205,11 @@ inline float SubsurfaceScattering(float3 V, float3 L, float3 N, float distortion
 
 inline float3 Translucency(
     float3 V, float3 L, float3 N, float normalDist, float scattering,
-    float3 baseColor,float3 direct, float3 ambient, float mainAtten, float translucency)
+    float3 baseColor, float3 direct, float3 ambient, float mainAtten, float translucency)
 {
     half3 halfDir = L + N * normalDist;
-    half mainVdotL = pow( saturate( dot( V, -halfDir ) ), scattering );
-    half3 mainTranslucency = mainAtten * ( mainVdotL * direct + ambient );
+    half mainVdotL = pow(saturate(dot(V, -halfDir)), scattering);
+    half3 mainTranslucency = mainAtten * (mainVdotL * direct + ambient);
     return baseColor * mainTranslucency * translucency;
 }
 
@@ -288,13 +326,13 @@ half4 DissolveLinear(
     half4 edgeFirstColor, half4 edgeSecondColor)
 {
     #if defined(_HORIZONTAL)
-        float dist = uv.x;
+    float dist = uv.x;
     #else
     float dist = uv.y;
     #endif
 
     #if defined(_INVERT)
-        dist = 1 - dist;
+    dist = 1 - dist;
     #endif
     half noise = tex2D(NoiseTex, uv).r;
     half cutout = lerp(dist, noise, noiseIntensity);
@@ -740,8 +778,9 @@ float3 CalculateViewRay(half2 uv, float4x4 frustumCornersRay)
     int index = int(uv.x + 0.5) + 2 * int(uv.y + 0.5);
     return frustumCornersRay[index].xyz;
 }
+
 //重建世界坐标 - Fragment Shader
-float3 ReconstructPositionWS(float2 uv, float3 ray,float depth)
+float3 ReconstructPositionWS(float2 uv, float3 ray, float depth)
 {
     float3 positionWS = 0;
     if (IsPerspectiveProjection())
@@ -765,6 +804,7 @@ float3 ReconstructPositionWS(float2 uv, float3 ray,float depth)
     }
     return positionWS;
 }
+
 float3 ReconstructPositionWS(float2 uv, float3 ray)
 {
     float depth = SampleSceneDepth(uv);

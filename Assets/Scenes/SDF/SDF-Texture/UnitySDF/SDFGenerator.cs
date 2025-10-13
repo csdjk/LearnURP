@@ -29,7 +29,7 @@ public class SDFGeneratorEditor : Editor {
 }
 #endif
 
-[CreateAssetMenu(menuName = "2D/SDF Generator")]
+[CreateAssetMenu(menuName = "LcL/SDF Generator")]
 public class SDFGenerator : ScriptableObject {
 
     [Flags]

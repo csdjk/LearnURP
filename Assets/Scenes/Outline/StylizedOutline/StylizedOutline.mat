@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StylizedOutline
+  m_Shader: {fileID: 4800000, guid: d127f367288ea6d4da9f134207885a65, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: 68b1b85fe80535d46ab83503e4aefd0e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ClipNoiseIntensity: 1
+    - _OffsetFactor: 0
+    - _OffsetNoiseIntensity: 1
+    - _OffsetUnits: 0
+    - _OutlineClipValue: -1
+    - _OutlineMaskWidth: 0.29
+    - _OutlinePow: 2.12
+    - _OutlinePower: 0.0044
+    - _OutlineWidth: 1.24
+    - _USE_SMOOTH_NORMAL: 0
+    m_Colors:
+    - _LineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseTilling: {r: 2, g: 2, b: 2, a: 2}
+    - _NoiseTillingClip: {r: 2, g: 2, b: 1, a: 1}
+  m_BuildTextureStacks: []

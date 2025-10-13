@@ -8,11 +8,20 @@ Shader "LcL/Common/CubemapBlur"
         _Rotation ("Rotation", Range(0, 360)) = 0
         _Blur ("Blur", Range(0, 1)) = 0
         [NoScaleOffset] _Tex ("Cubemap   (HDR)", Cube) = "grey" { }
+
+        [Foldout(_SKY_FOG)]_SKY_FOG ("Fog", float) = 0
+        [ShowIf(_SKY_FOG, 1)]_FogColor ("Fog Color", Color) = (0.5, 0.5, 0.5, 1)
+        [ShowIf(_SKY_FOG, 1)]_CenterY ("Fog Start Height", Range(-1,1)) = 0
+        [ShowIf(_SKY_FOG, 1)]_FogSoftness ("Fog Softness", Range(0,1)) = 0.1
+        [FoldoutEnd][ShowIf(_SKY_FOG, 1)]_FogIntensity ("Fog Intensity", Range(0,1)) = 1
     }
 
     SubShader
     {
-        Tags { "Queue" = "Background" "RenderType" = "Background" "PreviewType" = "Skybox" }
+        Tags
+        {
+            "Queue" = "Background" "RenderType" = "Background" "PreviewType" = "Skybox"
+        }
         Cull Off ZWrite Off
 
         Pass
@@ -24,6 +33,7 @@ Shader "LcL/Common/CubemapBlur"
             #pragma target 2.0
 
             #include "UnityCG.cginc"
+            #pragma multi_compile _ _SKY_FOG
 
             samplerCUBE _Tex;
             half4 _Tex_HDR;
@@ -31,6 +41,11 @@ Shader "LcL/Common/CubemapBlur"
             half _Exposure;
             float _Rotation;
             float _Blur;
+
+            half4 _FogColor;
+            float _CenterY;
+            float _FogSoftness;
+            float _FogIntensity ;
 
             float3 RotateAroundYInDegrees(float3 vertex, float degrees)
             {
@@ -51,6 +66,7 @@ Shader "LcL/Common/CubemapBlur"
             {
                 float4 vertex : SV_POSITION;
                 float3 texcoord : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -62,6 +78,8 @@ Shader "LcL/Common/CubemapBlur"
                 float3 rotated = RotateAroundYInDegrees(v.vertex, _Rotation);
                 o.vertex = UnityObjectToClipPos(rotated);
                 o.texcoord = v.vertex.xyz;
+                // o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                o.worldPos = v.vertex.xyz;
                 return o;
             }
 
@@ -72,12 +90,23 @@ Shader "LcL/Common/CubemapBlur"
                 half3 c = DecodeHDR(tex, _Tex_HDR);
                 c = c * _Tint.rgb * unity_ColorSpaceDouble.rgb;
                 c *= _Exposure;
+
+                // float3 view_pos = UnityWorldToViewPos(i.worldPos);
+
+                #ifdef _SKY_FOG
+                float maskUp = smoothstep(_CenterY, _CenterY + _FogSoftness, i.worldPos.y);
+                float maskDown = smoothstep(_CenterY, _CenterY - _FogSoftness, i.worldPos.y);
+                float fogFactor = max(maskUp, maskDown);
+                fogFactor = lerp(1, fogFactor, _FogIntensity);
+                c = lerp(_FogColor.rgb, c, fogFactor);
+                #endif
+
                 return half4(c, 1);
             }
             ENDCG
         }
     }
-
+    CustomEditor "LcLShaderEditor.LcLShaderGUI"
 
     Fallback Off
 }

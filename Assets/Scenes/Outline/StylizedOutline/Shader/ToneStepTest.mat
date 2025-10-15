@@ -24,17 +24,35 @@ Material:
         m_Texture: {fileID: 2800000, guid: d5efbe7a42e2b7f4493412c01ac6c552, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DistNoiseMap:
+        m_Texture: {fileID: 2800000, guid: 47cdda17bb08a47b0a50675cbb83cfa2, type: 3}
+        m_Scale: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseMap:
+        m_Texture: {fileID: 2800000, guid: 9e02f6370a11bf541a5db093f334c332, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _StepNoiseMap:
+        m_Texture: {fileID: 2800000, guid: 0df7a0b61c9dfa6408ae01459c10ffec, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Cutoff: 0.5
+    - _DistNoiseIntensity: 0.01
+    - _DistNoiseTiling: 10
     - _Feather: 0
+    - _LembertNoiseIntensity: 0.164
     - _RampSize: 0.5
-    - _RampSmooth: 0.245
+    - _RampSmooth: 0.01
     - _RampStart: 0.5
-    - _RampStep: 4
+    - _RampStep: 5
+    - _StepNoiseIntensity: 0.525
     - _Steps: 4.38
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _DarkColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
+    - _DistNoiseSpeed: {r: 1, g: 0, b: 0, a: 0}
+    - _DistNoiseTiling: {r: 11.93, g: 62.05, b: 5.8, a: 1}
     - _LightColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

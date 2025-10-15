@@ -22,7 +22,7 @@ Shader "LcL/PlanerReflectionLit"
     {
         Tags
         {
-            "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"
+            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" "Queue" = "Geometry"
         }
 
         Pass

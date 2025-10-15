@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SDFDisplay
+  m_Shader: {fileID: 4800000, guid: 40f05191c7b51174ca4dd905c1617e5b, type: 3}
+  m_ValidKeywords:
+  - TEXTURING_OFF
+  - UNDERLAY_OFF
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BackgroundTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 8c93b11c4f18ee2488bca0979ef8dff0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - TEXTURING: 0
+    - UNDERLAY: 0
+    - _DstBlend: 10
+    - _EmbossSoftness: 1
+    - _EmbossWidth: 0.5
+    - _EnableEmboss: 0
+    - _EnableOutline: 0
+    - _FaceDilate: 0.202
+    - _OutlineSoftness: 0
+    - _OutlineWidth: 0
+    - _SrcBlend: 5
+    - _UnderlayDilate: 0
+    - _UnderlayOffsetX: 0
+    - _UnderlayOffsetY: 0
+    - _UnderlaySoftness: 0
+    - _UniformGradient: 0
+    m_Colors:
+    - _EmbossDark: {r: 0, g: 0, b: 0, a: 1}
+    - _EmbossLight: {r: 1, g: 1, b: 1, a: 1}
+    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_BuildTextureStacks: []

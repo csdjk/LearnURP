@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SDF Generator
   m_EditorClassIdentifier: 
   Mode: 7
-  GradientSizePX: 128
+  GradientSizePX: 512
   SetImportSettings: 1
   Targets:
   - {fileID: 2800000, guid: 75af4ab6ce4bc0d43a78781eae66affd, type: 3}

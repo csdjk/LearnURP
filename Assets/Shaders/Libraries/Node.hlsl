@@ -527,6 +527,22 @@ half SphereMask(float3 positionWS, float3 center, float3 radius, float hardness)
 }
 
 
+// ================================= 三维UV =================================
+float2 TriplanarFlowUV(float3 positionWS, float3 N, float tiling, float3 speed, float blendSmoothness = 0)
+{
+    half2 xUV = positionWS.zy * tiling + speed.x * _Time.y;
+    half2 yUV = positionWS.xz * tiling + speed.y * _Time.y;
+    half2 zUV = positionWS.xy * tiling + speed.z * _Time.y;
+
+    return (xUV+yUV+zUV)/3;
+
+    // half3 blendWeights = pow(abs(N), blendSmoothness);
+    // blendWeights = blendWeights / (blendWeights.x + blendWeights.y + blendWeights.z);
+    //
+    // float2 newuv = (xUV * blendWeights.x + yUV * blendWeights.y + zUV * blendWeights.z);
+    // return newuv;
+}
+
 // ================================= 三维贴图映射 =================================
 /**
  *  @brief 三维贴图映射节点

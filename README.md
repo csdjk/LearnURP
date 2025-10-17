@@ -74,3 +74,8 @@ Record some demos of the effects implemented in URP.
 ![1715242151829](image/README/1715242151829.png)
 
 
+### [模型云](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Cloud/MultiPassCloud)
+
+![alt text](image/README/cloud.gif)
+
+

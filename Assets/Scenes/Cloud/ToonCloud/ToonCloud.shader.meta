@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: bbc12339b0348bc46857ef8b14e4e185
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _perlin_noise_3d: {fileID: 11700000, guid: b0dc6c42ec379a94ab550fb34d9bbf5a, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

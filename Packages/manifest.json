@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.sidefx.vat": "file:D:/Program Files/Side Effects Software/sidefx_packages/SideFXLabs20.5/unity/shaders/URP_VAT3",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "4.4.2",

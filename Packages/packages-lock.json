@@ -7,6 +7,14 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.sidefx.vat": {
+      "version": "file:D:/Program Files/Side Effects Software/sidefx_packages/SideFXLabs20.5/unity/shaders/URP_VAT3",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "12.0.0"
+      }
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

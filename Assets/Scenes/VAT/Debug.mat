@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Debug
+  m_Shader: {fileID: 4800000, guid: 97de94f52d7cc9f47b2feaf7d8074ce9, type: 3}
+  m_ValidKeywords:
+  - _SHOWVALUE_UV0
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NmlTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PosTex:
+        m_Texture: {fileID: 2800000, guid: bfa1e09d1a4a8bd4fb70440585e5d579, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RotTex:
+        m_Texture: {fileID: 2800000, guid: 3398fa629c1ba0844baf10d673f2ab47, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AnimLen: 1
+    - _BlendOp: 0
+    - _CUTOFF: 0
+    - _ColorMask: 15
+    - _CullMode: 2
+    - _CurrentFrame: 0
+    - _Cutoff: 0.5
+    - _DstBlend: 10
+    - _Gamma: 1
+    - _Invert: 0
+    - _ScleraSize: 1
+    - _ShowValue: 14
+    - _Speed: 1.31
+    - _SrcBlend: 5
+    - _TotalFrame: 128
+    - _ZTestMode: 4
+    - _ZWriteMode: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BoundsMax: {r: 0, g: 0, b: 0, a: 0}
+    - _BoundsMin: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _PivRange: {r: -0.3886703, g: 1.878811, b: 0, a: 0}
+    - _PosRange: {r: -2.011098, g: 3.270692, b: 0, a: 0}
+  m_BuildTextureStacks: []

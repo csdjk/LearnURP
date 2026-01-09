@@ -18,6 +18,7 @@ namespace UnityEngine.Rendering.Universal
         public class PlanarReflectionSettings
         {
             public ResolutionMulltiplier resolutionMultiplier = ResolutionMulltiplier.Full;
+            [Range(0f, 1f)]
             public float clipPlaneOffset = 0.07f;
             public LayerMask reflectLayers = -1;
             public string cameraTag = "MainCamera";
@@ -29,6 +30,7 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField]
         public PlanarReflectionSettings settings = new PlanarReflectionSettings();
         public GameObject targetPlane;
+        [Range(-1f, 1f)]
         public float planeOffset;
 
         [SerializeField, HideInInspector]
@@ -36,13 +38,10 @@ namespace UnityEngine.Rendering.Universal
         RenderTexture m_ReflectionTexture;
         readonly int m_PlanarReflectionTextureId = Shader.PropertyToID("_PlanarReflectionTexture");
 
+
         private void OnEnable()
         {
             var rpAsset = UniversalRenderPipeline.asset;
-
-            // int selectedRenderer = EditorGUI.IntPopup(controlRect, Styles.rendererType, selectedRendererOption, rpAsset.rendererDisplayList, rpAsset.rendererIndexList);
-
-
             // if (IsSupport())
             {
                 RenderPipelineManager.beginCameraRendering += ExecutePlanarReflections;
@@ -101,12 +100,13 @@ namespace UnityEngine.Rendering.Universal
         // 校验Camera tag
         private bool CheckCameraTag(Camera camera)
         {
-            // #if UNITY_EDITOR
-            //             if (camera.cameraType == CameraType.SceneView)
-            //             {
-            //                 return true;
-            //             }
-            // #endif
+#if UNITY_EDITOR
+            // 在 Editor 模式下，允许 Scene 视图相机进行反射渲染
+            if (camera.cameraType == CameraType.SceneView)
+            {
+                return true;
+            }
+#endif
             if (settings.cameraTag.Equals(string.Empty) || camera.CompareTag(settings.cameraTag))
             {
                 return true;
@@ -204,7 +204,6 @@ namespace UnityEngine.Rendering.Universal
                 m_ReflectionTexture.name = "Planar Reflection Texture";
             }
             m_ReflectionCamera.targetTexture = m_ReflectionTexture;
-
         }
         private void UpdateCamera(Camera src, Camera dest)
         {

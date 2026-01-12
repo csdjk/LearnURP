@@ -44,8 +44,6 @@ Shader "LcL/VAT/VAT3_RBD"
             HLSLPROGRAM
             #pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
-            #pragma enable_d3d11_debug_symbols
-
             #pragma shader_feature_local _NORMALMAP
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"

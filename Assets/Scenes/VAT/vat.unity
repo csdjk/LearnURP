@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &114400529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,7 +517,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableFog: 1
   fogColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
-  centerY: 0
+  centerY: -0.09
   fogSoftness: 0.1
   fogIntensity: 1
   fogDensity: 0.04

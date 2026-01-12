@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8081582795363580827
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 5
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -20,16 +7,18 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Lit
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_Name: fog
+  m_Shader: {fileID: 4800000, guid: 25533e86a06be624e91046d3fd40d0b2, type: 3}
+  m_ValidKeywords:
+  - _USE_FACE_REMOVE
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
+  - _RECEIVE_SHADOWS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -39,14 +28,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 516eafdf5e09fc148a8364c10516ec7e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ClearCoatMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Cube:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -62,8 +43,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DistNoiseAMap:
+        m_Texture: {fileID: 2800000, guid: 632171e63b3ffea43a352098f73d853d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistNoiseMap:
+        m_Texture: {fileID: 2800000, guid: 4fc70e4de57857c42a8580507f483d31, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FireMap:
+        m_Texture: {fileID: 2800000, guid: cad9fbe90cd01d847b138d78ed0658a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -74,16 +67,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MetallicSpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampMap:
+        m_Texture: {fileID: 2800000, guid: d630da2e7d930eb4eabd319dc63aed49, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -104,42 +97,77 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
+    - _AlphaNoise: 0
     - _Blend: 0
-    - _BumpScale: 5
-    - _ClearCoat: 0
+    - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _Cutoff: 0.5
+    - _Cutoff: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Dist: 0
+    - _DistInt: 0.02
+    - _DistIntA: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FaceRemovePow: 3
+    - _FireAlpha: 0.352
+    - _FireBoundary1: 0.1
+    - _FireBoundary2: 0.3
+    - _FireBoundary3: 0.5
+    - _FireBoundary4: 0.7
+    - _FireBoundary5: 1
+    - _FireColor: 0
+    - _FireLevelPow: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossinessSource: 0
+    - _Glossiness: 0
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
-    - _ReflectionSource: 0
-    - _Shininess: 1
-    - _Smoothness: 1
+    - _RampColorInt: 1
+    - _RampHue: 0
+    - _ReceiveShadows: 0
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
-    - _SpecSource: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _USE_ALPHA_NOISE: 0
+    - _USE_FACE_REMOVE: 1
+    - _USE_RAMP: 0
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
-    - _Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
+    - _BaseColor: {r: 0.88438344, g: 0.88438344, b: 0.88438344, a: 1}
+    - _Color: {r: 0.88438344, g: 0.88438344, b: 0.88438344, a: 1}
+    - _DistIntAttenAdjust: {r: 1, g: 1, b: 0, a: 0}
+    - _DistIntAttenAdjustA: {r: 1, g: 1, b: 0, a: 0}
+    - _DistNoiseTilingSpeed: {r: 5, g: 5, b: 0, a: 1}
+    - _DistNoiseTilingSpeedA: {r: 1, g: 1, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FireColor1: {r: 0.43946844, g: 0.11681201, b: 0.990566, a: 1}
+    - _FireColor2: {r: 1, g: 0.04, b: 0.53, a: 1}
+    - _FireColor3: {r: 1, g: 0.47506687, b: 0, a: 1}
+    - _FireColor4: {r: 0, g: 0.36, b: 1, a: 1}
+    - _FireColor5: {r: 0, g: 1, b: 0.6, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
+--- !u!114 &3783546996851660861
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

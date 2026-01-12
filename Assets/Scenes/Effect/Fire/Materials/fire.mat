@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: fire
+  m_Shader: {fileID: 4800000, guid: 25533e86a06be624e91046d3fd40d0b2, type: 3}
+  m_ValidKeywords:
+  - _USE_ALPHA_NOISE
+  - _USE_RAMP
+  m_InvalidKeywords:
+  - _USE_ALPHA_NOISE_ON
+  - _USE_RAMP_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - SingleLine_FireMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistNoiseAMap:
+        m_Texture: {fileID: 2800000, guid: 02b730a856e87854eb7ca767cc0ce17d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistNoiseMap:
+        m_Texture: {fileID: 2800000, guid: 4fc70e4de57857c42a8580507f483d31, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FireMap:
+        m_Texture: {fileID: 2800000, guid: c874a4e90026cda4dbcb780f3773b515, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampMap:
+        m_Texture: {fileID: 2800000, guid: d630da2e7d930eb4eabd319dc63aed49, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0
+    - _AlphaNoise: 0
+    - _Base: 0
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _Dist: 0
+    - _DistInt: 0.016
+    - _DistIntA: 1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _FaceRemovePow: 1
+    - _FireAlpha: 1
+    - _FireBoundary1: 0
+    - _FireBoundary2: 0.11
+    - _FireBoundary3: 0.35
+    - _FireBoundary4: 0.73
+    - _FireBoundary5: 0.9
+    - _FireColor: 0
+    - _FireCoreAlpha: 1
+    - _FireLevelPow: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _QueueOffset: 0
+    - _RampColorInt: 1.21
+    - _RampHue: 0
+    - _RampPow: 1
+    - _ReceiveShadows: 1
+    - _Smoothness: 0
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _USE_ALPHA_NOISE: 1
+    - _USE_FACE_REMOVE: 0
+    - _USE_RAMP: 1
+    - _UVSec: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0.88438344, g: 0.88438344, b: 0.88438344, a: 1}
+    - _Color: {r: 0.88438344, g: 0.88438344, b: 0.88438344, a: 1}
+    - _DistIntAttenAdjust: {r: 2, g: 0.5, b: 0, a: 0}
+    - _DistIntAttenAdjustA: {r: 1, g: 1, b: 0, a: 0}
+    - _DistNoiseTiling: {r: 3, g: 3, b: 0, a: 0}
+    - _DistNoiseTilingA: {r: 1, g: 1, b: 0, a: 0}
+    - _DistNoiseTilingSpeed: {r: 3, g: 3, b: 0, a: 1}
+    - _DistNoiseTilingSpeedA: {r: 2, g: 2, b: 0, a: 0.5}
+    - _DistSpeed: {r: 0, g: 1, b: 0, a: 0}
+    - _DistSpeedA: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FireColor1: {r: 0.15896086, g: 0, b: 0.9911022, a: 1}
+    - _FireColor2: {r: 0.19806935, g: 0.028426038, b: 1, a: 1}
+    - _FireColor3: {r: 0.13013652, g: 0.15292618, b: 1, a: 1}
+    - _FireColor4: {r: 0, g: 0.10702311, b: 1, a: 1}
+    - _FireColor5: {r: 0, g: 2, b: 0.066845894, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &224431139658003896
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

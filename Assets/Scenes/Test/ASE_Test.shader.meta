@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 233697036d4ccf14b90cf4edfcecb5c5
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _part19hurlnoise: {fileID: 2800000, guid: 3398d272534d9c34fb266904c915b465, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

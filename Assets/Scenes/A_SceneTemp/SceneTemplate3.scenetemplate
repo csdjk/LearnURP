@@ -52,7 +52,7 @@ MonoBehaviour:
     instantiationMode: 0
   templatePipeline: {fileID: 0}
   badge: {fileID: 0}
-  addToDefaults: 0
+  addToDefaults: 1
 --- !u!28 &1724879567341294778
 Texture2D:
   m_ObjectHideFlags: 0

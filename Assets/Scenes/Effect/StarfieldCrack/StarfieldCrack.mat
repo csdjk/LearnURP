@@ -37,8 +37,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseMap:
-        m_Texture: {fileID: 2800000, guid: 30e9bc67a13954547af7e1c5555a4868, type: 3}
-        m_Scale: {x: 1, y: 5}
+        m_Texture: {fileID: 2800000, guid: 511ecb264d7c3754a8903c955c37efaf, type: 3}
+        m_Scale: {x: 0.5, y: 3}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
@@ -49,7 +49,7 @@ Material:
     - _Cutoff: 0.5
     - _Metallic: 0
     - _NoiseSpeed: 0.1
-    - _NoiseStrength: 0.075
+    - _NoiseStrength: 0.043
     - _OcclusionPower: 1
     - _Radius: 0.67
     - _SmoothWidth: 0.01
@@ -60,12 +60,12 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Center: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _CenterRadiuse: {r: 0.5, g: 0.5, b: 0.8, a: 0.3}
-    - _CrackColor: {r: 0, g: 7, b: 10, a: 1}
+    - _CrackColor: {r: 0, g: 9.308511, b: 9.999999, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _NoiseSpeed: {r: -0.5, g: 0, b: 0, a: 0}
+    - _NoiseSpeed: {r: -0.3, g: 0, b: 0, a: 0}
     - _NoiseTilling: {r: 1, g: 5, b: 0, a: 0}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _Radius: {r: 0.8, g: 0.3, b: 0, a: 0}
-    - _StarfieldColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StarfieldColor: {r: 0.89188504, g: 4.1281533, b: 6.498019, a: 1}
     - _Tilling: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

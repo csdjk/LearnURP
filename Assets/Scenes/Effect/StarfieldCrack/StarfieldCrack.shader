@@ -4,7 +4,7 @@ Shader "LcL/StarfieldCrack"
     {
         [Foldout()]_BASE ("Base", float) = 0
         _BaseMap ("Background Texture", 2D) = "white" { }
-        [FoldoutEnd]_StarfieldColor ("Starfield Color", Color) = (1, 1, 1, 1)
+        [FoldoutEnd][HDR]_StarfieldColor ("Starfield Color", Color) = (1, 1, 1, 1)
 
 
         [Foldout()]_Starfield ("Starfield Crack", float) = 0

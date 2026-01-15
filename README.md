@@ -79,3 +79,13 @@ Record some demos of the effects implemented in URP.
 ![alt text](image/README/cloud.gif)
 
 
+### [VAT-RBD](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/VAT)
+
+![1768222305409](image/README/1768222305409.gif)
+
+### [星空裂缝](https://github.com/csdjk/LearnURP/tree/main/Assets/Scenes/Effect/StarfieldCrack)
+
+<video width="700" height="394" controls>
+  <source src="image/README/1768467750691.mp4" type="video/mp4">
+  您的浏览器不支持视频播放。
+</video>

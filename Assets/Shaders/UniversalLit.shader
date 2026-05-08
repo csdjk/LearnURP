@@ -222,6 +222,7 @@ Shader "LcL/UniversalLit"
                 InputData inputData = InitializeInputData(input, surfaceData.normalTS);
                 half4 color = UniversalFragmentPBR(inputData, surfaceData);
 
+                color.rgb = min(color.rgb, 10);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
                 color.a = saturate(color.a);

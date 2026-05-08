@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AnisotropicSpecular_KK
+  m_Shader: {fileID: 4800000, guid: 66a0f46dfbd4b07409bf876ee07f08f4, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HairNoiseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: f0538e6635b8c3942819be77142a597f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseMap:
+        m_Texture: {fileID: 2800000, guid: c3a453771406050448927694e8a6842b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 812779dc47d722749842099c1ade78c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OtherMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AnisoRot: 0.3
+    - _AnisoSpecIntensity: 1
+    - _AnisoSpecPower: 8
+    - _DiffuseIntensity: 1.16
+    - _DiffuseWrap: 0.278
+    - _FlowMapScale: 1
+    - _FlowNoiseScale: 0
+    - _HairSpecPower: 445
+    - _HairSpecularScale: 1.08
+    - _MetalMulti: 0
+    - _NoiseIntensity: 0.652
+    - _NoiseOffset: 0.316
+    - _NormalOffset: 1.3
+    - _PrimaryShift: 0.42
+    - _RoughMulti: 0
+    - _RoughnessB: 0.3
+    - _RoughnessT: 0.05
+    - _SecondaryShift: -0.11
+    - _ShiftB: -0.1
+    - _ShiftT: 0.1
+    - _SpecularIntensity: 1
+    m_Colors:
+    - _NewAnisoFactor: {r: 60, g: 0, b: 1, a: 0}
+    - _PrimaryColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SecondaryColor: {r: 0.5, g: 0.39999998, b: 0.29999998, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

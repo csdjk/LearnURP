@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.1763179, g: 0.17190772, b: 0.16689718, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -137,7 +138,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0014522
+      value: 1.0569899
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
@@ -147,27 +148,27 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.1444602
+      value: -0.0031274408
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.73758125
+      value: 0.38449347
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000016120353
+      value: 0.000000008403368
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.67525846
+      value: -0.9231277
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000014758252
+      value: -0.00000002017561
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
@@ -177,7 +178,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -84.948
+      value: -134.775
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 520108a2f070cf44fa60c0549a89e7bc,
         type: 3}
@@ -456,7 +457,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1063996449
 GameObject:
@@ -700,7 +701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    aberrationStrength: 1.5
+    aberrationStrength: 0.99
     distortionStrength: 0.41
     distortionFrequency: 10
     distortionSpeed: 1

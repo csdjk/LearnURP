@@ -60,14 +60,14 @@ Material:
     - _Blend: 0
     - _Blur: 0
     - _BumpScale: 1
-    - _CenterY: -0.021
+    - _CenterY: 0.006
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _Exposure: 1
     - _FogIntensity: 1
-    - _FogSoftness: 0.303
+    - _FogSoftness: 0.179
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0

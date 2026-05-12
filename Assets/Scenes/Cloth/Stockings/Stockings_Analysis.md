@@ -20,7 +20,7 @@
 
 ## 二、渲染设置
 
-```hlsl
+```c
 Tags
 {
     "RenderType" = "Opaque"
@@ -95,7 +95,7 @@ Tags
 
 ## 四、顶点着色器（vert）
 
-```hlsl
+```c
 Varyings vert(Attributes input)
 {
     output.positionCS = GetVertexPositionInputs(input.positionOS.xyz).positionCS;
@@ -118,7 +118,7 @@ Varyings vert(Attributes input)
 
 ### 5.1 高度遮罩（HeightMask）
 
-```hlsl
+```c
 float ObjectBound01(float3 positionOS)
 {
     float objMinY  = _ObjectBoundY.x;
@@ -155,13 +155,13 @@ height_mask  0                        0          → 渐变 →        1        
 
 ### 5.2 丝袜核心着色（Stockings 函数）
 
-```hlsl
+```c
 float3 Stockings(float2 uv, float3 N, float3 V, float3 baseColor, float height_mask)
 ```
 
 #### Step 1：采样 StockMap
 
-```hlsl
+```c
 // B通道：带Tiling的粗糙度扰动采样
 float stockRangeZ = SAMPLE_TEXTURE2D(_StockMap, sampler_StockMap, uv * _StockMap_ST.xy).z;
 // RG通道：原始UV采样（编织密度）
@@ -170,7 +170,7 @@ float2 stockMap   = SAMPLE_TEXTURE2D(_StockMap, sampler_StockMap, uv).xy;
 
 #### Step 2：厚度图处理
 
-```hlsl
+```c
 float stock_thickness_map = pow(stockMap.y, _StockThicknessPow);
 ```
 
@@ -178,7 +178,7 @@ float stock_thickness_map = pow(stockMap.y, _StockThicknessPow);
 
 #### Step 3：粗糙度计算
 
-```hlsl
+```c
 float roughnessAdjust = (stockRangeZ * 0.5) - 0.5;   // 映射到 [-0.5, 0]
 float finalRoughness  = _StockRoughness * roughnessAdjust + 1.0;
 ```
@@ -187,7 +187,7 @@ float finalRoughness  = _StockRoughness * roughnessAdjust + 1.0;
 
 #### Step 4：NdotV 边缘光计算
 
-```hlsl
+```c
 float rimValue    = max(dot(N, V), 0.001);
 ```
 
@@ -196,7 +196,7 @@ float rimValue    = max(dot(N, V), 0.001);
 
 #### Step 5：暗部边缘梯度
 
-```hlsl
+```c
 float rimGradient = 1 - smoothstep(
     _StockDarkWidth - _StockDarkSoftness,
     _StockDarkWidth + _StockDarkSoftness,
@@ -216,7 +216,7 @@ rimGradient: 1              →渐变→          0             0
 
 #### Step 6：高度遮罩融合（逻辑OR合并）
 
-```hlsl
+```c
 rimGradient = rimGradient + height_mask - rimGradient * height_mask;
 ```
 
@@ -229,7 +229,7 @@ $$\text{result} = 1 - (1 - A)(1 - B) = A + B - AB$$
 
 #### Step 7：厚度图调制暗部梯度
 
-```hlsl
+```c
 rimGradient = 1 - (1 - rimGradient) * stock_thickness_map;
 ```
 
@@ -237,7 +237,7 @@ rimGradient = 1 - (1 - rimGradient) * stock_thickness_map;
 
 #### Step 8：暗部颜色合成
 
-```hlsl
+```c
 float3 darkColorBlend  = lerp(1, _StockDarkColor.xyz, rimGradient);
 float3 stockDarkResult = lerp(1, baseColor.xyz * darkColorBlend, rimGradient);
 ```
@@ -249,7 +249,7 @@ float3 stockDarkResult = lerp(1, baseColor.xyz * darkColorBlend, rimGradient);
 
 #### Step 9：丝袜透明度（stockAlpha）计算
 
-```hlsl
+```c
 float stockAlpha = finalRoughness * stockMap.y;          // 基础透明度
 stockAlpha = stockAlpha * (1 - _StockThickness);         // 全局厚度调节
 float edgeLight  = max(pow(rimValue, _StockPow), 0.004); // 边缘高光（Phong-like）
@@ -271,7 +271,7 @@ stockAlpha = clamp(stockAlpha * edgeLight, 0.0, 1.0);   // 最终透明度
 
 #### Step 10：最终颜色合成
 
-```hlsl
+```c
 float3 finalStockColor = lerp(baseColor.xyz * stockDarkResult, _StockColor.xyz, stockAlpha);
 ```
 

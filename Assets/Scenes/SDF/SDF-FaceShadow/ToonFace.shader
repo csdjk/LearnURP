@@ -94,10 +94,10 @@ Shader "LcL/ToonFace"
                 float lightAtten = 1 - (dot(L.xz, forward.xz) * 0.5 + 0.5);
                 float filpU = sign(dot(L.xz, left.xz));
                 float2 shadow_uv = input.uv * float2(filpU, 1);
-                float3 shaodwRamp = SAMPLE_TEXTURE2D(_FaceShadowTex, sampler_FaceShadowTex, shadow_uv).a;
+                float3 shaodwRamp = SAMPLE_TEXTURE2D(_FaceShadowTex, sampler_FaceShadowTex, shadow_uv).x;
                 float faceShadow = SmoothValue(lightAtten + _FaceLightOffset, _ShadowSmoothness, shaodwRamp.r);
 
-                return half4(filpU.xxx, 1);
+                return half4(faceShadow.xxx, 1);
 
                 // return half4(color.rgb * shading * light.shadowAttenuation, color.a);
             }
@@ -127,5 +127,7 @@ Shader "LcL/ToonFace"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             ENDHLSL
         }
+
+        
     }
 }

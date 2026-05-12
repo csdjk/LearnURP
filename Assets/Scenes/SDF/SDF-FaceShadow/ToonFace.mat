@@ -25,14 +25,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceShadowTex:
-        m_Texture: {fileID: 2800000, guid: 8c93b11c4f18ee2488bca0979ef8dff0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9dc6c2356d848df4396ff936883b87f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Cutoff: 0.5
-    - _FaceLightOffset: 0.457
-    - _ShadowSmoothness: 0.5
+    - _FaceLightOffset: 0.299
+    - _ShadowSmoothness: 0.009
     m_Colors:
     - _BaseColor: {r: 0, g: 0.65999997, b: 0.73, a: 1}
   m_BuildTextureStacks: []
